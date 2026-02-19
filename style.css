@@ -61,3 +61,15 @@ h1 {
     background-color: #38bdf8;
     color: #0f172a;
 }
+
+/* Headshot */
+.headshot {
+    width: 150px;        /* adjust as needed */
+    height: 150px;
+    border-radius: 50%;  /* makes it circular */
+    display: block;
+    margin: 0 auto 1rem auto;
+    border: 3px solid #38bdf8; /* optional accent border */
+    object-fit: cover;   /* crops image nicely */
+}
+
