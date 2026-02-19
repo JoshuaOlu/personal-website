@@ -11,6 +11,7 @@ body {
     color: #f1f5f9; /* soft white */
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
@@ -64,12 +65,41 @@ h1 {
 
 /* Headshot */
 .headshot {
-    width: 150px;        /* adjust as needed */
+    width: 150px;
     height: 150px;
-    border-radius: 50%;  /* makes it circular */
+    border-radius: 50%;
     display: block;
     margin: 0 auto 1rem auto;
-    border: 3px solid #38bdf8; /* optional accent border */
-    object-fit: cover;   /* crops image nicely */
+    border: 3px solid #38bdf8;
+    object-fit: cover;
 }
 
+/* Social Media */
+.social-media {
+    margin: 2rem 0;
+}
+
+.social-media a {
+    display: inline-block;
+    margin: 0 0.5rem;
+    transition: transform 0.3s ease;
+}
+
+.social-media a img {
+    width: 32px;
+    height: 32px;
+    filter: invert(92%) sepia(8%) saturate(0%) hue-rotate(177deg) brightness(102%) contrast(102%); /* white icons */
+}
+
+.social-media a:hover {
+    transform: scale(1.2);
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #94a3b8; /* lighter grey */
+}
