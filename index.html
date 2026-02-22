@@ -74,8 +74,12 @@
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Joshua Olunlade. All rights reserved.</p>
+        <p>&copy; 2024–<span id="year"></span> Joshua Olunlade. All rights reserved.</p>
     </footer>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
 
 </body>
 </html>
