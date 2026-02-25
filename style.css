@@ -103,3 +103,46 @@ footer {
     font-size: 0.9rem;
     color: #94a3b8; /* lighter grey */
 }
+
+
+/* Project Page Layout */
+.project-container {
+    max-width: 900px;
+    padding: 4rem 2rem;
+}
+
+.project-section {
+    margin-bottom: 3rem;
+}
+
+.project-section h2 {
+    color: #38bdf8;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+.project-section p {
+    line-height: 1.7;
+    opacity: 0.9;
+}
+
+.project-section ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    opacity: 0.9;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.7rem 1.4rem;
+    border: 1px solid #38bdf8;
+    color: #38bdf8;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background-color: #38bdf8;
+    color: #0f172a;
+}
