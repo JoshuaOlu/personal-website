@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tinkabot | Joshua Olunlade</title>
+
+    <meta name="description" content="Tinkabot – A tangible programming interface for early computational thinking. Developed as part of an M.Eng thesis in Mechanical Engineering.">
+    <meta name="author" content="Joshua Olunlade">
+
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+<div class="project-container">
+
+    <h1>🤖 Tinkabot</h1>
+    <p class="tagline">A Tangible Programming System for Early Computational Thinking</p>
+
+    <section class="project-section">
+        <h2>Overview</h2>
+        <p>
+            Tinkabot is a tangible programming interface that allows children
+            to construct robot behaviours by physically scanning RFID cards.
+            It eliminates screens and text-based syntax, introducing programming
+            concepts through embodied interaction.
+        </p>
+    </section>
+
+    <section class="project-section">
+        <h2>The Problem</h2>
+        <p>
+            Early programming education often depends on screens and abstract interfaces.
+            In resource-constrained environments, this limits accessibility and embodied learning.
+            Tinkabot explores how physical sequencing and sensor-based interaction
+            can introduce computational thinking without keyboards or monitors.
+        </p>
+    </section>
+
+    <section class="project-section">
+        <h2>Core Concepts Taught</h2>
+        <ul>
+            <li>Sequencing</li>
+            <li>Loops (Repeat ×2, ×4, ×6)</li>
+            <li>Conditionals (If Obstacle → Turn Left)</li>
+            <li>Event-driven triggers (Wait for Clap)</li>
+        </ul>
+    </section>
+
+    <section class="project-section">
+        <h2>System Architecture</h2>
+        <p>
+            Built on Arduino using an RFID input system, ultrasonic sensing,
+            light detection, sound triggers, and a NeoPixel LED feedback ring.
+            The interpreter parses card sequences into executable actions.
+        </p>
+    </section>
+
+    <section class="project-section">
+        <h2>Research Context</h2>
+        <p>
+            Developed as part of a Master of Engineering (M.Eng) thesis in
+            Mechanical Engineering at Adeleke University, Ede, Nigeria.
+            The work contributes to discussions on sustainable engineering
+            education and low-cost robotics in the Global South.
+        </p>
+    </section>
+
+    <section class="project-section">
+        <h2>Source Code</h2>
+        <a href="https://github.com/YOURUSERNAME/Tinkabot" class="button" target="_blank">
+            View on GitHub
+        </a>
+    </section>
+
+</div>
+
+<footer>
+    <p>&copy; 2026–<span id="year"></span> Joshua Olunlade.</p>
+</footer>
+
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
