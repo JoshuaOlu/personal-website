@@ -1,0 +1,232 @@
+/* ─── Tokens ────────────────────────────────────────────────────────────────── */
+:root {
+  --bg:        #0f172a;
+  --surface:   #1e293b;
+  --text:      #f1f5f9;
+  --muted:     #94a3b8;
+  --accent:    #38bdf8;
+  --border:    rgba(56, 189, 248, 0.2);
+  --font:      -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --max-prose: 680px;
+  --max-wide:  900px;
+}
+
+/* ─── Reset ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img { display: block; max-width: 100%; }
+
+/* ─── Base ──────────────────────────────────────────────────────────────────── */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.65;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main { flex: 1; }
+
+a { color: var(--accent); }
+a:hover { text-decoration: underline; }
+
+/* ─── Navbar ────────────────────────────────────────────────────────────────── */
+.navbar {
+  width: 100%;
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo {
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.nav-links a {
+  margin-left: 1.5rem;
+  text-decoration: none;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+.nav-links a:hover,
+.nav-links a[aria-current="page"] { color: var(--accent); }
+
+/* ─── Home: profile block ───────────────────────────────────────────────────── */
+.container {
+  max-width: var(--max-prose);
+  margin: 0 auto;
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.headshot {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 1.25rem;
+  border: 2px solid var(--accent);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 2.8rem);
+  letter-spacing: 0.01em;
+  margin-bottom: 0.4rem;
+}
+
+.tagline {
+  color: var(--accent);
+  font-weight: 500;
+  margin-bottom: 2rem;
+}
+
+.about {
+  text-align: left;
+  color: var(--text);
+  opacity: 0.9;
+  margin-bottom: 2.5rem;
+}
+
+/* ─── Research cards ────────────────────────────────────────────────────────── */
+.research { text-align: left; margin-bottom: 2.5rem; }
+
+.research h2 {
+  color: var(--accent);
+  font-size: 1.3rem;
+  margin-bottom: 1.25rem;
+}
+
+.research-item {
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.2s;
+}
+.research-item:hover { border-color: var(--accent); }
+
+.research-item h3 { margin-bottom: 0.4rem; font-size: 1.05rem; }
+.research-item p   { opacity: 0.9; margin-bottom: 0.75rem; }
+
+.research-link {
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--accent);
+}
+.research-link:hover { text-decoration: underline; }
+
+/* ─── CTA links (CV / Contact) ──────────────────────────────────────────────── */
+.links { margin-bottom: 2rem; }
+.links a {
+  display: inline-block;
+  margin: 0.35rem 0.5rem;
+  padding: 0.55rem 1.2rem;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.links a:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* ─── Social icons ──────────────────────────────────────────────────────────── */
+.social-media { margin: 1.5rem 0; }
+.social-media a {
+  display: inline-block;
+  margin: 0 0.4rem;
+  transition: transform 0.2s;
+}
+.social-media a:hover { transform: scale(1.15); }
+.social-media img {
+  width: 26px;
+  height: 26px;
+  filter: invert(90%) sepia(5%) saturate(200%) brightness(105%);
+}
+
+/* ─── Footer ────────────────────────────────────────────────────────────────── */
+footer {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+/* ─── Research index page ───────────────────────────────────────────────────── */
+.project-container {
+  max-width: var(--max-wide);
+  margin: 0 auto;
+  padding: 3.5rem 2rem;
+}
+
+.project-container h1 {
+  margin-bottom: 0.4rem;
+}
+
+.project-section {
+  margin-bottom: 2.5rem;
+}
+
+.project-section h2 {
+  color: var(--accent);
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.project-section p,
+.project-section li {
+  opacity: 0.9;
+  line-height: 1.75;
+}
+
+.project-section ul {
+  padding-left: 1.4rem;
+  margin-top: 0.5rem;
+}
+
+.project-section ul li { margin-bottom: 0.25rem; }
+
+/* ─── Button ────────────────────────────────────────────────────────────────── */
+.button {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1.3rem;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.button:hover {
+  background: var(--accent);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+/* ─── Back link ─────────────────────────────────────────────────────────────── */
+.back-link { margin-top: 3rem; }
+.back-link a { color: var(--muted); text-decoration: none; }
+.back-link a:hover { color: var(--accent); }
+
+/* ─── Responsive ────────────────────────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .navbar { padding: 1rem 1.25rem; }
+  .container, .project-container { padding: 2rem 1.25rem; }
+  .nav-links a { margin-left: 1rem; }
+}
+
+/* ─── Accessibility ─────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

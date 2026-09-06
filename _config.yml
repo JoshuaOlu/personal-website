@@ -1,0 +1,63 @@
+# ─── Site identity ────────────────────────────────────────────────────────────
+title: Joshua Olunlade
+tagline: Engineering Education Researcher
+description: >-
+  Joshua Olunlade is an MPhil candidate in Engineering Education at the
+  University of Cape Town, researching work-integrated learning access for
+  Nigerian engineering undergraduates. Founder and Executive Director of
+  Care for Knowledge (CFK).
+author: Joshua Olunlade
+email: joshua@olunlade.com
+url: "https://joshua.olunlade.com"
+baseurl: ""
+
+# ─── Social handles (used in SEO includes) ────────────────────────────────────
+social:
+  linkedin: joshuaolunlade
+  twitter: josholunlade
+  instagram: josholunlade
+  orcid: "0009-0009-8152-3578"
+  substack: josholunlade
+  youtube: josholunlade
+  github: josholunlade          # update if needed
+
+# ─── Navigation ───────────────────────────────────────────────────────────────
+nav:
+  - label: Home
+    url: /
+  - label: Research
+    url: /research/
+  - label: CV
+    url: /assets/files/joshua-olunlade-cv.pdf
+    external: true
+
+# ─── Build settings ───────────────────────────────────────────────────────────
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# ─── Collections ──────────────────────────────────────────────────────────────
+collections:
+  projects:
+    output: true
+    permalink: /research/:name/
+
+# ─── Default front matter ─────────────────────────────────────────────────────
+defaults:
+  - scope:
+      path: ""
+      type: "projects"
+    values:
+      layout: project
+
+# ─── Plugins ──────────────────────────────────────────────────────────────────
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# ─── Exclude from build ───────────────────────────────────────────────────────
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - .gitignore

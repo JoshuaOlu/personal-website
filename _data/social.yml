@@ -1,0 +1,26 @@
+# Edit this file to add, remove, or reorder social links.
+# icon: name of the Simple Icons slug (https://simpleicons.org)
+
+- label: LinkedIn
+  url: https://www.linkedin.com/in/joshuaolunlade/
+  icon: linkedin
+
+- label: X / Twitter
+  url: https://twitter.com/josholunlade
+  icon: x
+
+- label: Instagram
+  url: https://www.instagram.com/josholunlade/
+  icon: instagram
+
+- label: ORCID
+  url: https://orcid.org/0009-0009-8152-3578
+  icon: orcid
+
+- label: Substack
+  url: https://josholunlade.substack.com/
+  icon: substack
+
+- label: YouTube
+  url: https://www.youtube.com/@josholunlade
+  icon: youtube

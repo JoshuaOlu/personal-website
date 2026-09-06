@@ -1,0 +1,12 @@
+<div class="social-media" aria-label="Social media links">
+  {% for item in site.data.social %}
+    <a href="{{ item.url }}" target="_blank" rel="noopener" aria-label="{{ item.label }}">
+      <img
+        src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/{{ item.icon }}.svg"
+        alt="{{ item.label }}"
+        width="28" height="28"
+        loading="lazy"
+      >
+    </a>
+  {% endfor %}
+</div>

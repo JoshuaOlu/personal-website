@@ -1,0 +1,20 @@
+---
+layout: default
+---
+<div class="project-container">
+  <h1>{{ page.title }}</h1>
+  {% if page.tagline %}
+    <p class="tagline">{{ page.tagline }}</p>
+  {% endif %}
+
+  {{ content }}
+
+  {% if page.github %}
+    <section class="project-section">
+      <h2>Source Code</h2>
+      <a href="{{ page.github }}" class="button" target="_blank" rel="noopener">View on GitHub</a>
+    </section>
+  {% endif %}
+
+  <p class="back-link"><a href="{{ '/research/' | relative_url }}">&larr; Back to Research</a></p>
+</div>
