@@ -16,16 +16,15 @@ description: >-
   <div class="about">
     <p>
       I am an MPhil student in Engineering Education at the University of Cape Town
-      (<a href="https://www.cree.uct.ac.za/" target="_blank" rel="noopener">CREE</a>),
+      (<a href="https://www.cree.uct.ac.za/" target="_blank" rel="noopener">Center for Research in Engineering Education (CREE)</a>),
       where my research examines how Nigerian engineering undergraduates access
       work-integrated learning placements. My work is grounded in constructivist
       grounded theory and a commitment to educational equity across the Global South.
     </p>
     <p style="margin-top:1rem;">
       I am also the founder and Executive Director of
-      <a href="https://cfk.ng/" target="_blank" rel="noopener">Care for Knowledge (CFK)</a>,
-      a Nigerian nonprofit running five educational initiatives for secondary-school students —
-      including open textbooks, civic education simulations, and an undergraduate publishing platform.
+      <a href="https://careforknowledge.org/" target="_blank" rel="noopener">Care for Knowledge (CFK)</a>,
+      a Nigerian nonprofit working towards making educational resources more accessible across Nigeria.
     </p>
   </div>
 
