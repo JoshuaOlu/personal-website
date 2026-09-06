@@ -16,7 +16,7 @@ description: >-
   <div class="about">
     <p>
       I am an MPhil student in Engineering Education at the University of Cape Town
-      (<a href="https://www.cree.uct.ac.za/" target="_blank" rel="noopener">Center for Research in Engineering Education (CREE)</a>),
+      <a href="https://www.cree.uct.ac.za/" target="_blank" rel="noopener">Center for Research in Engineering Education (CREE)</a>,
       where my research examines how Nigerian engineering undergraduates access
       work-integrated learning placements. My work is grounded in constructivist
       grounded theory and a commitment to educational equity across the Global South.
