@@ -38,7 +38,6 @@ jobs:
           # A Gemfile.lock made on Windows or Mac only works on that kind of computer.
           # This machine runs Linux, so it makes its own.
           rm -f Gemfile.lock
-          bundle config set --local path vendor/bundle
           bundle install --jobs 4
 
       - name: Set up Pages
