@@ -48,7 +48,10 @@ progress:
     state: next
     detail: What comes after.
 
-# Everything the project has produced. type can be:
+# Papers from _data/publications.yml that belong to this project. List their ids.
+publications: [some-paper-id]
+
+# Everything else the project has produced. type can be:
 # paper, article, report, thesis, video, talk, slides, poster, code, data, other
 outputs:
   - type: paper

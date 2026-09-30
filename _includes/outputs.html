@@ -1,11 +1,24 @@
 {%- comment -%}
-  Lists everything a project has produced (papers, videos, slides, code, data and so on).
-  Reads the "outputs" list from the project's front matter. See GUIDE.md.
+  Lists everything a project has produced. Two sources:
+    publications: [id, id]   ids from _data/publications.yml (papers, shown as full references)
+    outputs: [...]           anything else (videos, slides, code, data, and so on)
+  Both are set in the project's front matter. See GUIDE.md.
 {%- endcomment -%}
-{%- if page.outputs and page.outputs.size > 0 -%}
+{%- assign has_outputs = false -%}
+{%- if page.publications.size > 0 or page.outputs.size > 0 -%}{%- assign has_outputs = true -%}{%- endif -%}
+{%- if has_outputs -%}
 <section aria-labelledby="outputs-heading">
   <h2 id="outputs-heading">Outputs</h2>
   <ul class="output-list">
+    {%- for pub_id in page.publications %}
+    {%- assign pub = site.data.publications | where: "id", pub_id | first -%}
+    {%- if pub %}
+    <li class="output">
+      <span class="output-type">{% if pub.type == "journal" %}Journal{% elsif pub.type == "conference" %}Conference{% else %}{{ pub.type | capitalize }}{% endif %}</span>
+      <div><p class="output-citation">{% include citation.html pub=pub %}</p></div>
+    </li>
+    {%- endif %}
+    {%- endfor %}
     {%- for output in page.outputs %}
     {%- assign href = output.url -%}
     {%- if href == nil and output.doi -%}{%- assign href = output.doi | prepend: "https://doi.org/" -%}{%- endif -%}

@@ -29,7 +29,7 @@ sections:
       - title: MPhil in Engineering Education
         org: University of Cape Town, Centre for Research in Engineering Education (CREE)
         dates: Expected 2027
-        note: Supervised by A/Prof. Bruce Kloot and Dr Lauren Jansen. Funded by the CB4EE Intra-Africa Mobility Grant.
+        note: Supervised by A/Prof. Bruce Kloot and Dr Lauren Jansen.
         bullets:
           - "Research: Navigating Access to Industrial Placements, a constructivist grounded theory study of Nigerian engineering undergraduate students."
       - title: M.Eng in Mechanical Engineering
@@ -51,12 +51,29 @@ sections:
         org: Good Tidings Nursery and Primary School, Osogbo
         dates: "2011"
 
-  - title: Teaching and Instructional Experience
+  - title: Publications
+    # Papers are added in _data/publications.yml, not here. Groups with no papers stay hidden.
+    publications:
+      - type: journal
+        heading: Journal Articles
+      - type: conference
+        heading: Conference Papers
+      - type: preprint
+        heading: Preprints
+      - type: chapter
+        heading: Book Chapters
+      - type: report
+        heading: Reports
+
+  - title: Teaching Experience
     entries:
-      # To add your role at UCT, remove the # at the start of each line below and fix the details.
-      # - title: Tutor
-      #   org: Department of Mechanical Engineering, University of Cape Town
-      #   dates: 2026 to Present
+      - title: Tutor
+        org: Department of Mechanical Engineering, University of Cape Town
+        dates: 2026 to Present
+        note: Tutoring, grading and related teaching duties.
+        bullets:
+          - "MEC1020W, Introduction to Mechanical Engineering (2026)"
+          - "MEC2050S, Thermofluids 1 (2026)"
       - title: Graduate Assistant
         org: Department of Mechanical Engineering, Adeleke University, Ede
         dates: Jan 2025 to Jan 2026
@@ -80,15 +97,94 @@ sections:
           - "Created YouTube Videos to enhance peer understanding."
           - "Organized study groups and developed learning materials to enhance group learning."
 
-  - title: Honours and Awards
+  - title: Professional Experience
     entries:
+      - title: Equipment and Maintenance Officer
+        org: Sphero Grid Nigeria Limited
+        dates: Nov 2023 to Dec 2024
+        bullets:
+          - "Managed and maintained all equipment, including surveying and geoinformatics instruments, computer systems, and mechanical systems such as vehicles and generators."
+          - "Conducted regular inspections, basic repairs and troubleshooting."
+          - "Coordinated with technicians and vendors for repairs and procurement of new tools."
+      - title: Automobile Repair Training Exchange Internship
+        org: Sphero Grid Nigeria Limited
+        dates: Jul 2024 to Aug 2024
+        bullets:
+          - "Completed an eight-week training internship focusing on automobile repair and maintenance."
+          - "Gained hands-on experience with various repair techniques and tools."
+          - "Worked closely with experienced local mechanics to learn about vehicle systems, troubleshooting, and repair processes."
+          - "Applied practical skills to assist in routine maintenance and repair tasks, enhancing overall understanding of automotive repair."
+      - title: Junior Production Engineer
+        org: Federal University of Agriculture, Abeokuta (FUNAAB) Integrated Ventures
+        dates: Nov 2022 to Oct 2023
+        bullets:
+          - "Contributed to the production of various goods including sachet and bottled water, garri, fufu flour, and cashew nuts within the university's internal production unit."
+          - "Assisted in overseeing production processes to ensure efficiency and product quality."
+          - "Supported equipment maintenance and troubleshooting to minimize downtime."
+          - "Collaborated with the production team to improve workflow and output."
+      - title: Student Intern
+        org: Prototype Engineering Development Institute, Ilesha
+        dates: Mar 2021 to Aug 2021
+        bullets:
+          - "Developed Windows-based desktop applications using Java and the JavaFX framework."
+          - "Designed and prototyped a small Arduino-controlled robot car, enhancing practical skills in robotics and embedded systems."
+      - title: Student Intern
+        org: Department of Mechanical Engineering, Adeleke University
+        dates: May 2020 to Oct 2020
+        bullets:
+          - "Contributed to the design and development of an innovative automatic dispensing unit with touchless stations for water, soap, and sanitizer, utilizing proximity sensing technology."
+          - "Assisted in creating an automatic disinfectant chamber that sprays disinfectant upon entry, supporting the university's COVID-19 response."
+          - "Gained in-depth knowledge of automatic control principles, microcontroller programming, and sensor selection."
+      - title: Student Intern
+        org: Prototype Engineering Development Institute, Ilesha
+        dates: Jun 2019 to Sep 2019
+        bullets:
+          - "Developed skills in solid modeling of components using CAD software, specifically Autodesk Inventor."
+          - "Acquired programming expertise in C and gained practical experience in hardware programming with Arduino."
+          - "Enhanced understanding of G Code and participated in simulations related to CNC Lathe G Code operations."
+
+  - title: Leadership and Entrepreneurship
+    entries:
+      - title: Founder & Executive Director
+        org: Care for Knowledge (CFK)
+        dates: Apr 2023 to Present
+        bullets:
+          - "Established a nonprofit organization dedicated to providing educational resources and mentorship to students."
+          - "Developed and implemented programs to make educational materials accessible to all, regardless of location or income."
+          - "Led efforts in fundraising, partnership building, and community outreach to support the organization's mission and expand its impact."
+      - title: Project Lead
+        org: Morship Game Development
+        dates: Jan 2023 to Present
+        bullets:
+          - "Conceptualized and launched a Christian board game designed to foster fellowship through interactive gameplay."
+          - "Led project development, including design, production, and marketing efforts."
+          - "Managed a team, coordinated resources, and ensured project alignment with educational and entertainment goals."
+      - title: Founder & Director
+        org: Sphero Life Limited
+        dates: Jan 2023 to Present
+        bullets:
+          - "Co-founded Sphero Life Limited, focusing on creating educational and interactive content for Christian communities."
+          - "Directed project planning, content development, and community outreach."
+          - "Oversaw strategic initiatives, budget management, and organizational growth."
+
+  - title: Honours, Awards and Funding
+    entries:
+      - title: Intra-Africa Mobility Grant
+        org: Capacity Building for Engineering Education (CB4EE) consortium
+        note: Funding for MPhil studies.
       - title: Best Graduating Student
         org: Department of Mechanical Engineering, Adeleke University, Ede
         dates: "2022"
       - title: Microsoft Office Specialist National Championships, Word 2019 Category
         dates: "2022"
 
-  - title: Licenses and Certifications
+  - title: Professional Memberships
+    entries:
+      - title: Graduate Member (GNSE)
+        org: Nigerian Society of Engineers
+        dates: 2022 to Present
+
+  - title: Certifications and Training
     entries:
       - title: Digital Manufacturing & Design
         org: Coursera (Offered by University at Buffalo, The State University of New York)
@@ -142,95 +238,8 @@ sections:
           - label: Certificate
             url: https://www.credly.com/badges/92e3cdff-6f76-4907-bf66-9a14337fd92b/public_url
 
-  - title: Professional Experience
+  - title: Community Service
     entries:
-      - title: Equipment and Maintenance Officer
-        org: Sphero Grid Nigeria Limited
-        dates: Nov 2023 to Dec 2024
-        bullets:
-          - "Managed and maintained all equipment, including surveying and geoinformatics instruments, computer systems, and mechanical systems such as vehicles and generators."
-          - "Conducted regular inspections, basic repairs and troubleshooting."
-          - "Coordinated with technicians and vendors for repairs and procurement of new tools."
-      - title: Junior Production Engineer
-        org: Federal University of Agriculture, Abeokuta (FUNAAB) Integrated Ventures
-        dates: Nov 2022 to Oct 2023
-        bullets:
-          - "Contributed to the production of various goods including sachet and bottled water, garri, fufu flour, and cashew nuts within the university's internal production unit."
-          - "Assisted in overseeing production processes to ensure efficiency and product quality."
-          - "Supported equipment maintenance and troubleshooting to minimize downtime."
-          - "Collaborated with the production team to improve workflow and output."
-
-  - title: Professional Memberships
-    entries:
-      - title: Graduate Member (GNSE)
-        org: Nigerian Society of Engineers
-        dates: 2022 to Present
-
-  - title: Internships
-    entries:
-      - title: Automobile Repair Training Exchange Internship
-        org: Sphero Grid Nigeria Limited
-        dates: Jul 2024 to Aug 2024
-        bullets:
-          - "Completed an eight-week training internship focusing on automobile repair and maintenance."
-          - "Gained hands-on experience with various repair techniques and tools."
-          - "Worked closely with experienced local mechanics to learn about vehicle systems, troubleshooting, and repair processes."
-          - "Applied practical skills to assist in routine maintenance and repair tasks, enhancing overall understanding of automotive repair."
-      - title: Student Intern
-        org: Prototype Engineering Development Institute, Ilesha
-        dates: Mar 2021 to Aug 2021
-        bullets:
-          - "Developed Windows-based desktop applications using Java and the JavaFX framework."
-          - "Designed and prototyped a small Arduino-controlled robot car, enhancing practical skills in robotics and embedded systems."
-      - title: Student Intern
-        org: Department of Mechanical Engineering, Adeleke University
-        dates: May 2020 to Oct 2020
-        bullets:
-          - "Contributed to the design and development of an innovative automatic dispensing unit with touchless stations for water, soap, and sanitizer, utilizing proximity sensing technology."
-          - "Assisted in creating an automatic disinfectant chamber that sprays disinfectant upon entry, supporting the university's COVID-19 response."
-          - "Gained in-depth knowledge of automatic control principles, microcontroller programming, and sensor selection."
-      - title: Student Intern
-        org: Prototype Engineering Development Institute, Ilesha
-        dates: Jun 2019 to Sep 2019
-        bullets:
-          - "Developed skills in solid modeling of components using CAD software, specifically Autodesk Inventor."
-          - "Acquired programming expertise in C and gained practical experience in hardware programming with Arduino."
-          - "Enhanced understanding of G Code and participated in simulations related to CNC Lathe G Code operations."
-
-  - title: Entrepreneurial and Leadership Experience
-    entries:
-      - title: Founder & Executive Director
-        org: Care for Knowledge (CFK)
-        dates: Apr 2023 to Present
-        bullets:
-          - "Established a nonprofit organization dedicated to providing educational resources and mentorship to students."
-          - "Developed and implemented programs to make educational materials accessible to all, regardless of location or income."
-          - "Led efforts in fundraising, partnership building, and community outreach to support the organization's mission and expand its impact."
-      - title: Project Lead
-        org: Morship Game Development
-        dates: Jan 2023 to Present
-        bullets:
-          - "Conceptualized and launched a Christian board game designed to foster fellowship through interactive gameplay."
-          - "Led project development, including design, production, and marketing efforts."
-          - "Managed a team, coordinated resources, and ensured project alignment with educational and entertainment goals."
-      - title: Founder & Director
-        org: Sphero Life Limited
-        dates: Jan 2023 to Present
-        bullets:
-          - "Co-founded Sphero Life Limited, focusing on creating educational and interactive content for Christian communities."
-          - "Directed project planning, content development, and community outreach."
-          - "Oversaw strategic initiatives, budget management, and organizational growth."
-
-  - title: Community Involvement
-    entries:
-      - title: Team Leader & Technical Support
-        org: WikiQuestions
-        dates: Feb 2024 to Jan 2025
-        bullets:
-          - "Led a team in the collaborative sharing of past examination papers to aid students' exam preparation."
-          - "Provided technical support for the platform, ensuring smooth operation and resolving any issues."
-          - "Coordinated with team members to enhance platform functionality and user experience."
-          - "Developed and implemented strategies to increase user engagement and expand the platform's reach."
       - title: Discipleship Coordinator
         org: Grace Bible Mission Students' and Teenagers' Church
         dates: Nov 2023 to Feb 2026
@@ -239,6 +248,14 @@ sections:
           - "Organized and led discipleship meetings, Bible study sessions, and mentorship activities."
           - "Developed and implemented strategies to engage youth and enhance their spiritual development."
           - "Collaborated with other church leaders to support and guide the younger members of the congregation."
+      - title: Team Leader & Technical Support
+        org: WikiQuestions
+        dates: Feb 2024 to Jan 2025
+        bullets:
+          - "Led a team in the collaborative sharing of past examination papers to aid students' exam preparation."
+          - "Provided technical support for the platform, ensuring smooth operation and resolving any issues."
+          - "Coordinated with team members to enhance platform functionality and user experience."
+          - "Developed and implemented strategies to increase user engagement and expand the platform's reach."
       - title: Team Member
         org: Gender Equity and Charity, Community Development Service Group (NYSC)
         dates: Nov 2022 to Oct 2023

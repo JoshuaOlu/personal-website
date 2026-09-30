@@ -1,0 +1,39 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  YOUR PUBLICATIONS. Add each paper once, here. Then:
+#    • the CV (web page and PDF) lists it automatically, in the right group
+#    • a project page can show it too, by adding  publications: [the-id]
+#      to that project's front matter
+#  See GUIDE.md, "Papers and publications".
+#
+#  Newest first within each type. Fields:
+#    id        (required) a short lowercase name of your choice, no spaces
+#    type      journal | conference | preprint | chapter | report
+#    authors   exactly as you want them printed, ending with a full stop
+#    year      the year (required)
+#    month     optional, shown after the year, for example June
+#    title     the title of the paper
+#    prefix    optional words before the venue, for example "Paper presented at"
+#    venue     the journal or conference (shown in italics)
+#    details   optional: volume and pages, or the conference city
+#    doi       the DOI without https://doi.org/   (or use url: instead)
+# ═══════════════════════════════════════════════════════════════════════════
+
+- id: tinkabot-review
+  type: journal
+  authors: "Olunlade, J., Adeleke, K., & Ilori, O."
+  year: 2026
+  title: "Affordable, Screen-Free Robotics for Enhancing Computational Thinking in Early STEM Education: A Comprehensive Review"
+  venue: Uniosun Journal of Engineering and Environmental Sciences
+  details: "8, 44–56"
+  doi: "10.64980/ujees.v8i1.005"
+
+- id: freecad-asee-2026
+  type: conference
+  authors: "Olunlade, J. O., & Olayemi, M."
+  year: 2026
+  month: June
+  title: "Exploring FreeCAD for Teaching Engineering Graphics (GET 102) in Developing Nations"
+  prefix: Paper presented at
+  venue: 2026 ASEE Annual Conference & Exposition
+  details: Charlotte, North Carolina
+  doi: "10.18260/1-2--59749"

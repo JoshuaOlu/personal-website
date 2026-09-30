@@ -26,6 +26,7 @@ Then visit `http://localhost:4000`.
 ├── _config.yml           Site settings, menu, search and sharing settings
 ├── _data/
 │   ├── cv.yml            Your CV. The web page and the PDF both read this
+│   ├── publications.yml  Your papers. The CV and project pages read this
 │   └── social.yml        The links in the footer
 ├── _includes/            Reusable pieces: head, menu, footer, project list, outputs
 ├── _layouts/

@@ -13,7 +13,9 @@
     <div>
       <h3><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h3>
       {% if project.summary %}<p>{{ project.summary }}</p>{% endif %}
-      {%- assign output_count = project.outputs | size -%}
+      {%- assign pub_count = project.publications | size -%}
+      {%- assign other_count = project.outputs | size -%}
+      {%- assign output_count = pub_count | plus: other_count -%}
       {% if output_count > 0 %}<p class="project-row-foot">{{ output_count }} output{% if output_count > 1 %}s{% endif %}</p>{% endif %}
     </div>
   </li>

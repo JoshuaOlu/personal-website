@@ -71,3 +71,9 @@ a { color: #000; text-decoration: none; }
 .entry li { margin: 0 0 1.2pt; padding-left: 1pt; }
 .links { margin-top: 1.5pt; font-size: 9pt; }
 .links a { text-decoration: underline; }
+
+/* Publications: numbered references, grouped */
+.pubgroup { margin: 5pt 0 3pt; font-weight: 700; font-style: italic; break-after: avoid; }
+.pubs { margin: 0 0 5pt; padding-left: 17pt; }
+.pubs li { margin: 0 0 4pt; padding-left: 2pt; break-inside: avoid; overflow-wrap: anywhere; }
+.pubs a { text-decoration: none; }

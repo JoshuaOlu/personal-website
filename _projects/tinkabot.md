@@ -24,7 +24,10 @@ facts:
   - label: Built with
     value: Arduino, RFID, ultrasonic and light sensing, NeoPixel LED ring
 
-# Add papers, videos, code and more here. See GUIDE.md for every option.
+# Papers come from _data/publications.yml. List the ids of the ones that belong here.
+publications: [tinkabot-review]
+
+# Videos, code, slides and other outputs go here. See GUIDE.md for every option.
 # outputs:
 #   - type: code
 #     title: Tinkabot source code

@@ -15,7 +15,7 @@ This guide covers:
 7. Helping search engines find the page
 8. Trying it on your computer, then publishing
 
-After that there are separate sections on **Your contact email** and **Your CV**.
+
 
 ---
 
@@ -51,7 +51,8 @@ text works fine.
 | `image` | The picture used when the page is shared on LinkedIn and elsewhere. See section 6. |
 | `facts` | The "at a glance" box beside the text. Each entry has a `label` and a `value`. Values can contain markdown links. |
 | `progress` | The timeline called "Where things stand". Each step has a `label`, a `state` and an optional `detail`. |
-| `outputs` | Papers, videos, slides and so on. See section 3. |
+| `publications` | The ids of papers from `_data/publications.yml` that belong to this project. See "Papers and publications". |
+| `outputs` | Videos, slides, code, data and anything else. See section 3. |
 | `contact` | An optional "Get in touch" note at the end. |
 | `references` | An optional "Sources" list at the end. Markdown works, so `*italics*` and links are fine. |
 
@@ -64,9 +65,9 @@ paragraph larger, like an introduction, put `{: .lede}` on the line straight
 below it. To set a paragraph apart as a highlighted question, put `{: .question}`
 on the line below it.
 
-## 3. Adding papers, videos and other outputs
+## 3. Adding videos and other outputs
 
-Add an `outputs:` list to the top of the project file. Each item is one output.
+For papers, see "Papers and publications" further down. For everything else, add an `outputs:` list to the top of the project file. Each item is one output.
 Every item needs a `title`. Everything else is optional.
 
 ```yaml
@@ -223,6 +224,42 @@ Write to me at [{{ site.email }}](mailto:{{ site.email }}).
 Please avoid typing the address itself into a page. If you do, it will not
 change when you update `_config.yml`.
 
+## Papers and publications
+
+All your papers live in one file, `_data/publications.yml`. Add each paper once:
+
+```yaml
+- id: my-new-paper                 # a short name of your choice, lowercase, no spaces
+  type: journal                    # journal, conference, preprint, chapter or report
+  authors: "Olunlade, J., & Someone, A."
+  year: 2027
+  month: March                     # optional
+  title: "The title of the paper"
+  venue: Name of the Journal       # shown in italics
+  details: "12, 101–115"           # optional: volume and pages
+  doi: "10.xxxx/xxxxx"             # without https://doi.org/
+```
+
+For a conference paper, use `type: conference`, add `prefix: Paper presented at`,
+put the conference name in `venue`, and put the city in `details`.
+
+Put the newest paper first in each type. Then:
+
+- **On your CV:** the paper appears automatically under "Publications", in a
+  group named after its type (Journal Articles, Conference Papers, Preprints, Book
+  Chapters, Reports). Empty groups stay hidden. The groups are listed at the top of
+  the Publications section in `_data/cv.yml` if you want to rename or reorder them.
+- **On a project page:** add the paper's `id` to the project's front matter, and
+  it appears in that project's Outputs section as a full reference:
+
+  ```yaml
+  publications: [my-new-paper]
+  ```
+
+  A paper does not have to belong to a project. Leave it out and it shows on the
+  CV only.
+- For a paper with no DOI, use `url: https://...` instead of `doi:`.
+
 ## Your CV
 
 The CV exists twice, and both versions come from **one file**: `_data/cv.yml`.
@@ -255,6 +292,8 @@ edit it. Only `title` is required:
 
 - Keep every `bullets` line inside double quotes.
 - Entries appear in the order you write them, so put the newest first.
+- The order of the sections in `cv.yml` is the order on the page and in the PDF. Move a whole
+  block up or down to reorder.
 - To add a new section, copy a whole `- title: ...` block at the level of
   "Education" and give it a new title. A section with only `text:` (like
   References) shows a single line.
@@ -279,7 +318,7 @@ print preview.
 4. Push a change, or open the **Actions** tab, choose "Build and deploy site" and
    click **Run workflow**.
 
-If a run fails, open it in the Actions tab and read the red step. Until you do the
+If a run fails, open it in the Actions tab and read the red step. (If it complains about `Gemfile.lock`, that file was made on another type of computer. The workflow deletes it and makes its own, so this should not happen.) Until you do the
 setup above, the site keeps working as before, and the button gives the last PDF
 that was saved in `assets/files/`.
 

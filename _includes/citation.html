@@ -1,0 +1,9 @@
+{%- comment -%}
+  Prints one publication as a reference, in the style
+  Authors (Year). Title. Venue, details. https://doi.org/...
+  Usage: {% include citation.html pub=pub %}
+{%- endcomment -%}
+{%- assign p = include.pub -%}
+{{ p.authors | escape }} ({{ p.year }}{% if p.month %}, {{ p.month }}{% endif %}). {{ p.title | escape }}. {% if p.prefix %}{{ p.prefix | escape }} {% endif %}<em>{{ p.venue | escape }}</em>{% if p.details %}, {{ p.details | escape }}{% endif %}.
+{%- if p.doi %} <a class="doi" href="https://doi.org/{{ p.doi }}" target="_blank" rel="noopener">https://doi.org/{{ p.doi }}</a>
+{%- elsif p.url %} <a class="doi" href="{{ p.url }}" target="_blank" rel="noopener">{{ p.url }}</a>{% endif -%}

@@ -54,17 +54,30 @@ sitemap: false
   <section class="cv-section">
     <h2>{{ section.title }}</h2>
     {% if section.text %}<p class="text">{{ section.text }}</p>{% endif %}
+    {% if section.publications %}
+    {% for group in section.publications %}
+      {% assign group_items = site.data.publications | where: "type", group.type %}
+      {% if group_items.size > 0 %}
+    <div class="pubgroup">{{ group.heading }}</div>
+    <ol class="pubs">
+        {% for pub in group_items %}
+      <li>{% include citation.html pub=pub %}</li>
+        {% endfor %}
+    </ol>
+      {% endif %}
+    {% endfor %}
+    {% endif %}
     {% for entry in section.entries %}
     <div class="entry">
       <div class="row">
-        <span class="title">{{ entry.title }}</span>
+        <span class="title">{{ entry.title | escape }}</span>
         {% if entry.dates %}<span class="dates">{{ entry.dates | replace: " to ", " &ndash; " }}</span>{% endif %}
       </div>
-      {% if entry.org %}<div class="org">{{ entry.org }}</div>{% endif %}
-      {% if entry.note %}<div class="note">{{ entry.note }}</div>{% endif %}
+      {% if entry.org %}<div class="org">{{ entry.org | escape }}</div>{% endif %}
+      {% if entry.note %}<div class="note">{{ entry.note | escape }}</div>{% endif %}
       {% if entry.bullets %}
       <ul>
-        {% for bullet in entry.bullets %}<li>{{ bullet }}</li>{% endfor %}
+        {% for bullet in entry.bullets %}<li>{{ bullet | escape }}</li>{% endfor %}
       </ul>
       {% endif %}
       {% if entry.links %}

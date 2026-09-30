@@ -1,0 +1,6 @@
+
+# Made fresh on each computer. A lock file from Windows or Mac breaks the GitHub build.
+Gemfile.lock
+_site/
+vendor/
+.jekyll-cache/

@@ -30,18 +30,34 @@ permalink: /cv/
   <section class="cv-section" id="{{ section.title | slugify }}" aria-labelledby="{{ section.title | slugify }}-heading">
     <h2 id="{{ section.title | slugify }}-heading">{{ section.title }}</h2>
     {% if section.text %}<p class="cv-text">{{ section.text }}</p>{% endif %}
+    {% if section.publications %}
+    {% for group in section.publications %}
+      {% assign group_items = site.data.publications | where: "type", group.type %}
+      {% if group_items.size > 0 %}
+    <h3 class="cv-group">{{ group.heading }}</h3>
+    <ol class="cv-entries">
+        {% for pub in group_items %}
+      <li class="cv-entry">
+        <div class="cv-dates">{{ pub.year }}</div>
+        <div class="cv-body"><p class="cv-citation">{% include citation.html pub=pub %}</p></div>
+      </li>
+        {% endfor %}
+    </ol>
+      {% endif %}
+    {% endfor %}
+    {% endif %}
     {% if section.entries %}
     <ol class="cv-entries">
       {% for entry in section.entries %}
       <li class="cv-entry">
         <div class="cv-dates">{{ entry.dates }}</div>
         <div class="cv-body">
-          <h3>{{ entry.title }}</h3>
-          {% if entry.org %}<p class="cv-org">{{ entry.org }}</p>{% endif %}
-          {% if entry.note %}<p class="cv-note">{{ entry.note }}</p>{% endif %}
+          <h3>{{ entry.title | escape }}</h3>
+          {% if entry.org %}<p class="cv-org">{{ entry.org | escape }}</p>{% endif %}
+          {% if entry.note %}<p class="cv-note">{{ entry.note | escape }}</p>{% endif %}
           {% if entry.bullets %}
           <ul>
-            {% for bullet in entry.bullets %}<li>{{ bullet }}</li>{% endfor %}
+            {% for bullet in entry.bullets %}<li>{{ bullet | escape }}</li>{% endfor %}
           </ul>
           {% endif %}
           {% if entry.links %}
