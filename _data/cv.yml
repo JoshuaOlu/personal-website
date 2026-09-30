@@ -69,7 +69,7 @@ sections:
     entries:
       - title: Tutor
         org: Department of Mechanical Engineering, University of Cape Town
-        dates: 2026 to Present
+        dates: Jul 2026 to Present
         note: Tutoring, grading and related teaching duties.
         bullets:
           - "MEC1020W, Introduction to Mechanical Engineering (2026)"
@@ -172,6 +172,10 @@ sections:
       - title: Intra-Africa Mobility Grant
         org: Capacity Building for Engineering Education (CB4EE) consortium
         note: Funding for MPhil studies.
+        dates: 2026 to 2027
+      - title: Best Graduating Masters Student
+        org: Adeleke University, Ede
+        dates: "2026"
       - title: Best Graduating Student
         org: Department of Mechanical Engineering, Adeleke University, Ede
         dates: "2022"
