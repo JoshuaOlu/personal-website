@@ -259,6 +259,11 @@ Put the newest paper first in each type. Then:
   A paper does not have to belong to a project. Leave it out and it shows on the
   CV only.
 - For a paper with no DOI, use `url: https://...` instead of `doi:`.
+- **Your name in bold.** Your name is printed in bold in every author list, on the
+  CV, in the PDF and on project pages. The name forms it looks for are listed in
+  `_data/authors.yml`. If you use a different form in a new paper, for example
+  "Olunlade, J. O. A.", add it there. Spell your name the same way in all your papers
+  and you will only need one entry.
 
 ## Your CV
 
@@ -308,6 +313,20 @@ edit it. Only `title` is required:
 and publishes everything. To look at the PDF layout yourself, run the site on
 your computer and open `http://localhost:4000/cv/print/`, then use your browser's
 print preview.
+
+### Checking that the PDF was updated
+
+The footer of every PDF page says "Updated" followed by the `updated:` date from
+`cv.yml`. After you change your CV and push:
+
+1. Open the **Actions** tab on GitHub and wait for the run to show a green tick.
+   Open it and check that the step "Make the CV PDF" is green too.
+2. Open `joshua.olunlade.com/assets/files/joshua-olunlade-cv.pdf`. If the old one
+   appears, refresh the page, since browsers keep PDFs for a while.
+3. Check that the footer shows today's date.
+
+A red cross means the site was not published and the previous version is still live.
+Click the red step to see why.
 
 ### One-time setup on GitHub
 

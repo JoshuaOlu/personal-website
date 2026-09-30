@@ -23,7 +23,7 @@ sitemap: false
     @page {
       size: A4;
       margin: 15mm 17mm 17mm 17mm;
-      @bottom-left  { content: "{{ cv.name }}, Curriculum Vitae"; font: 8pt "CV Serif", "Times New Roman", serif; color: #000; }
+      @bottom-left  { content: "{{ cv.name }}, Curriculum Vitae{% if cv.updated %}. Updated {{ cv.updated | date: "%-d %B %Y" }}{% endif %}"; font: 8pt "CV Serif", "Times New Roman", serif; color: #000; }
       @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8pt "CV Serif", "Times New Roman", serif; color: #000; }
     }
   </style>

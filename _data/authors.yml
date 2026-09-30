@@ -1,0 +1,7 @@
+# Your name as it appears in the author lists in _data/publications.yml.
+# Anywhere it matches, the CV (web page and PDF) and the project pages print it in bold.
+# List every form you use. If a paper matches more than one, put the longest form first.
+# To turn bolding off, delete the names and leave "highlight:" empty.
+highlight:
+  - "Olunlade, J. O."
+  - "Olunlade, J."

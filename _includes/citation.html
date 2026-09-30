@@ -1,9 +1,19 @@
 {%- comment -%}
   Prints one publication as a reference, in the style
   Authors (Year). Title. Venue, details. https://doi.org/...
+  Your own name (listed in _data/authors.yml) is printed in bold.
   Usage: {% include citation.html pub=pub %}
 {%- endcomment -%}
 {%- assign p = include.pub -%}
-{{ p.authors | escape }} ({{ p.year }}{% if p.month %}, {{ p.month }}{% endif %}). {{ p.title | escape }}. {% if p.prefix %}{{ p.prefix | escape }} {% endif %}<em>{{ p.venue | escape }}</em>{% if p.details %}, {{ p.details | escape }}{% endif %}.
+{%- assign shown_authors = p.authors | escape -%}
+{%- assign already_bold = false -%}
+{%- for name in site.data.authors.highlight -%}
+  {%- if already_bold == false and shown_authors contains name -%}
+    {%- assign bold_name = "<strong>" | append: name | append: "</strong>" -%}
+    {%- assign shown_authors = shown_authors | replace: name, bold_name -%}
+    {%- assign already_bold = true -%}
+  {%- endif -%}
+{%- endfor -%}
+{{ shown_authors }} ({{ p.year }}{% if p.month %}, {{ p.month }}{% endif %}). {{ p.title | escape }}. {% if p.prefix %}{{ p.prefix | escape }} {% endif %}<em>{{ p.venue | escape }}</em>{% if p.details %}, {{ p.details | escape }}{% endif %}.
 {%- if p.doi %} <a class="doi" href="https://doi.org/{{ p.doi }}" target="_blank" rel="noopener">https://doi.org/{{ p.doi }}</a>
 {%- elsif p.url %} <a class="doi" href="{{ p.url }}" target="_blank" rel="noopener">{{ p.url }}</a>{% endif -%}
