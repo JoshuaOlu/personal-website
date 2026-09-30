@@ -46,10 +46,10 @@ progress:
     detail: A short screening survey for final year engineering students, which leads to the first three or four interviews.
   - label: Interviews and analysis
     state: next
-    detail: The first interviews will be online. A field visit to Nigeria is planned between November 2026 and February 2027.
-  - label: Writing up
-    state: next
-    detail: The thesis is due in March 2027.
+    detail: The first interviews will be online with physical interviews during a followup field visit.
+  # - label: Writing up
+  #   state: next
+  #   detail: The thesis is due in March 2027.
 
 # Add papers, talks, videos and more as they appear. See GUIDE.md for every option.
 # outputs:
@@ -114,4 +114,4 @@ I will also talk informally with faculty staff and read official documents, so t
 
 I am a mechanical engineering graduate from Nigeria and a former academic staff member in a Nigerian engineering faculty. I went through the placement process myself as an undergraduate. That helps me understand the setting.
 
-It also means I have to be careful. My own experience was at a different university, and I cannot assume my participants' experiences will look like mine. I will write about this in the thesis as well, wherever it shapes what I find.
+It also means I have to be careful. My own experience was at a different university, and I cannot assume my participants' experiences will look like mine. I will write about this in the dissertation as well, wherever it shapes what I find.
