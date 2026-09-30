@@ -5,6 +5,12 @@ and hosted on GitHub Pages.
 
 **To add or update research, read [GUIDE.md](GUIDE.md).**
 
+## Deploying
+
+The site is built by GitHub Actions (see `.github/workflows/deploy.yml`), which also
+makes the CV PDF. In the repository settings, Pages must use the source
+"GitHub Actions". Details are in GUIDE.md, under "Your CV".
+
 ## Local development
 
 ```bash
@@ -18,7 +24,9 @@ Then visit `http://localhost:4000`.
 
 ```
 ├── _config.yml           Site settings, menu, search and sharing settings
-├── _data/social.yml      The links in the footer
+├── _data/
+│   ├── cv.yml            Your CV. The web page and the PDF both read this
+│   └── social.yml        The links in the footer
 ├── _includes/            Reusable pieces: head, menu, footer, project list, outputs
 ├── _layouts/
 │   ├── default.html      The frame around every page
@@ -32,9 +40,13 @@ Then visit `http://localhost:4000`.
 ├── assets/
 │   ├── css/main.css      All styles. Colours are at the top
 │   ├── fonts/            Self-hosted fonts (Bricolage Grotesque, Source Serif 4)
-│   ├── files/            CV
+│   ├── files/            The generated CV PDF
 │   └── images/           Headshot, favicons, link preview images
 │       └── covers/       Pictures shown at the top of project pages
+├── cv/
+│   ├── index.html        The CV web page (/cv/)
+│   └── print/index.html  The hidden plain layout that becomes the PDF
+├── .github/workflows/deploy.yml   Builds the site and makes the CV PDF
 ├── research/index.md     The Research page
 ├── siwes/survey/         The short link that forwards to the survey
 ├── index.md              The home page

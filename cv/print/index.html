@@ -1,0 +1,82 @@
+---
+layout: null
+title: Curriculum Vitae (print version)
+permalink: /cv/print/
+sitemap: false
+---
+{%- comment -%}
+  This page is the source for the downloadable PDF. It has its own plain,
+  black and white, academic layout (assets/css/cv-print.css) and does not use
+  the site's look. GitHub prints this page to PDF each time the site is built.
+  It reads the same data as the web version: _data/cv.yml
+{%- endcomment -%}
+{%- assign cv = site.data.cv -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>{{ cv.name }}, Curriculum Vitae</title>
+  <link rel="stylesheet" href="{{ '/assets/css/cv-print.css' | relative_url }}">
+  <style>
+    @page {
+      size: A4;
+      margin: 15mm 17mm 17mm 17mm;
+      @bottom-left  { content: "{{ cv.name }}, Curriculum Vitae"; font: 8pt "CV Serif", "Times New Roman", serif; color: #000; }
+      @bottom-right { content: "Page " counter(page) " of " counter(pages); font: 8pt "CV Serif", "Times New Roman", serif; color: #000; }
+    }
+  </style>
+</head>
+<body>
+<main class="cv">
+
+  <header class="cv-head">
+    <h1>{{ cv.name }}</h1>
+    <p class="contact">
+      <span><a href="mailto:{{ site.email }}">{{ site.email }}</a></span>
+      <span><a href="{{ site.url }}">{{ site.url | remove: "https://" | remove: "http://" }}</a></span>
+    </p>
+    <p class="contact">
+      {%- for label in cv.profiles %}
+        {%- assign profile = site.data.social | where: "label", label | first %}
+        {%- if profile %}
+          {%- assign shown = profile.url | remove: "https://www." | remove: "https://" | remove: "http://" %}
+          {%- assign last_char = shown | slice: -1 %}
+          {%- if last_char == "/" %}{% assign shown = shown | remove_last: "/" %}{% endif %}
+      <span><a href="{{ profile.url }}">{{ shown }}</a></span>
+        {%- endif %}
+      {%- endfor %}
+    </p>
+  </header>
+
+  {% for section in cv.sections %}
+  <section class="cv-section">
+    <h2>{{ section.title }}</h2>
+    {% if section.text %}<p class="text">{{ section.text }}</p>{% endif %}
+    {% for entry in section.entries %}
+    <div class="entry">
+      <div class="row">
+        <span class="title">{{ entry.title }}</span>
+        {% if entry.dates %}<span class="dates">{{ entry.dates | replace: " to ", " &ndash; " }}</span>{% endif %}
+      </div>
+      {% if entry.org %}<div class="org">{{ entry.org }}</div>{% endif %}
+      {% if entry.note %}<div class="note">{{ entry.note }}</div>{% endif %}
+      {% if entry.bullets %}
+      <ul>
+        {% for bullet in entry.bullets %}<li>{{ bullet }}</li>{% endfor %}
+      </ul>
+      {% endif %}
+      {% if entry.links %}
+      <div class="links">
+        {% for link in entry.links %}<a href="{{ link.url }}">{{ link.label }} link</a>{% unless forloop.last %}, {% endunless %}{% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </section>
+  {% endfor %}
+
+</main>
+</body>
+</html>

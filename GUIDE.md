@@ -15,6 +15,8 @@ This guide covers:
 7. Helping search engines find the page
 8. Trying it on your computer, then publishing
 
+After that there are separate sections on **Your contact email** and **Your CV**.
+
 ---
 
 ## 1. Adding a new project
@@ -221,6 +223,66 @@ Write to me at [{{ site.email }}](mailto:{{ site.email }}).
 Please avoid typing the address itself into a page. If you do, it will not
 change when you update `_config.yml`.
 
+## Your CV
+
+The CV exists twice, and both versions come from **one file**: `_data/cv.yml`.
+
+- The web page at `/cv/` uses the look of the site.
+- The PDF uses a separate, plain black and white academic layout
+  (`assets/css/cv-print.css`). It does not look like the site on purpose.
+
+To change your CV, edit `_data/cv.yml`, set `updated:` to today's date, then
+commit and push. GitHub rebuilds the web page and makes a fresh PDF from it.
+The "Download PDF" button always gives the latest one.
+
+### Adding or changing an entry
+
+Each section has a `title` and a list of `entries`. Copy an existing entry and
+edit it. Only `title` is required:
+
+```yaml
+- title: Research Assistant
+  org: Department of Something, University of Somewhere
+  dates: Jan 2027 to Present        # "to" is shown as a dash in the PDF
+  note: One plain line of extra detail.
+  bullets:
+    - "A short point about what you did."
+    - "Another point."
+  links:
+    - label: Certificate
+      url: https://example.org/certificate
+```
+
+- Keep every `bullets` line inside double quotes.
+- Entries appear in the order you write them, so put the newest first.
+- To add a new section, copy a whole `- title: ...` block at the level of
+  "Education" and give it a new title. A section with only `text:` (like
+  References) shows a single line.
+- Your email and website come from `_config.yml`. The ORCID and LinkedIn
+  addresses in the PDF header come from `_data/social.yml`. The `profiles:` line
+  at the top of `cv.yml` chooses which ones appear.
+
+### How the PDF is made
+
+`.github/workflows/deploy.yml` builds the site, opens the hidden page
+`/cv/print/` in a browser, prints it to `assets/files/joshua-olunlade-cv.pdf`,
+and publishes everything. To look at the PDF layout yourself, run the site on
+your computer and open `http://localhost:4000/cv/print/`, then use your browser's
+print preview.
+
+### One-time setup on GitHub
+
+1. Open your repository on GitHub, then **Settings**, then **Pages**.
+2. Under "Build and deployment", set **Source** to **GitHub Actions**.
+3. Check that the custom domain `joshua.olunlade.com` is still shown on that page.
+   If it is blank, type it in again and save.
+4. Push a change, or open the **Actions** tab, choose "Build and deploy site" and
+   click **Run workflow**.
+
+If a run fails, open it in the Actions tab and read the red step. Until you do the
+setup above, the site keeps working as before, and the button gives the last PDF
+that was saved in `assets/files/`.
+
 ## Other things you may want to change
 
 | I want to... | Edit this |
@@ -230,5 +292,5 @@ change when you update `_config.yml`.
 | Change the contact email | `email:` in `_config.yml` (see "Your contact email" above) |
 | Add a page to the top menu | `nav:` in `_config.yml` |
 | Change the colours | The "Tokens" block at the top of `assets/css/main.css` |
-| Replace the CV | Replace `assets/files/joshua-olunlade-cv.pdf`, keeping the file name |
+| Change what is on my CV | `_data/cv.yml` (see "Your CV" above) |
 | Point the survey link somewhere else | `redirect_to:` at the top of `siwes/survey/index.html` |

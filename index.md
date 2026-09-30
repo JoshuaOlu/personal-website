@@ -17,7 +17,7 @@ description: >-
       within reach.
     </p>
     <div class="hero-actions">
-      <a class="button" href="{{ '/assets/files/joshua-olunlade-cv.pdf' | relative_url }}" target="_blank" rel="noopener">Read my CV</a>
+      <a class="button" href="{{ '/cv/' | relative_url }}">Read my CV</a>
       <a class="button secondary" href="mailto:{{ site.email }}">Get in touch</a>
     </div>
   </div>

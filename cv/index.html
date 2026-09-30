@@ -1,0 +1,59 @@
+---
+layout: default
+title: Curriculum Vitae
+description: >-
+  Curriculum vitae of Joshua Olunlade: education, teaching, professional
+  experience, certifications and leadership. MPhil candidate in Engineering
+  Education at the University of Cape Town.
+permalink: /cv/
+---
+{%- assign cv = site.data.cv -%}
+<div class="page-shell cv-page">
+  <header class="page-header">
+    <h1>Curriculum vitae</h1>
+    <p class="page-tagline">{{ cv.name }}. {{ cv.headline }}.</p>
+    <div class="cv-actions">
+      <a class="button" href="{{ '/assets/files/joshua-olunlade-cv.pdf' | relative_url }}" download="Joshua-Olunlade-CV.pdf">Download PDF</a>
+      {% if cv.updated %}<span class="cv-updated">Last updated {{ cv.updated | date: "%-d %B %Y" }}</span>{% endif %}
+    </div>
+  </header>
+
+  <nav aria-label="CV sections">
+    <ul class="cv-toc">
+      {% for section in cv.sections %}
+      <li><a href="#{{ section.title | slugify }}">{{ section.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+
+  {% for section in cv.sections %}
+  <section class="cv-section" id="{{ section.title | slugify }}" aria-labelledby="{{ section.title | slugify }}-heading">
+    <h2 id="{{ section.title | slugify }}-heading">{{ section.title }}</h2>
+    {% if section.text %}<p class="cv-text">{{ section.text }}</p>{% endif %}
+    {% if section.entries %}
+    <ol class="cv-entries">
+      {% for entry in section.entries %}
+      <li class="cv-entry">
+        <div class="cv-dates">{{ entry.dates }}</div>
+        <div class="cv-body">
+          <h3>{{ entry.title }}</h3>
+          {% if entry.org %}<p class="cv-org">{{ entry.org }}</p>{% endif %}
+          {% if entry.note %}<p class="cv-note">{{ entry.note }}</p>{% endif %}
+          {% if entry.bullets %}
+          <ul>
+            {% for bullet in entry.bullets %}<li>{{ bullet }}</li>{% endfor %}
+          </ul>
+          {% endif %}
+          {% if entry.links %}
+          <p class="cv-links">
+            {% for link in entry.links %}<a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }}</a>{% unless forloop.last %} {% endunless %}{% endfor %}
+          </p>
+          {% endif %}
+        </div>
+      </li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+  </section>
+  {% endfor %}
+</div>

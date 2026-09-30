@@ -1,0 +1,77 @@
+# Builds the site, makes the CV PDF from the /cv/print/ page, and publishes it.
+# Runs every time you push to GitHub. You can also run it by hand from the
+# "Actions" tab (choose "Build and deploy site", then "Run workflow").
+#
+# One-time setup: in the repository go to Settings, then Pages, and under
+# "Build and deployment" set Source to "GitHub Actions".
+
+name: Build and deploy site
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the code
+        uses: actions/checkout@v4
+
+      - name: Set up Ruby and the site's tools
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.1"
+          bundler-cache: true
+
+      - name: Set up Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build the site
+        run: bundle exec jekyll build
+        env:
+          JEKYLL_ENV: production
+
+      - name: Make the CV PDF
+        run: |
+          set -euo pipefail
+          # Serve the built site on this machine so the browser can load it
+          python3 -m http.server 4000 --directory _site > /dev/null 2>&1 &
+          SERVER_PID=$!
+          sleep 3
+          CHROME="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium-browser || command -v chromium)"
+          mkdir -p _site/assets/files
+          "$CHROME" --headless=new --no-sandbox --disable-gpu \
+            --no-pdf-header-footer --virtual-time-budget=15000 \
+            --print-to-pdf=_site/assets/files/joshua-olunlade-cv.pdf \
+            http://localhost:4000/cv/print/
+          kill "$SERVER_PID"
+          # Stop the deploy if the PDF is missing or tiny
+          test "$(stat -c%s _site/assets/files/joshua-olunlade-cv.pdf)" -gt 20000
+          ls -l _site/assets/files/joshua-olunlade-cv.pdf
+
+      - name: Upload the site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publish
+        id: deployment
+        uses: actions/deploy-pages@v4

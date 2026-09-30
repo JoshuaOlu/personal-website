@@ -431,6 +431,56 @@ a:hover { text-decoration-thickness: 2px; }
 .back-link a { color: var(--muted); text-decoration: none; }
 .back-link a:hover { color: var(--accent); text-decoration: underline; }
 
+/* ─── CV page (/cv/) ────────────────────────────────────────────────────────── */
+.cv-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.25rem; margin-top: 1.5rem; }
+.cv-updated { font-family: var(--display); font-size: 0.9rem; color: var(--muted); }
+
+.cv-toc { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.cv-toc a {
+  display: inline-block;
+  font-family: var(--display); font-weight: 500; font-size: 0.9rem; line-height: 1;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+}
+.cv-toc a:hover { border-color: var(--accent); color: var(--accent); }
+
+.cv-section { margin-top: 3.5rem; scroll-margin-top: 1.5rem; }
+.cv-section > h2 {
+  font-family: var(--display); font-weight: 700; font-size: 1.75rem;
+  letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 1.25rem;
+}
+.cv-text { color: var(--muted); }
+
+.cv-entries { list-style: none; border-top: 1px solid var(--line); }
+.cv-entry {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: 0.25rem 2rem;
+  padding: 1.4rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.cv-dates { font-family: var(--display); font-size: 0.95rem; color: var(--muted); padding-top: 0.3rem; }
+.cv-body { max-width: var(--measure); }
+.cv-body h3 {
+  font-family: var(--display); font-weight: 700; font-size: 1.2rem;
+  line-height: 1.25; letter-spacing: -0.01em;
+}
+.cv-org { color: var(--muted); margin-top: 0.1rem; }
+.cv-note { margin-top: 0.35rem; }
+.cv-body ul { margin-top: 0.6rem; padding-left: 1.2rem; }
+.cv-body li + li { margin-top: 0.3em; }
+.cv-body li, .cv-note { text-wrap: pretty; }
+.cv-links { margin-top: 0.6rem; font-family: var(--display); font-size: 0.95rem; display: flex; gap: 1rem; }
+
+@media (max-width: 640px) {
+  .cv-entry { grid-template-columns: 1fr; gap: 0.15rem; padding: 1.15rem 0; }
+  .cv-dates { order: -1; padding-top: 0; }
+}
+
 /* ─── Small screens ─────────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
   .page-header.has-cover { grid-template-columns: 1fr; gap: 1.75rem; }

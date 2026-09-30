@@ -34,8 +34,7 @@ nav:
   - label: Research
     url: /research/
   - label: CV
-    url: /assets/files/joshua-olunlade-cv.pdf
-    external: true
+    url: /cv/
 
 # ─── Build settings ───────────────────────────────────────────────────────────
 markdown: kramdown
