@@ -34,6 +34,7 @@ Then visit `http://localhost:4000`.
 │   ├── fonts/            Self-hosted fonts (Bricolage Grotesque, Source Serif 4)
 │   ├── files/            CV
 │   └── images/           Headshot, favicons, link preview images
+│       └── covers/       Pictures shown at the top of project pages
 ├── research/index.md     The Research page
 ├── siwes/survey/         The short link that forwards to the survey
 ├── index.md              The home page

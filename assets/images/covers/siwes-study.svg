@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="1200" height="1200" fill="#0E1A2B"/>
+  <!-- routes that stall -->
+  <g stroke="#34475D" stroke-width="12">
+    <path d="M230 600 C400 600 430 250 620 250 L800 250"/>
+    <path d="M830 212 L830 288"/>
+    <path d="M230 600 C420 600 450 400 640 400 L880 400"/>
+    <circle cx="918" cy="400" r="24"/>
+    <path d="M230 600 C420 600 450 820 640 820 L860 820"/>
+    <path d="M892 782 L892 858"/>
+    <path d="M230 600 C380 600 400 980 600 980 L740 980"/>
+    <circle cx="778" cy="980" r="24"/>
+  </g>
+  <!-- the route that gets through -->
+  <path d="M230 600 L520 600 C610 600 620 700 710 700 L820 700 C910 700 920 570 1010 570 L1030 570" stroke="#4FD1B0" stroke-width="16"/>
+  <circle cx="1060" cy="570" r="52" stroke="#F2B134" stroke-opacity="0.35" stroke-width="8"/>
+  <circle cx="1060" cy="570" r="30" fill="#F2B134" stroke="none"/>
+  <!-- start -->
+  <circle cx="214" cy="600" r="30" fill="#0E1A2B" stroke="#4FD1B0" stroke-width="12"/>
+</svg>

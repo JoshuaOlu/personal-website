@@ -17,7 +17,11 @@ period: 2026 to 2027       # shown next to the status
 order: 30                  # lowest number appears first (study = 10, Tinkabot = 20)
 updated: 2026-10-15        # the date shown under "Where things stand"
 
-image:                     # the picture that appears when the page is shared
+cover: /assets/images/covers/my-project.jpg       # the picture at the top right of the page (any shape, shown as a square)
+cover_alt: Describe what the picture shows in a sentence
+cover_position: 50% 30%    # optional: which part to keep when the picture is cropped (left/top as percentages)
+
+image:                     # the picture that appears when the page is shared on LinkedIn and elsewhere
   path: /assets/images/my-project-preview.png     # 1200 x 630 pixels
   width: 1200
   height: 630
@@ -30,7 +34,7 @@ facts:
   - label: Supervisors
     value: Name and Name
   - label: Contact
-    value: "[name@example.org](mailto:name@example.org)"
+    value: "[{email}](mailto:{email})"        # {email} becomes your address from _config.yml
 
 # The timeline under the text. state is done, now, or next.
 progress:
@@ -63,7 +67,7 @@ outputs:
     title: Source code
     url: https://github.com/yourname/project
 
-contact: "A short closing note with [an email link](mailto:name@example.org)."   # optional "Get in touch" section
+contact: "A short closing note with [an email link](mailto:{email})."   # optional "Get in touch" section
 
 references:                # optional "Sources" list at the end
   - "Author, A. (2020). Title of the work. *Journal*."

@@ -10,9 +10,10 @@ This guide covers:
 2. What each field does
 3. Adding papers, videos and other outputs
 4. Updating a project as it moves along
-5. The picture that appears when you share a link
-6. Helping search engines find the page
-7. Trying it on your computer, then publishing
+5. The cover picture on a project page
+6. The picture that appears when you share a link
+7. Helping search engines find the page
+8. Trying it on your computer, then publishing
 
 ---
 
@@ -42,7 +43,10 @@ text works fine.
 | `period` | Shown next to the pill, for example `2026 to 2027`. |
 | `order` | Sets the order on the home and Research pages. The lowest number comes first. If you leave it out, the project gets 50 and goes last. |
 | `updated` | The date shown as "Last updated" above the timeline. Change it whenever you change the timeline. |
-| `image` | The picture used when the page is shared. See section 5. |
+| `cover` | The picture at the top right of the page. See section 5. |
+| `cover_alt` | A sentence describing the cover picture, for people who use screen readers. |
+| `cover_position` | Optional. Which part of the cover to keep if it gets cropped, for example `50% 20%`. |
+| `image` | The picture used when the page is shared on LinkedIn and elsewhere. See section 6. |
 | `facts` | The "at a glance" box beside the text. Each entry has a `label` and a `value`. Values can contain markdown links. |
 | `progress` | The timeline called "Where things stand". Each step has a `label`, a `state` and an optional `detail`. |
 | `outputs` | Papers, videos, slides and so on. See section 3. |
@@ -116,7 +120,30 @@ Then add any new items to `outputs`, commit and push.
 When a project finishes, set `status: Completed`, mark every step `done`, and
 consider replacing the timeline with a short "What I found" section in the text.
 
-## 5. The picture that appears when you share a link
+## 5. The cover picture on a project page
+
+Each project can show a picture at the top right, lined up with the details box
+below it.
+
+1. Save the picture in `assets/images/covers/`. Any of JPG, PNG, WebP or SVG works.
+2. Add two lines to the project:
+
+   ```yaml
+   cover: /assets/images/covers/my-project.jpg
+   cover_alt: A sentence that describes what the picture shows
+   ```
+
+The picture is always shown as a square, a little smaller on a phone, so anything
+important should sit near the middle. If the wrong part is being cut
+off, add `cover_position: 50% 20%` (the first number moves the crop left to right,
+the second moves it top to bottom).
+
+A square picture about 1200 pixels wide is ideal. Real photographs of the work,
+such as the kit, the team or a poster, usually work better than illustrations.
+If you leave `cover` out, the page simply has no picture and the title uses the
+full width.
+
+## 6. The picture that appears when you share a link
 
 Each page can have its own preview image. If you do nothing, the page uses
 `assets/images/og-default.png`, the card with your name and photo.
@@ -134,7 +161,7 @@ The survey redirect page `siwes/survey/index.html` works the same way. It has a
 different image from the study page on purpose, so the link you post looks like
 a call for participants and the study page looks like a piece of research.
 
-## 6. Helping search engines find the page
+## 7. Helping search engines find the page
 
 - Put the words people would search for in the `title`, the `tagline`, the first
   paragraph and the headings. For example "SIWES", "industrial placements",
@@ -150,7 +177,7 @@ a call for participants and the study page looks like a piece of research.
 
 New pages can take weeks to appear in search results. That is normal.
 
-## 7. Trying it on your computer, then publishing
+## 8. Trying it on your computer, then publishing
 
 To see changes before they go live:
 
@@ -168,12 +195,39 @@ for a build error. The most common cause is a mistake in the block between the
 two `---` lines. Every `label:` needs a space after the colon, and values with a
 colon or a quote in them should be wrapped in quotes.
 
+## Your contact email
+
+The site has one contact address, stored in one place: the `email:` line in
+`_config.yml`. The button on the home page, the survey page and any project page
+read it from there, so to change it you edit that one line.
+
+Inside a project's front matter (the block between the two `---` lines), write
+`{email}` wherever the address should appear:
+
+```yaml
+facts:
+  - label: Contact
+    value: "[{email}](mailto:{email})"
+
+contact: "You can write to me at [{email}](mailto:{email})."
+```
+
+In the body of a page (below the second `---`), use `{{ site.email }}` instead:
+
+```markdown
+Write to me at [{{ site.email }}](mailto:{{ site.email }}).
+```
+
+Please avoid typing the address itself into a page. If you do, it will not
+change when you update `_config.yml`.
+
 ## Other things you may want to change
 
 | I want to... | Edit this |
 |---|---|
 | Change the bio or the top of the home page | `index.md` |
 | Add, remove or reorder the links in the footer | `_data/social.yml` |
+| Change the contact email | `email:` in `_config.yml` (see "Your contact email" above) |
 | Add a page to the top menu | `nav:` in `_config.yml` |
 | Change the colours | The "Tokens" block at the top of `assets/css/main.css` |
 | Replace the CV | Replace `assets/files/joshua-olunlade-cv.pdf`, keeping the file name |

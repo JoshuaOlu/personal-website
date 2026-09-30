@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1200" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <rect width="1200" height="1200" fill="#0E1A2B"/>
+  <!-- three program cards -->
+  <g>
+    <rect x="90" y="250" width="300" height="400" rx="34" fill="#F3F5F7"/>
+    <rect x="450" y="250" width="300" height="400" rx="34" fill="#F3F5F7"/>
+    <rect x="810" y="250" width="300" height="400" rx="34" fill="#F3F5F7"/>
+  </g>
+  <!-- RFID chips -->
+  <g stroke="#0A6B5B" stroke-width="8">
+    <rect x="122" y="282" width="46" height="46" rx="10"/><path d="M137 298 h16 M137 312 h16"/>
+    <rect x="482" y="282" width="46" height="46" rx="10"/><path d="M497 298 h16 M497 312 h16"/>
+    <rect x="842" y="282" width="46" height="46" rx="10"/><path d="M857 298 h16 M857 312 h16"/>
+  </g>
+  <!-- card 1: repeat -->
+  <g stroke="#0E1A2B" stroke-width="18">
+    <path d="M300 460 A70 70 0 1 1 240 392"/>
+    <path d="M226 350 L246 392 L204 402"/>
+  </g>
+  <g fill="#0E1A2B"><circle cx="170" cy="590" r="12"/><circle cx="215" cy="590" r="12"/><circle cx="260" cy="590" r="12"/><circle cx="305" cy="590" r="12"/></g>
+  <!-- card 2: if obstacle, turn -->
+  <rect x="480" y="410" width="70" height="70" rx="12" fill="#F2B134"/>
+  <g stroke="#0E1A2B" stroke-width="18">
+    <path d="M540 590 L640 590 Q700 590 700 530 L700 440"/>
+    <path d="M664 470 L700 434 L736 470"/>
+  </g>
+  <!-- card 3: wait for a clap -->
+  <g stroke="#0E1A2B" stroke-width="18">
+    <path d="M900 460 Q930 500 900 540"/>
+    <path d="M950 430 Q1000 500 950 570"/>
+    <path d="M1000 400 Q1070 500 1000 600"/>
+  </g>
+  <circle cx="880" cy="500" r="16" fill="#0E1A2B" stroke="none"/>
+  <!-- scan arrow into the robot -->
+  <path d="M600 690 L600 790" stroke="#4FD1B0" stroke-width="14"/>
+  <path d="M568 762 L600 796 L632 762" stroke="#4FD1B0" stroke-width="14"/>
+  <!-- LED feedback ring -->
+  <g stroke="none">
+    <circle cx="600" cy="960" r="150" fill="#16283D"/>
+    <circle cx="600" cy="960" r="86" fill="#0E1A2B"/>
+    <circle cx="600" cy="836" r="18" fill="#4FD1B0"/>
+    <circle cx="662" cy="853" r="18" fill="#4FD1B0"/>
+    <circle cx="707" cy="898" r="18" fill="#F2B134"/>
+    <circle cx="724" cy="960" r="18" fill="#F2B134"/>
+    <circle cx="707" cy="1022" r="18" fill="#34475D"/>
+    <circle cx="662" cy="1067" r="18" fill="#34475D"/>
+    <circle cx="600" cy="1084" r="18" fill="#34475D"/>
+    <circle cx="538" cy="1067" r="18" fill="#34475D"/>
+    <circle cx="493" cy="1022" r="18" fill="#34475D"/>
+    <circle cx="476" cy="960" r="18" fill="#34475D"/>
+    <circle cx="493" cy="898" r="18" fill="#34475D"/>
+    <circle cx="538" cy="853" r="18" fill="#34475D"/>
+  </g>
+</svg>

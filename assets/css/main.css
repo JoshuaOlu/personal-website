@@ -42,6 +42,7 @@
   --text:    "Source Serif 4", Georgia, "Times New Roman", serif;
 
   --measure: 66ch;
+  --aside:   19rem;   /* width of the details box and the cover picture */
   --wide:    1080px;
   --radius:  14px;
 }
@@ -271,7 +272,7 @@ a:hover { text-decoration-thickness: 2px; }
 
 .project-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 17rem;
+  grid-template-columns: minmax(0, 1fr) var(--aside);
   gap: 4rem;
   align-items: start;
 }
@@ -284,6 +285,26 @@ a:hover { text-decoration-thickness: 2px; }
 .facts dt { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.15rem; }
 .facts dd { font-size: 0.98rem; line-height: 1.45; }
 .facts dd a { overflow-wrap: anywhere; }
+
+
+/* Project header with a cover picture: title on the left, picture on the right,
+   lined up with the details box below it. */
+.page-header.has-cover {
+  max-width: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--aside);
+  gap: 4rem;
+  align-items: start;
+}
+.page-header-text { max-width: 46rem; }
+.cover { margin: 0; }
+.cover img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 22px;
+  background: var(--surface);
+}
 
 /* ─── Long-form text ────────────────────────────────────────────────────────── */
 .prose { max-width: var(--measure); }
@@ -412,8 +433,17 @@ a:hover { text-decoration-thickness: 2px; }
 
 /* ─── Small screens ─────────────────────────────────────────────────────────── */
 @media (max-width: 860px) {
+  .page-header.has-cover { grid-template-columns: 1fr; gap: 1.75rem; }
+  .cover img { max-width: 20rem; }   /* stays square so nothing important is cropped */
   .hero { grid-template-columns: 1fr; gap: 2rem; padding-top: 1.5rem; }
-  .hero-photo { order: -1; width: 9.5rem; aspect-ratio: 1; border-radius: 18px; }
+  .hero-photo { order: -1; width: 11rem; aspect-ratio: 1; border-radius: 22px; }
+  /* On narrow screens the top of the home page and the footer are centred.
+     Reading text (the bio, project lists, project pages) stays left aligned. */
+  .hero { text-align: center; justify-items: center; }
+  .hero-lede { margin-inline: auto; }
+  .hero-actions { justify-content: center; }
+  .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+  .social-links { justify-content: center; }
   .project-grid { grid-template-columns: 1fr; gap: 2rem; }
   .project-grid > aside { position: static; order: 2; }          /* story first, details after */
   .project-grid > .project-main { order: 1; }

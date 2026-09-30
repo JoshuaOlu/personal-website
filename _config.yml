@@ -7,6 +7,8 @@ description: >-
   Nigerian engineering undergraduates. Founder and Executive Director of
   Care for Knowledge (CFK).
 author: Joshua Olunlade
+# The one place the site's contact address lives. The home page button, the
+# survey page and any project page that uses {email} all read it from here.
 email: joshua@olunlade.com
 lang: en
 url: "https://joshua.olunlade.com"

@@ -18,6 +18,8 @@ image:
 status: Recruiting
 period: 2026 to 2027
 order: 10
+cover: /assets/images/covers/siwes-study.svg
+cover_alt: "An illustration of several routes fanning out from a single starting point. Most stop short, and one continues to a glowing destination."
 updated: 2026-09-30
 
 facts:
@@ -32,7 +34,7 @@ facts:
   - label: Ethics clearance
     value: University of Cape Town, EBE/03193/2026
   - label: Questions and comments
-    value: "[olnjos001@myuct.ac.za](mailto:olnjos001@myuct.ac.za)"
+    value: "[{email}](mailto:{email})"
 
 progress:
   - label: Proposal and literature search
@@ -59,7 +61,7 @@ progress:
 #     date: March 2027
 #     doi: 10.xxxx/xxxxx
 
-contact: "If you work on SIWES, work integrated learning or engineering education in Nigeria, I would like to hear from you. You can write to me at [olnjos001@myuct.ac.za](mailto:olnjos001@myuct.ac.za)."
+contact: "If you work on SIWES, work integrated learning or engineering education in Nigeria, I would like to hear from you. You can write to me at [{email}](mailto:{email})."
 
 references:
   - "Adeagbo, J. O., & Oyewole, S. O. (2026). Higher Education-Industry-Government Partnership for National Development: The Place of Students Industrial Work Experience Scheme (SIWES). *Journal of Contemporary Education Research*. [https://doi.org/10.70382/hujcer.v11i8.039](https://doi.org/10.70382/hujcer.v11i8.039)"

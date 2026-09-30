@@ -12,6 +12,8 @@ description: >-
 status: Completed
 period: M.Eng thesis
 order: 20
+cover: /assets/images/covers/tinkabot.svg
+cover_alt: "An illustration of three program cards, for repeating, turning at an obstacle and waiting for a clap, pointing down to a ring of glowing lights."
 facts:
   - label: Type
     value: M.Eng thesis project

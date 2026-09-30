@@ -1,16 +1,25 @@
 ---
 layout: default
 ---
+{%- comment -%} Writing {email} in a project's front matter is replaced by the address in _config.yml. {%- endcomment -%}
+{%- assign email_token = "{email}" -%}
 <article class="page-shell project-page">
-  <header class="page-header">
-    {% if page.status or page.period %}
-    <div class="header-meta">
-      {% include status.html status=page.status %}
-      {% if page.period %}<span class="period">{{ page.period }}</span>{% endif %}
+  <header class="page-header{% if page.cover %} has-cover{% endif %}">
+    <div class="page-header-text">
+      {% if page.status or page.period %}
+      <div class="header-meta">
+        {% include status.html status=page.status %}
+        {% if page.period %}<span class="period">{{ page.period }}</span>{% endif %}
+      </div>
+      {% endif %}
+      <h1>{{ page.title }}</h1>
+      {% if page.tagline %}<p class="page-tagline">{{ page.tagline }}</p>{% endif %}
     </div>
+    {% if page.cover %}
+    <figure class="cover">
+      <img src="{{ page.cover | relative_url }}" alt="{{ page.cover_alt | escape }}" width="1200" height="1200"{% if page.cover_position %} style="object-position: {{ page.cover_position }}"{% endif %}>
+    </figure>
     {% endif %}
-    <h1>{{ page.title }}</h1>
-    {% if page.tagline %}<p class="page-tagline">{{ page.tagline }}</p>{% endif %}
   </header>
 
   <div class="project-grid">
@@ -20,7 +29,7 @@ layout: default
         {% for fact in page.facts %}
         <div>
           <dt>{{ fact.label }}</dt>
-          <dd>{{ fact.value | markdownify | remove: "<p>" | remove: "</p>" | strip }}</dd>
+          <dd>{{ fact.value | replace: email_token, site.email | markdownify | remove: "<p>" | remove: "</p>" | strip }}</dd>
         </div>
         {% endfor %}
       </dl>
@@ -40,7 +49,7 @@ layout: default
           {% for step in page.progress %}
           <li class="{{ step.state | default: 'next' }}">
             <p class="progress-label">{{ step.label }}<span class="progress-state">{% if step.state == 'done' %}Done{% elsif step.state == 'now' %}Now{% else %}Next{% endif %}</span></p>
-            {% if step.detail %}<p class="progress-detail">{{ step.detail }}</p>{% endif %}
+            {% if step.detail %}<p class="progress-detail">{{ step.detail | replace: email_token, site.email }}</p>{% endif %}
           </li>
           {% endfor %}
         </ol>
@@ -52,7 +61,7 @@ layout: default
       {% if page.contact %}
       <section aria-labelledby="contact-heading">
         <h2 id="contact-heading">Get in touch</h2>
-        {{ page.contact | markdownify }}
+        {{ page.contact | replace: email_token, site.email | markdownify }}
       </section>
       {% endif %}
 
