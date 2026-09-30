@@ -230,3 +230,40 @@ footer {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
+
+/* ─── Study page (/siwes/) ──────────────────────────────────────────────────── */
+.study-page .project-section,
+.study-page .study-facts { max-width: var(--max-prose); }
+
+.study-facts {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 1.5rem;
+  margin: 0.5rem 0 2.5rem;
+}
+.study-facts div {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid var(--border);
+}
+.study-facts div:first-child { border-top: 0; }
+.study-facts dt { color: var(--muted); }
+
+.project-section ol {
+  padding-left: 1.4rem;
+  margin-top: 0.5rem;
+}
+.project-section ol li { margin-bottom: 0.75rem; }
+.project-section p + p { margin-top: 0.75rem; }
+
+.consent-note {
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .study-facts div { grid-template-columns: 1fr; gap: 0.15rem; }
+}
