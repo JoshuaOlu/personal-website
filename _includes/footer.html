@@ -1,3 +1,7 @@
-<footer>
-  <p>&copy; 2026&ndash;{{ 'now' | date: "%Y" }} Joshua Olunlade. All rights reserved.</p>
+{%- assign this_year = 'now' | date: "%Y" -%}
+<footer class="site-footer">
+  <div class="footer-inner">
+    <p>&copy; {% if this_year == '2026' %}2026{% else %}2026&ndash;{{ this_year }}{% endif %} Joshua Olunlade. All rights reserved.</p>
+    {% include social.html %}
+  </div>
 </footer>

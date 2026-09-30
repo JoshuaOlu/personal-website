@@ -1,155 +1,117 @@
 ---
 title: Navigating Access to Industrial Placements
+seo_title: Navigating Access to Industrial Placements (SIWES) in Nigeria
 tagline: A Constructivist Grounded Theory Study of Nigerian Engineering Undergraduate Students
 summary: >-
   My MPhil study of how final year engineering students at a Nigerian
-  university navigate access to SIWES placements. Now recruiting participants.
+  university find and secure SIWES placements. Recruitment has begun.
 description: >-
-  A research study on how final year engineering students at a Nigerian
-  university navigate access to industrial placements (SIWES). Read about the
-  study, who can take part, and how your privacy is protected.
+  An MPhil study of how engineering students in Nigeria find and secure SIWES
+  industrial placements, using constructivist grounded theory. Research by
+  Joshua Olunlade, University of Cape Town.
 permalink: /siwes/
 image:
   path: /assets/images/siwes-study-preview.png
   width: 1200
   height: 630
   alt: "Navigating Access to Industrial Placements, a study of final year engineering students at a Nigerian university."
+status: Recruiting
+period: 2026 to 2027
+order: 10
+updated: 2026-09-30
+
+facts:
+  - label: Researcher
+    value: Joshua Olunlade, MPhil in Engineering Education, University of Cape Town
+  - label: Supervisors
+    value: A/Prof. Bruce Kloot and Dr Lauren Jansen
+  - label: Topic
+    value: SIWES and industrial placements in Nigerian engineering education
+  - label: Approach
+    value: Interviews, analysed with constructivist grounded theory
+  - label: Ethics clearance
+    value: University of Cape Town, EBE/03193/2026
+  - label: Questions and comments
+    value: "[olnjos001@myuct.ac.za](mailto:olnjos001@myuct.ac.za)"
+
+progress:
+  - label: Proposal and literature search
+    state: done
+    detail: A Scopus search in June 2026 and the full proposal in July 2026.
+  - label: Ethics clearance
+    state: done
+    detail: Cleared in September 2026 by the University of Cape Town and by the partner university where the fieldwork will take place.
+  - label: Recruitment
+    state: now
+    detail: A short screening survey for final year engineering students, which leads to the first three or four interviews.
+  - label: Interviews and analysis
+    state: next
+    detail: The first interviews will be online. A field visit to Nigeria is planned between November 2026 and February 2027.
+  - label: Writing up
+    state: next
+    detail: The thesis is due in March 2027.
+
+# Add papers, talks, videos and more as they appear. See GUIDE.md for every option.
+# outputs:
+#   - type: paper
+#     title: Title of the paper
+#     venue: Journal or conference
+#     date: March 2027
+#     doi: 10.xxxx/xxxxx
+
+contact: "If you work on SIWES, work integrated learning or engineering education in Nigeria, I would like to hear from you. You can write to me at [olnjos001@myuct.ac.za](mailto:olnjos001@myuct.ac.za)."
+
+references:
+  - "Adeagbo, J. O., & Oyewole, S. O. (2026). Higher Education-Industry-Government Partnership for National Development: The Place of Students Industrial Work Experience Scheme (SIWES). *Journal of Contemporary Education Research*. [https://doi.org/10.70382/hujcer.v11i8.039](https://doi.org/10.70382/hujcer.v11i8.039)"
+  - "Charmaz, K. (2014). *Constructing Grounded Theory*. SAGE."
+  - "Industrial Training Fund. (n.d.). *SIWES*. Federal Republic of Nigeria."
+  - "National Universities Commission. (2023). *Core Curriculum and Minimum Academic Standards (CCMAS) for Nigerian Universities: Engineering and Technology*. NUC."
 ---
 
-<div class="study-page">
+Industrial training is a compulsory part of an engineering degree in Nigeria. Getting a place to do it is not always straightforward. This study looks at what students do when it isn't.
+{: .lede}
 
-<div class="study-facts">
-  <dl>
-    <div>
-      <dt>Researcher</dt>
-      <dd>Joshua Olunlade, MPhil student, Department of Mechanical Engineering, University of Cape Town</dd>
-    </div>
-    <div>
-      <dt>Supervisors</dt>
-      <dd>A/Prof. Bruce Kloot and Dr Lauren Jansen</dd>
-    </div>
-    <div>
-      <dt>Who can take part</dt>
-      <dd>Final year engineering undergraduates at the participating Nigerian university who have completed at least one SIWES placement. The recruitment materials and the survey name the university.</dd>
-    </div>
-    <div>
-      <dt>Ethics approval</dt>
-      <dd>University of Cape Town: EBE/03193/2026<br>The participating Nigerian university's research ethics committee (details on the first page of the survey)</dd>
-    </div>
-    <div>
-      <dt>Questions</dt>
-      <dd><a href="mailto:olnjos001@myuct.ac.za">olnjos001@myuct.ac.za</a></dd>
-    </div>
-  </dl>
-</div>
+## What is SIWES?
 
-<section class="project-section">
-  <h2>About the study</h2>
-  <p>
-    This study is part of my MPhil in Engineering Education at the University of Cape Town.
-    It explores how final year engineering students at a Nigerian university navigate access
-    to industrial placements through the Students Industrial Work Experience Scheme (SIWES).
-  </p>
-  <p>
-    Universities often cannot place every student, so many students have to find placements
-    themselves. Little is known about what SIWES means to students, what strategies they use or
-    avoid when looking for a placement, and which factors they say shape their access. The study
-    aims to understand students' experiences, strategies and perspectives on this process, in
-    their own words.
-  </p>
-</section>
+The Students Industrial Work Experience Scheme, known as SIWES, is Nigeria's national programme for placing university students in workplaces during their degrees. For engineering students, the national curriculum standards call for three placements, one each in the second, third and fourth years, adding up to at least 33 weeks. The last one takes place in the second semester of fourth year rather than during a vacation.
 
-<section class="project-section">
-  <h2>Who can take part</h2>
-  <p>
-    The study is open to final year undergraduate engineering students who are currently enrolled
-    at the Faculty of Engineering of the participating Nigerian university and who have completed at least
-    one SIWES placement. The recruitment materials and the survey name the university.
-  </p>
-</section>
+Internationally, this kind of learning is called work integrated learning, or WIL. SIWES is Nigeria's version of it.
 
-<section class="project-section">
-  <h2>What taking part involves</h2>
-  <ol>
-    <li>
-      <strong>A short online survey, about 3 minutes.</strong> It asks about your department, your year of
-      study, how many SIWES placements you have completed, how you would describe your experience of
-      finding them, and whether you would be willing to be interviewed. If you say yes to an interview,
-      you will be asked for your contact details so that I can reach you.
-    </li>
-    <li>
-      <strong>One interview, only if you are selected and agree.</strong> It lasts about 45 to 60 minutes and
-      takes place online on Microsoft Teams, or in person during a planned field visit to Nigeria. With your
-      permission, the interview is audio recorded and transcribed. You may be contacted for a follow up
-      interview later if further clarification is needed.
-    </li>
-  </ol>
-  <p>Completing the survey does not guarantee that you will be selected for an interview.</p>
-</section>
+## The problem
 
-<section class="project-section">
-  <h2>Your participation is voluntary</h2>
-  <ul>
-    <li>You are free to stop the survey at any time.</li>
-    <li>You may withdraw your survey responses at any time before you are contacted for an interview by emailing me at <a href="mailto:olnjos001@myuct.ac.za">olnjos001@myuct.ac.za</a>.</li>
-    <li>If you are contacted for an interview, you are free to decline without any consequences.</li>
-    <li>If you take part in an interview, you may withdraw at any time without negative consequences, and you may skip any question without giving a reason.</li>
-  </ul>
-</section>
+Universities are expected to help students get placements. In practice, many cannot place everyone. Links between engineering faculties and companies can be weak, and even when a university has formal agreements with companies, those companies often cannot take every student. Some students are selected for the places that exist. Others are left to find one on their own.
 
-<section class="project-section">
-  <h2>Privacy and confidentiality</h2>
-  <ul>
-    <li>Your contact details are stored separately from your survey responses on a password protected device. They are accessible only to me and are shared with my supervisors only if necessary. They are never shared with anyone outside the research team.</li>
-    <li>Everything you share is kept confidential. Your name will not appear in any reports or publications. You will be given a pseudonym, and identifying details will be changed or generalised to protect your identity.</li>
-    <li>Audio recordings and transcripts are stored on a password protected device. Only I, and where necessary my supervisors, can access the raw data.</li>
-    <li>Data is kept for five years and then securely deleted.</li>
-  </ul>
-</section>
+## What we know, and what we don't
 
-<section class="project-section">
-  <h2>Risks, benefits and payment</h2>
-  <p>
-    There are no anticipated risks to taking part beyond the time it requires. Your participation
-    will contribute to research that may benefit future engineering students and inform how institutions
-    support students in accessing industrial placements.
-  </p>
-  <p>
-    You will not be paid for taking part. Transport costs for an in person interview may be reimbursed
-    on request. This reimbursement does not depend on what you share.
-  </p>
-</section>
+Researchers have written a lot about the inequalities and barriers in this system, and that work matters. What it tends to leave out is the process itself. What does SIWES mean to a student who is looking for a place? Which strategies do they try, and which do they avoid? What do they say made the difference? And what might they learn about communicating, organising themselves and building networks just by going through the search?
 
-<section class="project-section">
-  <h2>Consent</h2>
-  <div class="consent-note">
-    <p>
-      Reading this page does not count as consent. You give your informed consent on the first page of the
-      survey, before any questions. If you are invited to an interview, you will be asked to consent again
-      before it starts, and your consent will be confirmed out loud at the beginning of the interview.
-    </p>
-  </div>
-</section>
+I searched Scopus in June 2026 for research on how engineering students in Sub-Saharan Africa access industrial placements. It returned 54 papers, and none of them looked at how students navigate that access. When I removed the geographic limit and focused on navigation, I found 224 papers, and none of those looked at the navigation process either.
 
-<section class="project-section">
-  <h2>Ethics and concerns</h2>
-  <p>
-    This study has ethics approval from the University of Cape Town Research Ethics Committee and from the
-    research ethics committee of the participating Nigerian university. If you have a concern about the study
-    or a question about institutional oversight, the first page of the survey gives the contact details for
-    both institutions. You can also email me at
-    <a href="mailto:olnjos001@myuct.ac.za">olnjos001@myuct.ac.za</a>.
-  </p>
-</section>
+That is one search in one database, so I hold the result lightly. Still, it suggests there is room for this work.
 
-<section class="project-section take-part">
-  <h2>Take part</h2>
-  <p>
-    If you are eligible and have read the information above, you can start the survey. Its first page
-    repeats the key information and asks for your consent. If you would like to ask something first,
-    email <a href="mailto:olnjos001@myuct.ac.za">olnjos001@myuct.ac.za</a>.
-  </p>
-  <a href="{{ '/siwes/survey/' | relative_url }}" class="button">Take the survey</a>
-</section>
+## The questions
 
-</div>
+The main question guiding the study is:
+
+How do undergraduate engineering students in Nigeria navigate access to industrial placements?
+{: .question}
+
+Three smaller questions are my starting points:
+
+- How do students understand and make sense of industrial placement opportunities?
+- What strategies or actions do students adopt, or avoid, when seeking an industrial placement?
+- What structural factors do students identify in terms of their access to industrial placement?
+
+## How I am studying it
+
+I am using constructivist grounded theory, developed by Kathy Charmaz. In plain terms, I am not starting with a theory and testing it. I am starting with students' own accounts and building explanations from them, moving back and forth between what students say and the ideas I develop.
+
+The main source of data is intensive interviews with final year engineering students at a Nigerian university. By final year, students have typically been through the placement process up to three times, so they can compare what changed from one search to the next. I expect to do between 10 and 15 interviews. I will begin with three or four, analyse them, and only then decide who to speak to next. That is how theoretical sampling works, and it means the final number is not fixed in advance.
+
+I will also talk informally with faculty staff and read official documents, so that students' accounts can be understood in their institutional setting.
+
+## Where I am coming from
+
+I am a mechanical engineering graduate from Nigeria and a former academic staff member in a Nigerian engineering faculty. I went through the placement process myself as an undergraduate. That helps me understand the setting.
+
+It also means I have to be careful. My own experience was at a different university, and I cannot assume my participants' experiences will look like mine. I will write about this in the thesis as well, wherever it shapes what I find.

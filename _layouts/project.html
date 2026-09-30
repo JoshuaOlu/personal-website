@@ -1,20 +1,73 @@
 ---
 layout: default
 ---
-<div class="project-container">
-  <h1>{{ page.title }}</h1>
-  {% if page.tagline %}
-    <p class="tagline">{{ page.tagline }}</p>
-  {% endif %}
+<article class="page-shell project-page">
+  <header class="page-header">
+    {% if page.status or page.period %}
+    <div class="header-meta">
+      {% include status.html status=page.status %}
+      {% if page.period %}<span class="period">{{ page.period }}</span>{% endif %}
+    </div>
+    {% endif %}
+    <h1>{{ page.title }}</h1>
+    {% if page.tagline %}<p class="page-tagline">{{ page.tagline }}</p>{% endif %}
+  </header>
 
-  {{ content }}
+  <div class="project-grid">
+    {% if page.facts %}
+    <aside aria-label="Project details">
+      <dl class="facts">
+        {% for fact in page.facts %}
+        <div>
+          <dt>{{ fact.label }}</dt>
+          <dd>{{ fact.value | markdownify | remove: "<p>" | remove: "</p>" | strip }}</dd>
+        </div>
+        {% endfor %}
+      </dl>
+    </aside>
+    {% endif %}
 
-  {% if page.github %}
-    <section class="project-section">
-      <h2>Source Code</h2>
-      <a href="{{ page.github }}" class="button" target="_blank" rel="noopener">View on GitHub</a>
-    </section>
-  {% endif %}
+    <div class="project-main">
+      <div class="prose">
+        {{ content }}
+      </div>
+
+      {% if page.progress %}
+      <section aria-labelledby="progress-heading">
+        <h2 id="progress-heading">Where things stand</h2>
+        {% if page.updated %}<p class="updated">Last updated {{ page.updated | date: "%-d %B %Y" }}</p>{% endif %}
+        <ol class="progress-list">
+          {% for step in page.progress %}
+          <li class="{{ step.state | default: 'next' }}">
+            <p class="progress-label">{{ step.label }}<span class="progress-state">{% if step.state == 'done' %}Done{% elsif step.state == 'now' %}Now{% else %}Next{% endif %}</span></p>
+            {% if step.detail %}<p class="progress-detail">{{ step.detail }}</p>{% endif %}
+          </li>
+          {% endfor %}
+        </ol>
+      </section>
+      {% endif %}
+
+      {% include outputs.html %}
+
+      {% if page.contact %}
+      <section aria-labelledby="contact-heading">
+        <h2 id="contact-heading">Get in touch</h2>
+        {{ page.contact | markdownify }}
+      </section>
+      {% endif %}
+
+      {% if page.references %}
+      <section class="references" aria-labelledby="sources-heading">
+        <h2 id="sources-heading">Sources</h2>
+        <ul>
+          {% for ref in page.references %}
+          <li>{{ ref | markdownify | remove: "<p>" | remove: "</p>" | strip }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+      {% endif %}
+    </div>
+  </div>
 
   <p class="back-link"><a href="{{ '/research/' | relative_url }}">&larr; Back to Research</a></p>
-</div>
+</article>

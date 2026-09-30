@@ -1,0 +1,21 @@
+{%- comment -%}
+  A list of all projects, ordered by the "order" number in each project's front matter
+  (lowest first). Used on the home page and the Research page.
+{%- endcomment -%}
+{%- assign sorted_projects = site.projects | sort: "order" -%}
+<ol class="project-list">
+  {%- for project in sorted_projects %}
+  <li class="project-row">
+    <div class="project-row-meta">
+      {% include status.html status=project.status %}
+      {% if project.period %}<span class="period">{{ project.period }}</span>{% endif %}
+    </div>
+    <div>
+      <h3><a href="{{ project.url | relative_url }}">{{ project.title }}</a></h3>
+      {% if project.summary %}<p>{{ project.summary }}</p>{% endif %}
+      {%- assign output_count = project.outputs | size -%}
+      {% if output_count > 0 %}<p class="project-row-foot">{{ output_count }} output{% if output_count > 1 %}s{% endif %}</p>{% endif %}
+    </div>
+  </li>
+  {%- endfor %}
+</ol>

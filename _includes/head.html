@@ -1,10 +1,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0B141E" media="(prefers-color-scheme: dark)">
+  {% if page.noindex %}<meta name="robots" content="noindex">{% endif %}
 
-  <!-- jekyll-seo-tag handles title, description, OG, Twitter card automatically -->
-  {% seo %}
+  <!-- jekyll-seo-tag writes the page title, description, canonical link and
+       the tags that control link previews. Set seo_title in a page's front
+       matter to give search engines a different title from the on-page one. -->
+  {% if page.seo_title %}
+    {% seo title=false %}
+    <title>{{ page.seo_title }} | {{ site.title }}</title>
+  {% else %}
+    {% seo %}
+  {% endif %}
 
+  <link rel="preload" href="{{ '/assets/fonts/bricolage-grotesque.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ '/assets/fonts/source-serif-4.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
 
   <!-- Favicon -->
@@ -12,7 +25,4 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/images/favico/favicon-32x32.png' | relative_url }}">
   <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/images/favico/favicon-16x16.png' | relative_url }}">
   <link rel="manifest" href="{{ '/assets/images/favico/site.webmanifest' | relative_url }}">
-
-  <!-- Preconnect for Simple Icons CDN -->
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
 </head>

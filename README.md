@@ -1,8 +1,9 @@
 # joshua.olunlade.com
 
-Personal website of Joshua Olunlade, built with [Jekyll](https://jekyllrb.com/) and hosted on GitHub Pages.
+Personal website of Joshua Olunlade, built with [Jekyll](https://jekyllrb.com/)
+and hosted on GitHub Pages.
 
----
+**To add or update research, read [GUIDE.md](GUIDE.md).**
 
 ## Local development
 
@@ -13,68 +14,43 @@ bundle exec jekyll serve
 
 Then visit `http://localhost:4000`.
 
----
+## How the site is organised
 
-## How to maintain this site
+```
+├── _config.yml           Site settings, menu, search and sharing settings
+├── _data/social.yml      The links in the footer
+├── _includes/            Reusable pieces: head, menu, footer, project list, outputs
+├── _layouts/
+│   ├── default.html      The frame around every page
+│   ├── page.html         A plain page
+│   └── project.html      A research project page
+├── _projects/            One file per project. Add new ones here
+│   ├── siwes-study.md
+│   └── tinkabot.md
+├── templates/
+│   └── project-template.md   Copy this to start a new project
+├── assets/
+│   ├── css/main.css      All styles. Colours are at the top
+│   ├── fonts/            Self-hosted fonts (Bricolage Grotesque, Source Serif 4)
+│   ├── files/            CV
+│   └── images/           Headshot, favicons, link preview images
+├── research/index.md     The Research page
+├── siwes/survey/         The short link that forwards to the survey
+├── index.md              The home page
+├── GUIDE.md              How to add and update projects
+└── CNAME
+```
 
-### Update your bio or social links
-
-- **Bio / about text** → edit `index.md`
-- **Social media links** → edit `_data/social.yml` (add, remove, or reorder entries there; nothing else needs changing)
-- **Navigation links** → edit `_config.yml` under `nav:`
-
-### Add a new research project
-
-1. Create a new file in `_projects/` — e.g. `_projects/my-new-project.md`
-2. Copy the front matter pattern from `_projects/tinkabot.md`
-3. Write the content in Markdown below the `---`
-
-That's it. The project will automatically appear on the home page and on `/research/`.
-
-### Update your CV
-
-Replace `assets/files/joshua-olunlade-cv.pdf` with your new PDF. Keep the filename the same.
-
-### Site-wide settings (title, description, URL)
-
-Edit `_config.yml`. After any change to `_config.yml`, restart the local server.
-
----
-
-## Plugins used
+## Plugins
 
 | Plugin | Purpose |
 |---|---|
-| `jekyll-sitemap` | Auto-generates `/sitemap.xml` on every build |
-| `jekyll-seo-tag` | Injects `<title>`, `<meta description>`, Open Graph, and Twitter Card tags from front matter |
+| `jekyll-sitemap` | Builds `/sitemap.xml` for search engines |
+| `jekyll-seo-tag` | Writes the page title, description and link preview tags |
 
-Both are supported natively by GitHub Pages — no extra CI needed.
+Both are supported by GitHub Pages with no extra setup.
 
----
+## Fonts
 
-## File structure
-
-```
-├── _config.yml          # Site settings, nav, plugins
-├── _data/
-│   └── social.yml       # Social media links
-├── _includes/
-│   ├── head.html        # <head> tag (SEO plugin lives here)
-│   ├── nav.html         # Navbar
-│   ├── footer.html      # Footer
-│   └── social.html      # Social icon row
-├── _layouts/
-│   ├── default.html     # Base layout
-│   ├── page.html        # Generic page
-│   └── project.html     # Research project page
-├── _projects/           # One .md file per research project
-│   └── tinkabot.md
-├── assets/
-│   ├── css/main.css     # All styles
-│   ├── files/           # CV PDF
-│   └── images/          # Headshot, favicons
-├── research/
-│   └── index.md         # Research listing page
-├── index.md             # Home page
-└── CNAME
-```
+The fonts are stored in `assets/fonts/` and served from this site, so visitors'
+browsers do not contact Google. Both are open source (SIL Open Font License).

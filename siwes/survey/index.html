@@ -1,5 +1,5 @@
 ---
-layout: null
+layout: default
 title: Share your SIWES story
 description: >-
   A 3 minute survey for final year engineering students at the University of
@@ -7,8 +7,9 @@ description: >-
   placements (SIWES).
 permalink: /siwes/survey/
 sitemap: false
-# Paste the survey address from UCT LimeSurvey below (it must start with https://).
-# Until then, this page shows a "not open yet" message instead of redirecting.
+noindex: true
+# The survey address on UCT LimeSurvey (it must start with https://).
+# If it is missing, this page shows a "not open yet" message instead of redirecting.
 redirect_to: "https://limesurvey.uct.ac.za/index.php/672163"
 image:
   path: /assets/images/siwes-participation-preview.png
@@ -16,54 +17,35 @@ image:
   height: 630
   alt: "Share your SIWES story. A survey for final year engineering students at the University of Lagos."
 ---
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="robots" content="noindex">
-
-  <!-- Link preview tags (title, description, image) come from the front matter above -->
-  {% seo %}
-
-  <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
-  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/images/favico/apple-touch-icon.png' | relative_url }}">
-  <link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/images/favico/favicon-32x32.png' | relative_url }}">
-  <link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/images/favico/favicon-16x16.png' | relative_url }}">
-</head>
-<body>
-  {% include nav.html %}
-  <main>
-    <div class="container">
-      <h1>Share your SIWES story</h1>
-      {% if page.redirect_to contains 'https://' %}
-        <p class="tagline">Taking you to the survey&hellip;</p>
-        <div class="about">
-          <p>
-            The survey takes about 3 minutes. Its first page explains the study and asks for your consent
-            before any questions.
-          </p>
-          <p style="margin-top:1rem;">
-            Not redirected? <a href="{{ page.redirect_to }}">Continue to the survey</a>.
-            You can also <a href="{{ '/siwes/' | relative_url }}">read more about the study</a> first.
-          </p>
-        </div>
-        <script>
-          // Link previews read the tags above. People are then sent on to the survey.
-          window.location.replace({{ page.redirect_to | jsonify }});
-        </script>
-      {% else %}
-        <p class="tagline">The survey is not open yet</p>
-        <div class="about">
-          <p>
-            Please check back soon, or email
-            <a href="mailto:olnjos001@myuct.ac.za">olnjos001@myuct.ac.za</a> with any questions.
-            You can also <a href="{{ '/siwes/' | relative_url }}">read more about the study</a>.
-          </p>
-        </div>
-      {% endif %}
-    </div>
-  </main>
-  {% include footer.html %}
-</body>
-</html>
+<div class="page-shell">
+  <header class="page-header">
+    <h1>Share your SIWES story</h1>
+    {% if page.redirect_to contains 'https://' %}
+      <p class="page-tagline">Taking you to the survey&hellip;</p>
+    {% else %}
+      <p class="page-tagline">The survey is not open yet</p>
+    {% endif %}
+  </header>
+  <div class="prose">
+    {% if page.redirect_to contains 'https://' %}
+      <p>
+        The survey takes about 3 minutes. Its first page explains the study and asks for your consent
+        before any questions.
+      </p>
+      <p>
+        Not redirected? <a href="{{ page.redirect_to }}">Continue to the survey</a>.
+        You can also <a href="{{ '/siwes/' | relative_url }}">read more about the study</a> first.
+      </p>
+      <script>
+        // Link previews read the tags in the page head. People are then sent on to the survey.
+        window.location.replace({{ page.redirect_to | jsonify }});
+      </script>
+    {% else %}
+      <p>
+        Please check back soon, or email
+        <a href="mailto:olnjos001@myuct.ac.za">olnjos001@myuct.ac.za</a> with any questions.
+        You can also <a href="{{ '/siwes/' | relative_url }}">read more about the study</a>.
+      </p>
+    {% endif %}
+  </div>
+</div>

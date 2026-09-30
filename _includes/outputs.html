@@ -1,0 +1,36 @@
+{%- comment -%}
+  Lists everything a project has produced (papers, videos, slides, code, data and so on).
+  Reads the "outputs" list from the project's front matter. See GUIDE.md.
+{%- endcomment -%}
+{%- if page.outputs and page.outputs.size > 0 -%}
+<section aria-labelledby="outputs-heading">
+  <h2 id="outputs-heading">Outputs</h2>
+  <ul class="output-list">
+    {%- for output in page.outputs %}
+    {%- assign href = output.url -%}
+    {%- if href == nil and output.doi -%}{%- assign href = output.doi | prepend: "https://doi.org/" -%}{%- endif -%}
+    {%- if href == nil and output.youtube -%}{%- assign href = output.youtube | prepend: "https://www.youtube.com/watch?v=" -%}{%- endif -%}
+    <li class="output">
+      <span class="output-type">{{ output.type | default: "output" | capitalize }}</span>
+      <div>
+        <h3 class="output-title">
+          {%- if href %}<a href="{{ href }}" target="_blank" rel="noopener">{{ output.title }}</a>{% else %}{{ output.title }}{% endif -%}
+        </h3>
+        {% if output.venue or output.date or output.note %}
+        <p class="output-meta">
+          {% if output.venue %}<span>{{ output.venue }}</span>{% endif %}
+          {% if output.date %}<span>{{ output.date }}</span>{% endif %}
+          {% if output.note %}<span>{{ output.note }}</span>{% endif %}
+        </p>
+        {% endif %}
+        {%- if output.youtube %}
+        <div class="video">
+          <iframe src="https://www.youtube-nocookie.com/embed/{{ output.youtube }}" title="{{ output.title | escape }}" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        {%- endif %}
+      </div>
+    </li>
+    {%- endfor %}
+  </ul>
+</section>
+{%- endif -%}

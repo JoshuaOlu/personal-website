@@ -1,0 +1,2 @@
+{%- comment -%} Shows a project's status as a small pill. Usage: {% include status.html status=project.status %} {%- endcomment -%}
+{%- if include.status -%}<span class="status status-{{ include.status | slugify }}">{{ include.status }}</span>{%- endif -%}

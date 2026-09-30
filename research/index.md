@@ -1,20 +1,17 @@
 ---
-layout: page
+layout: default
 title: Research
-tagline: Engineering Education, Robotics & Tangible Programming
 description: >-
-  Research portfolio of Joshua Olunlade — MPhil candidate in Engineering Education.
-  Projects span work-integrated learning access, computational thinking, and
-  educational technology in underserved contexts.
+  Research and projects by Joshua Olunlade, an MPhil candidate in Engineering
+  Education at the University of Cape Town. Work on industrial placements (SIWES)
+  in Nigerian engineering education, computational thinking and educational
+  technology in underserved contexts.
 ---
 
-<section class="project-section">
-  <h2>Projects</h2>
-  {% for project in site.projects %}
-    <div class="research-item">
-      <h3>{{ project.title }}</h3>
-      <p>{{ project.summary }}</p>
-      <a href="{{ project.url | relative_url }}" class="button">View project &rarr;</a>
-    </div>
-  {% endfor %}
-</section>
+<div class="page-shell">
+  <header class="page-header">
+    <h1>Research</h1>
+    <p class="page-tagline">Engineering education, robotics and tangible programming. Each project page collects what came out of it: papers, talks, videos and more.</p>
+  </header>
+  {% include project-list.html %}
+</div>

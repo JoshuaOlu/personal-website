@@ -8,23 +8,27 @@ description: >-
   Care for Knowledge (CFK).
 author: Joshua Olunlade
 email: joshua@olunlade.com
+lang: en
 url: "https://joshua.olunlade.com"
 baseurl: ""
 
-# ─── Social handles (used in SEO includes) ────────────────────────────────────
+# ─── Search and sharing (used by jekyll-seo-tag) ──────────────────────────────
+# "social" tells search engines that these profiles all belong to one person.
 social:
-  linkedin: joshuaolunlade
-  twitter: josholunlade
-  instagram: josholunlade
-  orcid: "0009-0009-8152-3578"
-  substack: josholunlade
-  youtube: josholunlade
-  github: josholunlade          # update if needed
+  name: Joshua Olunlade
+  links:
+    - https://www.linkedin.com/in/joshuaolunlade/
+    - https://orcid.org/0009-0009-8152-3578
+    - https://josholunlade.substack.com/
+    - https://www.youtube.com/@josholunlade
+    - https://twitter.com/josholunlade
+    - https://www.instagram.com/josholunlade/
+twitter:
+  username: josholunlade
+  card: summary_large_image
 
 # ─── Navigation ───────────────────────────────────────────────────────────────
 nav:
-  - label: Home
-    url: /
   - label: Research
     url: /research/
   - label: CV
@@ -37,6 +41,7 @@ highlighter: rouge
 permalink: pretty
 
 # ─── Collections ──────────────────────────────────────────────────────────────
+# Every file in _projects/ becomes a project page (see GUIDE.md).
 collections:
   projects:
     output: true
@@ -46,9 +51,14 @@ collections:
 defaults:
   - scope:
       path: ""
+    values:
+      image: /assets/images/og-default.png
+  - scope:
+      path: ""
       type: "projects"
     values:
       layout: project
+      order: 50
 
 # ─── Plugins ──────────────────────────────────────────────────────────────────
 plugins:
@@ -60,4 +70,6 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
+  - GUIDE.md
+  - templates
   - .gitignore
