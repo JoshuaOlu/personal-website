@@ -75,7 +75,7 @@ Industrial training is a compulsory part of an engineering degree in Nigeria. Ge
 
 ## What is SIWES?
 
-The Students Industrial Work Experience Scheme, known as SIWES, is Nigeria's national programme for placing university students in workplaces during their degrees. For engineering students, the national curriculum standards call for three placements, one each in the second, third and fourth years, adding up to at least 33 weeks. The last one takes place in the second semester of fourth year rather than during a vacation.
+The Students Industrial Work Experience Scheme, known as SIWES, is Nigeria's national programme for placing university students in workplaces during their degrees. For engineering students in most universities, the national curriculum standards call for three placements, one each in the second, third and fourth years, adding up to at least 33 weeks. The last one takes place in the second semester of fourth year rather than during a vacation. Some universities only have this placements in the fourth year.
 
 Internationally, this kind of learning is called work integrated learning, or WIL. SIWES is Nigeria's version of it.
 
