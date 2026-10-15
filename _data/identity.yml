@@ -7,69 +7,52 @@
 # ═══════════════════════════════════════════════════════════════════════════
 
 name: Joshua Olunlade
+
 given_name: Joshua
+
 family_name: Olunlade
 
-# Other ways your name is written. Add any you use on papers or profiles.
-# This is what lets search engines join "Olunlade, J. O." to you.
 also_known_as:
-  - Joshua O. Olunlade
-  - Olunlade, J. O.
-  - Olunlade, J.
+- Joshua O. Olunlade
+- Olunlade, J. O.
+- Olunlade, J.
 
 job_title: Engineering education researcher
 
-# One sentence (about 25 words). Used in search results and by AI assistants.
-bio_one_line: >-
-  Joshua Olunlade is an engineering education researcher at the University of Cape Town, studying how Nigerian engineering students access industrial placements (SIWES).
+bio_one_line: Joshua Olunlade is an engineering education researcher at the University of Cape Town, studying how Nigerian engineering students access industrial placements (SIWES).
 
-# About 50 words, for programmes, panels and introductions.
-bio_short: >-
-  Joshua Olunlade is an MPhil candidate in Engineering Education at the University of Cape Town's Centre for Research in Engineering Education (CREE). His research examines how Nigerian engineering undergraduates access industrial placements (SIWES). He is the founder and Executive Director of Care for Knowledge (CFK), a Nigerian nonprofit working to make educational resources more accessible.
+bio_short: Joshua Olunlade is an MPhil candidate in Engineering Education at the University of Cape Town's Centre for Research in Engineering Education (CREE). His research examines how Nigerian engineering undergraduates access industrial placements (SIWES). He is the founder and Executive Director of Care for Knowledge (CFK), a Nigerian nonprofit working to make educational resources more accessible.
 
-# About 120 words, for conference programmes and longer introductions.
-bio_long: >-
-  Joshua Olunlade is an MPhil candidate in Engineering Education at the University of Cape Town's Centre for Research in Engineering Education (CREE), supervised by A/Prof. Bruce Kloot and Dr Lauren Jansen. His study, using constructivist grounded theory, examines how final-year engineering undergraduates in Nigeria find and secure industrial placements under the Students Industrial Work Experience Scheme (SIWES), and what that means for equity of access to work-integrated learning.
-  He holds a B.Eng and an M.Eng in Mechanical Engineering from Adeleke University, Ede, where his thesis produced Tinkabot, a screen-free robotics kit for early computational thinking. His publications cover educational robotics and the teaching of engineering graphics in developing countries. He is the founder and Executive Director of Care for Knowledge (CFK), a Nigerian nonprofit working to make educational resources more accessible, and tutors in mechanical engineering at UCT.
+bio_long: Joshua Olunlade is an MPhil candidate in Engineering Education at the University of Cape Town's Centre for Research in Engineering Education (CREE), supervised by A/Prof. Bruce Kloot and Dr Lauren Jansen. His study, using constructivist grounded theory, examines how final-year engineering undergraduates in Nigeria find and secure industrial placements under the Students Industrial Work Experience Scheme (SIWES), and what that means for equity of access to work-integrated learning. He holds a B.Eng and an M.Eng in Mechanical Engineering from Adeleke University, Ede, where his thesis produced Tinkabot, a screen-free robotics kit for early computational thinking. His publications cover educational robotics and the teaching of engineering graphics in developing countries. He is the founder and Executive Director of Care for Knowledge (CFK), a Nigerian nonprofit working to make educational resources more accessible, and tutors in mechanical engineering at UCT.
 
-# The organisations you belong to. type is the schema.org name: CollegeOrUniversity,
-# Organization, NGO, ResearchOrganization.
 affiliations:
-  - name: Centre for Research in Engineering Education (CREE), University of Cape Town
-    url: https://ebe.uct.ac.za/cree
-    type: ResearchOrganization
-  - name: Care for Knowledge (CFK)
-    url: https://careforknowledge.org/
-    type: NGO
+- name: Centre for Research in Engineering Education (CREE), University of Cape Town
+  url: https://ebe.uct.ac.za/cree
+  type: ResearchOrganization
+- name: Care for Knowledge (CFK)
+  url: https://careforknowledge.org/
+  type: NGO
 
 alumni_of:
-  - name: Adeleke University
-    url: https://adelekeuniversity.edu.ng/
-    type: CollegeOrUniversity
+- name: Adeleke University
+  url: https://adelekeuniversity.edu.ng/
+  type: CollegeOrUniversity
 
-# What you want to be known for. Each topic is shown on the About page and
-# tells search engines what you are an authority on. Keep them specific and
-# true. Put the ones that matter most first.
-# title: the topic | text: one or two sentences about your angle on it.
 topics:
-  - title: Engineering education in Nigeria
-    text: How Nigerian engineering students learn, are placed in industry and move into the profession, studied with the students' own accounts at the centre.
-  - title: Work-integrated learning and SIWES
-    text: The Students Industrial Work Experience Scheme (SIWES) and who gets access to a good placement, and why it matters for equity.
-  - title: Engineering education research in Africa
-    text: Studying engineering education from within the African context, through the Centre for Research in Engineering Education (CREE) at the University of Cape Town.
-  - title: Constructivist grounded theory
-    text: Building theory from students' experiences rather than testing borrowed frameworks.
-  - title: Computational thinking and educational robotics
-    text: Screen-free, low-cost tangible programming for early STEM learning in resource-constrained schools, including the Tinkabot kit.
-  - title: Teaching engineering graphics and CAD
-    text: Open-source tools such as FreeCAD for teaching engineering graphics in developing countries.
-  - title: Educational access and equity
-    text: Care for Knowledge (CFK), a Nigerian nonprofit making educational resources reachable regardless of location or income.
+- title: Engineering education in Nigeria
+  text: How Nigerian engineering students learn, are placed in industry and move into the profession, studied with the students' own accounts at the centre.
+- title: Work-integrated learning and SIWES
+  text: The Students Industrial Work Experience Scheme (SIWES) and who gets access to a good placement, and why it matters for equity.
+- title: Engineering education research in Africa
+  text: Studying engineering education from within the African context, through the Centre for Research in Engineering Education (CREE) at the University of Cape Town.
+- title: Constructivist grounded theory
+  text: Building theory from students' experiences rather than testing borrowed frameworks.
+- title: Computational thinking and educational robotics
+  text: Screen-free, low-cost tangible programming for early STEM learning in resource-constrained schools, including the Tinkabot kit.
+- title: Teaching engineering graphics and CAD
+  text: Open-source tools such as FreeCAD for teaching engineering graphics in developing countries.
+- title: Educational access and equity
+  text: Care for Knowledge (CFK), a Nigerian nonprofit making educational resources reachable regardless of location or income.
 
-# Extra profiles that prove the accounts above are yours. Paste the full web
-# address. Anything listed in _data/social.yml is already included, so add only
-# profiles that are NOT in that file (Google Scholar, Zenodo, UCT page, Wikidata ...).
-same_as_extra: []
-#  - https://scholar.google.com/citations?user=XXXX
-#  - https://www.wikidata.org/wiki/QXXXX
+same_as_extra:
+- https://scholar.google.com/citations?user=NnBtagEAAAAJ&hl=en
