@@ -1,0 +1,22 @@
+{%- comment -%}
+  One publication as a schema.org ScholarlyArticle. Usage: {% include jsonld-article.html pub=pub %}
+{%- endcomment -%}
+{%- assign p = include.pub -%}
+{%- if p.doi -%}{%- assign link = "https://doi.org/" | append: p.doi -%}{%- elsif p.url -%}{%- assign link = p.url -%}{%- else -%}{%- assign link = "" -%}{%- endif -%}
+{
+  "@type": "ScholarlyArticle",
+  "@id": {{ site.url | append: "/publications/#" | append: p.id | jsonify }},
+  "headline": {{ p.title | jsonify }},
+  "name": {{ p.title | jsonify }},
+  "author": [{% include jsonld-author-list.html authors=p.authors %}],
+  "datePublished": {{ p.year | append: "" | jsonify }},
+  "inLanguage": "en",
+  "isPartOf": {"@type": {% if p.type == "journal" %}"Periodical"{% else %}"CreativeWork"{% endif %}, "name": {{ p.venue | jsonify }}}
+  {%- if link != "" %},
+  "url": {{ link | jsonify }},
+  "sameAs": {{ link | jsonify }}
+  {%- endif %}
+  {%- if p.doi %},
+  "identifier": {"@type": "PropertyValue", "propertyID": "DOI", "value": {{ p.doi | jsonify }}}
+  {%- endif %}
+}

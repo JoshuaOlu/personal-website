@@ -1,0 +1,10 @@
+# Podcast sync. Paste your podcast's RSS feed address below and the site lists every episode
+# automatically. GitHub checks the feed every day and rebuilds the site. Leave it empty for no podcast.
+feed_url: ""
+# Optional: where people can subscribe. Shown as buttons on the Podcast page.
+listen_on: []
+#  - label: Spotify
+#    url: https://open.spotify.com/show/...
+#  - label: Apple Podcasts
+#    url: https://podcasts.apple.com/...
+max_episodes: 100

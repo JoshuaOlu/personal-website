@@ -1,0 +1,31 @@
+---
+layout: default
+---
+<article class="page-shell">
+  <header class="page-header">
+    <h1>{{ page.title }}</h1>
+    {% if page.tagline %}<p class="page-tagline">{{ page.tagline }}</p>{% endif %}
+  </header>
+  <div class="prose">{{ content }}</div>
+
+  {%- assign cv_pubs = site.data.cv.sections | where_exp: "s", "s.publications" | first -%}
+  {%- assign any_shown = false -%}
+  {% for group in cv_pubs.publications %}
+    {%- assign group_items = site.data.publications | where: "type", group.type -%}
+    {% if group_items.size > 0 %}
+    <section class="pub-group" aria-labelledby="pubs-{{ group.type }}">
+      <h2 id="pubs-{{ group.type }}">{{ group.heading }}</h2>
+      <ol class="cv-entries pub-list">
+        {% for pub in group_items %}
+        <li class="cv-entry pub-entry" id="{{ pub.id }}">
+          <div class="cv-dates">{{ pub.year }}</div>
+          <div class="cv-body output-citation">{% include citation.html pub=pub %}</div>
+        </li>
+        {% endfor %}
+      </ol>
+    </section>
+    {% endif %}
+  {% endfor %}
+  {%- assign orcid = site.data.social | where: "label", "ORCID" | first -%}
+  {% if orcid %}<p class="muted pub-foot">This list is also kept on <a href="{{ orcid.url }}" target="_blank" rel="noopener me">ORCID</a>.</p>{% endif %}
+</article>

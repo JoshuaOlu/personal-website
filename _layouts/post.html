@@ -1,0 +1,44 @@
+---
+layout: default
+---
+{%- assign words = content | strip_html | number_of_words -%}
+{%- assign minutes = words | divided_by: 220 | plus: 1 -%}
+<article class="page-shell post-page">
+  <header class="page-header">
+    <div class="header-meta post-meta">
+      <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
+      <span>{{ minutes }} min read</span>
+      {% if page.updated and page.updated != page.date %}<span>Updated {{ page.updated | date: "%-d %B %Y" }}</span>{% endif %}
+    </div>
+    <h1>{{ page.title }}</h1>
+    {% if page.summary %}<p class="page-tagline">{{ page.summary }}</p>{% endif %}
+  </header>
+
+  {%- if page.toc != false -%}
+  {%- assign parts = content | split: '<h2 id="' -%}
+  {%- if parts.size > 3 -%}
+  <details class="post-toc"><summary>In this piece</summary><ul>
+    {%- for part in parts offset: 1 -%}
+    <li><a href="#{{ part | split: '"' | first }}">{{ part | split: '>' | slice: 1 | first | split: '</h2' | first | strip_html }}</a></li>
+    {%- endfor -%}
+  </ul></details>
+  {%- endif -%}
+  {%- endif -%}
+
+  <div class="prose post-body">
+    {{ content }}
+  </div>
+
+  <footer class="post-foot prose">
+    {% if page.tags and page.tags.size > 0 %}<p class="post-tags">{% for t in page.tags %}<span class="tag">{{ t }}</span>{% endfor %}</p>{% endif %}
+    {% if page.canonical_url %}<p class="muted">This piece first appeared at <a href="{{ page.canonical_url }}" rel="canonical">{{ page.canonical_url | remove: "https://" | remove: "http://" | split: "/" | first }}</a>.</p>{% endif %}
+    <p class="muted">
+      Cite as: Olunlade, J. ({{ page.date | date: "%Y" }}). {{ page.title }}. {{ site.title }}. {{ page.url | absolute_url }}
+    </p>
+    <p class="muted">Written by <a href="{{ '/about/' | relative_url }}">Joshua Olunlade</a>, an engineering education researcher at the University of Cape Town.</p>
+  </footer>
+
+  {% include newsletter.html %}
+
+  <p class="back-link"><a href="{{ '/writing/' | relative_url }}">&larr; All writing</a></p>
+</article>

@@ -14,7 +14,7 @@ lang: en
 url: "https://joshua.olunlade.com"
 baseurl: ""
 
-# ─── Search and sharing (used by jekyll-seo-tag) ──────────────────────────────
+# ─── Search and sharing (used by _includes/seo.html and jsonld.html) ──────────────────────────────
 # "social" tells search engines that these profiles all belong to one person.
 social:
   name: Joshua Olunlade
@@ -29,12 +29,39 @@ twitter:
   username: josholunlade
   card: summary_large_image
 
+# ─── Visitor counts (GoatCounter) ───────────────────────────────────
+# Your GoatCounter site code: the part before .goatcounter.com (for example "joshua").
+# Empty = no counting. GoatCounter sets no cookies and keeps no personal data, so no banner is needed.
+goatcounter: "jolunlade"
+
+# ─── Newsletter signup (shown under each piece of writing) ────────────────────
+# provider: substack | buttondown | custom | "" (empty hides it).
+# handle is your Substack subdomain (josholunlade) or Buttondown username.
+newsletter:
+  provider: substack
+  handle: josholunlade
+  action: ""
+  heading: Get new pieces by email
+  blurb: Occasional essays on engineering education in Nigeria and Africa. No spam, leave any time.
+
 # ─── Navigation ───────────────────────────────────────────────────────────────
+# Add a page here to put it in the menu. "collection: writing" hides an item
+# until that collection has at least one published entry.
 nav:
   - label: Research
     url: /research/
+  - label: Writing
+    url: /writing/
+    collection: writing
+  - label: Podcast
+    url: /podcast/
+    data: podcast_feed
+  - label: Publications
+    url: /publications/
   - label: CV
     url: /cv/
+  - label: About
+    url: /about/
 
 # ─── Build settings ───────────────────────────────────────────────────────────
 markdown: kramdown
@@ -47,6 +74,13 @@ collections:
   projects:
     output: true
     permalink: /research/:name/
+  # Essays and notes (see GUIDE.md, "Writing"). A file with published: false stays hidden.
+  writing:
+    output: true
+    permalink: /writing/:name/
+  # Short links that forward to somewhere else (see GUIDE.md, "Short links").
+  links:
+    output: true
 
 # ─── Default front matter ─────────────────────────────────────────────────────
 defaults:
@@ -60,14 +94,35 @@ defaults:
     values:
       layout: project
       order: 50
+  - scope:
+      path: ""
+      type: "writing"
+    values:
+      layout: post
+  - scope:
+      path: ""
+      type: "links"
+    values:
+      layout: link
+      sitemap: false
+      noindex: true
 
 # ─── Plugins ──────────────────────────────────────────────────────────────────
-plugins:
-  - jekyll-sitemap
-  - jekyll-seo-tag
+plugins: []
 
 # ─── Exclude from build ───────────────────────────────────────────────────────
+# Dot folders are skipped by Jekyll, so ".well-known" has to be asked for.
+include:
+  - .well-known
+
 exclude:
+  - console
+  - scripts
+  - Start-Console.bat
+  - start-console.sh
+  - start-console.command
+  - .console-data
+  - VISIBILITY.md
   - Gemfile
   - Gemfile.lock
   - README.md

@@ -1,0 +1,31 @@
+---
+layout: null
+sitemap: false
+---
+{%- comment -%}
+  Hand-made sitemap. Pages marked noindex or sitemap: false are left out, and so are the
+  Writing and Podcast list pages until they have something on them.
+{%- endcomment -%}
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- assign writing_n = site.writing | size -%}
+{%- assign podcast_n = site.data.podcast_feed.episodes | size -%}
+{%- for p in site.pages -%}
+  {%- assign last = p.url | slice: -1, 1 -%}
+  {%- if p.sitemap == false or p.noindex or last != "/" -%}{%- continue -%}{%- endif -%}
+  {%- if p.url == "/writing/" and writing_n == 0 -%}{%- continue -%}{%- endif -%}
+  {%- if p.url == "/podcast/" and podcast_n == 0 -%}{%- continue -%}{%- endif -%}
+  {%- assign lm = p.updated -%}
+  <url><loc>{{ p.url | absolute_url | xml_escape }}</loc>{% if lm %}<lastmod>{{ lm | date_to_xmlschema }}</lastmod>{% endif %}</url>
+{%- endfor -%}
+{%- for d in site.projects -%}
+  {%- if d.sitemap == false or d.noindex -%}{%- continue -%}{%- endif -%}
+  {%- assign lm = d.updated -%}
+  <url><loc>{{ d.url | absolute_url | xml_escape }}</loc>{% if lm %}<lastmod>{{ lm | date_to_xmlschema }}</lastmod>{% endif %}</url>
+{%- endfor -%}
+{%- for d in site.writing -%}
+  {%- if d.sitemap == false or d.noindex -%}{%- continue -%}{%- endif -%}
+  {%- assign lm = d.updated | default: d.date -%}
+  <url><loc>{{ d.url | absolute_url | xml_escape }}</loc>{% if lm %}<lastmod>{{ lm | date_to_xmlschema }}</lastmod>{% endif %}</url>
+{%- endfor %}
+</urlset>

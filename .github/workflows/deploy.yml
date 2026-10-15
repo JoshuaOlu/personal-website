@@ -11,6 +11,9 @@ on:
   push:
     branches: [main, master]
   workflow_dispatch:
+  # Rebuild every morning so new podcast episodes appear without you doing anything.
+  schedule:
+    - cron: "17 5 * * *"
 
 permissions:
   contents: read
@@ -40,6 +43,11 @@ jobs:
           rm -f Gemfile.lock
           bundle install --jobs 4
 
+      - name: Sync the podcast feed
+        # Reads the feed address in _data/podcast.yml. Does nothing if it is empty,
+        # and never stops the build if the feed is down.
+        run: ruby scripts/sync_podcast.rb
+
       - name: Set up Pages
         uses: actions/configure-pages@v5
 
@@ -47,6 +55,20 @@ jobs:
         run: bundle exec jekyll build
         env:
           JEKYLL_ENV: production
+
+      - name: Add the browser console (only if you switched it on)
+        # Settings > "Edit from any browser" in the console on your computer writes _data/console.yml.
+        run: |
+          if grep -Eq '^web_console:[[:space:]]*true' _data/console.yml 2>/dev/null; then
+            mkdir -p _site/manage/js
+            cp console/ui/app.css _site/manage/app.css
+            cp console/ui/js/*.js _site/manage/js/
+            cp console/web/index.html console/web/web.js console/web/config.js console/web/js-yaml.min.js _site/manage/
+            sed -i 's#url("/fonts/#url("/assets/fonts/#g' _site/manage/app.css
+            echo "Browser console added at /manage/"
+          else
+            echo "Browser console is off."
+          fi
 
       - name: Make the CV PDF
         run: |
@@ -65,6 +87,11 @@ jobs:
           # Stop the deploy if the PDF is missing or tiny
           test "$(stat -c%s _site/assets/files/joshua-olunlade-cv.pdf)" -gt 20000
           ls -l _site/assets/files/joshua-olunlade-cv.pdf
+
+      - name: Make the preview cards for your writing
+        # Photographs a 1200x630 card for each piece that has no picture of its own.
+        # If one cannot be made it falls back to the standard picture, so link previews never break.
+        run: python3 scripts/make_cards.py _site
 
       - name: Upload the site
         uses: actions/upload-pages-artifact@v3

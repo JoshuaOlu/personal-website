@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data:; font-src 'self'; connect-src https://api.github.com; base-uri 'none'; form-action 'none'">
+  <title>Site console (browser)</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230A6B5B'/%3E%3Cpath d='M9 22V10h3.2l4.3 7 4.3-7H24v12h-3v-7l-4.5 7h-.1L12 15v7z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/manage/app.css">
+  <link rel="stylesheet" href="/assets/css/og-card.css">
+</head>
+<body>
+  <div id="app">
+    <aside id="side" aria-label="Console menu">
+      <a class="brand" href="#/">
+        <span class="brand-mark" aria-hidden="true">J</span>
+        <span><strong id="brand-title">Site console</strong><small>browser version</small></span>
+      </a>
+      <nav id="nav"></nav>
+      <div class="side-foot">
+        <button type="button" id="quit" class="link-btn">Sign out</button>
+      </div>
+    </aside>
+    <div id="main">
+      <header id="top">
+        <button type="button" id="menu-toggle" aria-label="Menu">Menu</button>
+        <div class="top-title"><h1 id="page-title">Overview</h1><p id="page-sub"></p></div>
+        <div id="top-actions"></div>
+      </header>
+      <main id="view" tabindex="-1"></main>
+    </div>
+  </div>
+  <div id="toasts" aria-live="polite"></div>
+  <div id="modal-root"></div>
+  <script src="/manage/config.js"></script>
+  <script src="/manage/js-yaml.min.js"></script>
+  <script src="/manage/js/core.js"></script>
+  <script src="/manage/web.js"></script>
+  <script src="/manage/js/yamlpatch.js"></script>
+  <script src="/manage/js/forms.js"></script>
+  <script src="/manage/js/schemas.js"></script>
+  <script src="/manage/js/views_content.js"></script>
+  <script src="/manage/js/views_links.js"></script>
+  <script src="/manage/js/views_site.js"></script>
+  <script src="/manage/js/views_ship.js"></script>
+  <script src="/manage/js/main.js"></script>
+</body>
+</html>

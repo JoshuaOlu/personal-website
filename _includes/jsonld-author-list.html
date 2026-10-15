@@ -1,0 +1,32 @@
+{%- comment -%}
+  Turns "Olunlade, J. O., & Olayemi, M." into a list of schema.org Person objects.
+  Input: include.authors. Output: JSON objects separated by commas (no brackets).
+  Names written as "Surname, Initials" are flipped to "Initials Surname".
+  Your own entry points to your Person record so search engines join the two.
+{%- endcomment -%}
+{%- assign cleaned = include.authors | replace: "& ", "" | replace: "&amp; ", "" | strip -%}
+{%- assign parts = cleaned | split: ".," -%}
+{%- assign out = "" -%}
+{%- for part in parts -%}
+  {%- assign nm = part | strip -%}
+  {%- if nm == "" -%}{%- continue -%}{%- endif -%}
+  {%- if nm contains "," -%}
+    {%- assign bits = nm | split: "," -%}
+    {%- assign surname = bits[0] | strip -%}
+    {%- assign initials = bits[1] | strip -%}
+    {%- unless initials contains "." -%}{%- assign initials = initials | append: "." -%}{%- endunless -%}
+    {%- assign display = initials | append: " " | append: surname -%}
+  {%- else -%}
+    {%- assign surname = nm -%}
+    {%- assign display = nm -%}
+  {%- endif -%}
+  {%- capture one -%}
+    {%- if surname == site.data.identity.family_name -%}
+      {"@id": {{ site.url | append: "/#person" | jsonify }}}
+    {%- else -%}
+      {"@type": "Person", "name": {{ display | jsonify }}}
+    {%- endif -%}
+  {%- endcapture -%}
+  {%- assign out = out | append: one | append: "@@" -%}
+{%- endfor -%}
+{{- out | split: "@@" | join: ", " -}}

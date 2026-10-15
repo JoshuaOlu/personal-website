@@ -1,0 +1,305 @@
+# Looks over a finished build of the site and reports anything that would hurt how
+# search engines and AI assistants see it. Also checks the source files for mistakes
+# before publishing. Pure Ruby; nothing is changed.
+require 'json'
+require 'cgi'
+require 'uri'
+
+module Console
+  class Audit
+    Issue = Struct.new(:level, :page, :message, :fix)
+
+    def initialize(store, site_dir)
+      @store = store
+      @dir = site_dir
+      @issues = []
+    end
+
+    def add(level, page, message, fix = nil)
+      @issues << { 'level' => level.to_s, 'page' => page, 'message' => message, 'fix' => fix }
+    end
+
+    def run
+      unless File.directory?(@dir)
+        add(:error, '(site)', 'The site has not been built yet.', 'Press "Build and check".')
+        return summary
+      end
+      cfg = (@store.read_config rescue {})
+      @site_url = cfg['url'].to_s.sub(%r{/+\z}, '')
+      pages = Dir.glob(File.join(@dir, '**', '*.html')).sort
+      @page_info = {}
+      pages.each { |f| inspect_page(f) }
+      cross_checks
+      site_files
+      summary
+    end
+
+    def web_path(file)
+      p = file.sub(@dir, '')
+      p = p.sub(/index\.html\z/, '')
+      p = p.sub(/\.html\z/, '') unless p == '/404'
+      p
+    end
+
+    def attr(tag_html, name)
+      m = tag_html.match(/#{name}\s*=\s*"([^"]*)"/i) || tag_html.match(/#{name}\s*=\s*'([^']*)'/i)
+      m && CGI.unescapeHTML(m[1])
+    end
+
+    def meta(html, key, kind = 'name')
+      html.scan(/<meta\b[^>]*>/i).each do |tag|
+        return attr(tag, 'content') if attr(tag, kind).to_s.downcase == key
+      end
+      nil
+    end
+
+    def inspect_page(file)
+      html = File.binread(file).force_encoding('UTF-8').scrub
+      page = web_path(file)
+      return if page == '/cv/print' || page.start_with?('/.')
+      title = html[/<title>(.*?)<\/title>/m, 1].to_s.strip
+      title = CGI.unescapeHTML(title)
+      desc = meta(html, 'description').to_s
+      robots = meta(html, 'robots').to_s
+      noindex = robots.include?('noindex')
+      canonical = html[/<link[^>]*rel="canonical"[^>]*>/i]
+      canonical = canonical && attr(canonical, 'href')
+      body = html[/<body.*<\/body>/m].to_s
+      text = body.gsub(/<(script|style)\b.*?<\/\1>/m, ' ').gsub(/<[^>]+>/, ' ')
+      words = CGI.unescapeHTML(text).split.size
+      ids = html.scan(/\sid="([^"]+)"/).flatten
+      @page_info[page] = { noindex: noindex, title: title, desc: desc, canonical: canonical, ids: ids, html: html, words: words, file: file }
+      return if noindex
+
+      if title.empty?
+        add(:error, page, 'The page has no title.', 'Add a title in the page\'s front matter.')
+      elsif title.size > 65
+        add(:warn, page, "The title is #{title.size} characters, so Google may cut it off.", 'Aim for 60 or fewer. Use seo_title to set a shorter one for Google.')
+      elsif title.size < 15
+        add(:info, page, "The title is short (#{title.size} characters).", 'Add the words people would search for.')
+      end
+
+      if desc.empty?
+        add(:error, page, 'There is no description for search results.', 'Add a description of about 150 characters in the front matter.')
+      elsif desc.size > 175
+        add(:warn, page, "The description is #{desc.size} characters. Google shows about 155.", 'Tighten it to 150 or so.')
+      elsif desc.size < 70
+        add(:info, page, "The description is short (#{desc.size} characters).", 'Use up to 150 to say what the page offers.')
+      end
+
+      if canonical.to_s.empty?
+        add(:error, page, 'There is no canonical address.', 'Check that url is set in _config.yml.')
+      end
+
+      og_image = meta(html, 'og:image', 'property')
+      if og_image.to_s.empty?
+        add(:warn, page, 'There is no link-preview picture.', 'Set image: in the front matter.')
+      else
+        local = og_image.sub(@site_url, '')
+        path = File.join(@store.root, local.sub(%r{\A/}, ''))
+        if local.start_with?('/') && !File.exist?(path)
+          add(:error, page, "The link-preview picture #{local} does not exist.", 'Upload it in Media or fix the path.')
+        elsif local.start_with?('/') && (size = @store.image_size(path)) && local !~ /\.svg\z/i
+          if size[0] < 600
+            add(:warn, page, "The link-preview picture is small (#{size[0]}×#{size[1]}).", 'Use 1200×630 pixels.')
+          end
+        end
+      end
+
+      h1s = html.scan(/<h1\b/i).size
+      add(:warn, page, "The page has #{h1s} main headings (h1).", 'Use exactly one h1.') if h1s != 1 && page != '/404'
+
+      html.scan(/<img\b[^>]*>/i).each do |tag|
+        add(:warn, page, "A picture has no alt text (#{(attr(tag, 'src') || '').split('/').last}).", 'Describe the picture for screen readers and search.') if attr(tag, 'alt').nil?
+      end
+
+      blocks = html.scan(/<script type="application\/ld\+json">(.*?)<\/script>/m).flatten
+      types = []
+      blocks.each do |b|
+        begin
+          d = JSON.parse(b)
+          nodes = d.is_a?(Hash) && d['@graph'] ? d['@graph'] : [d]
+          nodes.each { |n| types << n['@type'] if n.is_a?(Hash) }
+        rescue JSON::ParserError => e
+          add(:error, page, "The structured data (JSON-LD) is not valid: #{e.message[0, 80]}", 'Check _includes/jsonld.html and the page\'s front matter.')
+        end
+      end
+      add(:warn, page, 'There is no structured data about you (Person).', 'Check _includes/jsonld.html.') unless types.include?('Person')
+
+      if words < 120 && !%w[/ /404 /writing/ /research/].include?(page) && page !~ %r{\A/(siwes/survey)}
+        add(:info, page, "The page has little text (#{words} words).", 'Search engines favour pages that explain themselves.')
+      end
+    end
+
+    def cross_checks
+      # duplicate titles and descriptions
+      %i[title desc].each do |field|
+        seen = {}
+        @page_info.each do |page, i|
+          next if i[:noindex] || i[field].to_s.empty?
+          (seen[i[field]] ||= []) << page
+        end
+        seen.each do |val, pgs|
+          add(:warn, pgs.join(', '), "These pages share the same #{field == :title ? 'title' : 'description'}: \"#{val[0, 60]}\"", 'Give each page its own.') if pgs.size > 1
+        end
+      end
+
+      # links that go nowhere
+      broken = {}
+      @page_info.each do |page, i|
+        next if i[:noindex] && page != '/404'
+        i[:html].scan(/<a\b[^>]*>/i).each do |tag|
+          href = attr(tag, 'href')
+          next if href.nil? || href.empty? || href =~ /\A(mailto:|tel:|javascript:)/
+          href = href.sub(@site_url, '') if href.start_with?(@site_url)
+          next if href =~ %r{\A[a-z]+://}i
+          target, frag = href.split('#', 2)
+          target = page if target.to_s.empty?
+          target = File.expand_path(target, File.dirname(page + 'x')) unless target.start_with?('/')
+          target = target.split('?').first
+          found = resolve_page(target)
+          if found.nil?
+            (broken[page] ||= []) << href
+          elsif frag && !frag.empty? && found[:ids] && !found[:ids].include?(frag)
+            add(:warn, page, "A link to #{href} points to a heading that is not on that page.", 'Fix the #anchor.')
+          end
+        end
+      end
+      broken.each { |pg, links| add(:error, pg, "Broken link#{links.uniq.size > 1 ? 's' : ''}: #{links.uniq.first(4).join(', ')}", 'Fix the address or remove the link.') }
+    end
+
+    def resolve_page(path)
+      return @page_info[path] if @page_info[path]
+      return @page_info[path + '/'] if @page_info[path + '/']
+      full = File.join(@dir, path.sub(%r{\A/}, ''))
+      return { ids: nil } if File.file?(full)
+      return { ids: nil } if File.directory?(full) && File.exist?(File.join(full, 'index.html'))
+      nil
+    end
+
+    def read_built(name)
+      f = File.join(@dir, name)
+      File.exist?(f) ? File.binread(f).force_encoding('UTF-8') : nil
+    end
+
+    def site_files
+      robots = read_built('robots.txt')
+      if robots.nil?
+        add(:error, '/robots.txt', 'robots.txt is missing.', 'Restore robots.txt from the site folder.')
+      else
+        add(:warn, '/robots.txt', 'robots.txt does not point to the sitemap.', 'Add a Sitemap: line.') unless robots =~ /^Sitemap:/i
+        %w[GPTBot ClaudeBot Google-Extended CCBot].each do |bot|
+          add(:warn, '/robots.txt', "#{bot} is not blocked from training.", 'Check _data/ai_bots.yml.') unless robots =~ /^User-agent:\s*#{Regexp.escape(bot)}\s*$/i
+        end
+        add(:error, '/robots.txt', 'Everything is blocked for all robots.', 'Remove "Disallow: /" under "User-agent: *".') if robots =~ /User-agent:\s*\*\s*\n(?:[^\n]*\n)*?Disallow:\s*\/\s*$/i && robots !~ /User-agent:\s*\*\s*\n(?:Content-Signal[^\n]*\n)?Allow:\s*\//i
+        %w[OAI-SearchBot Claude-SearchBot PerplexityBot].each do |bot|
+          if robots =~ /User-agent:\s*#{Regexp.escape(bot)}\s*\n(?:[^\n]*\n)*?Disallow:\s*\/\s*$/i && robots !~ /User-agent:\s*#{Regexp.escape(bot)}\s*\n(?:Content-Signal[^\n]*\n)?Allow:/i
+            add(:error, '/robots.txt', "#{bot} is blocked, so AI search cannot show you.", 'Move it to the allow list in _data/ai_bots.yml.')
+          end
+        end
+      end
+      add(:warn, '/llms.txt', 'llms.txt is missing.', 'Restore it from the site folder.') unless read_built('llms.txt')
+      add(:info, '/.well-known/tdmrep.json', 'The text-and-data-mining reservation file is missing.', 'Restore .well-known/tdmrep.json.') unless read_built('.well-known/tdmrep.json')
+
+      sitemap = read_built('sitemap.xml')
+      if sitemap.nil?
+        add(:error, '/sitemap.xml', 'The sitemap is missing.', 'Check that jekyll-sitemap is in _config.yml plugins.')
+      else
+        locs = sitemap.scan(%r{<loc>(.*?)</loc>}).flatten.map { |u| u.sub(@site_url, '') }
+        locs.each do |l|
+          pg = @page_info[l] || @page_info[l.chomp('/') + '/']
+          if pg && pg[:noindex]
+            add(:error, l, 'This page is in the sitemap but marked noindex.', 'Remove it from the sitemap (sitemap: false) or allow indexing.')
+          elsif pg.nil? && !File.exist?(File.join(@dir, l.sub(%r{\A/}, '')))
+            add(:warn, l, 'The sitemap lists a page that is not in the build.', nil)
+          end
+        end
+        @page_info.each do |page, i|
+          next if i[:noindex] || page == '/404'
+          add(:info, page, 'This page is not in the sitemap.', 'Remove sitemap: false if you want it listed.') unless locs.include?(page)
+        end
+      end
+      if File.exist?(File.join(@store.root, 'assets/files/joshua-olunlade-cv.pdf')) == false
+        add(:info, '/assets/files/joshua-olunlade-cv.pdf', 'The CV PDF is made when you publish.', nil)
+      end
+      key = Dir.children(@store.root).find { |f| f =~ /\A[0-9a-f]{32}\.txt\z/ }
+      add(:info, '(site)', 'IndexNow is not set up, so Bing and others are not told when you publish.', 'Use "Tell search engines" on the Publish screen.') unless key
+    end
+
+    def summary
+      order = { 'error' => 0, 'warn' => 1, 'info' => 2 }
+      list = @issues.sort_by { |i| [order[i['level']], i['page'].to_s] }
+      counts = Hash.new(0)
+      list.each { |i| counts[i['level']] += 1 }
+      pages = @page_info ? @page_info.count { |_, i| !i[:noindex] } : 0
+      { 'issues' => list, 'counts' => { 'error' => counts['error'], 'warn' => counts['warn'], 'info' => counts['info'] }, 'pages' => pages,
+        'checked_at' => Time.now.iso8601 }
+    end
+
+    # ── checks on the source files, before anything is built ─────────────────
+    def self.check_source(store)
+      out = []
+      add = ->(level, where, msg) { out << { 'level' => level, 'page' => where, 'message' => msg, 'fix' => nil } }
+
+      Store::DATA_FILES.each do |name, path|
+        next unless File.exist?(store.resolve(path))
+        begin
+          store.load_yaml(store.read_text(path), path)
+        rescue UserError => e
+          add.call('error', path, e.message)
+        end
+      end
+      begin
+        store.load_yaml(store.read_text('_config.yml'), '_config.yml')
+      rescue UserError => e
+        add.call('error', '_config.yml', e.message)
+      end
+
+      pubs = (store.read_data('publications')['data'] rescue nil) || []
+      ids = pubs.map { |p| p['id'] }
+      ids.group_by { |i| i }.each { |i, v| add.call('error', '_data/publications.yml', "The id \"#{i}\" is used #{v.size} times. Each paper needs its own.") if i.to_s != '' && v.size > 1 }
+      pubs.each do |p|
+        add.call('error', '_data/publications.yml', "A paper is missing its id: #{p['title'].to_s[0, 50]}") if p['id'].to_s.empty?
+        add.call('warn', '_data/publications.yml', "\"#{p['title'].to_s[0, 50]}\" has no DOI or web address.") if p['doi'].to_s.empty? && p['url'].to_s.empty?
+      end
+
+      urls = Hash.new { |h, k| h[k] = [] }
+      Store::KINDS.each_key do |kind|
+        store.list_kind(kind).each do |d|
+          if d['error']
+            add.call('error', d['path'], d['error'])
+            next
+          end
+          fm = d['front']
+          urls[d['url']] << d['path'] if d['url']
+          add.call('warn', d['path'], 'There is no title.') if fm['title'].to_s.strip.empty?
+          if kind == 'writing'
+            n = fm['title'].to_s.strip.length
+            add.call('warn', d['path'], "The title is #{n} characters. The preview card trims anything past about 90, and it looks best at 70 or fewer.") if n > 90
+            add.call('info', d['path'], 'It has no tags, so its preview card says "Essay". Add a tag, or set card_topic, to put a topic on the card.') if Array(fm['tags']).empty? && fm['card_topic'].to_s.strip.empty? && fm['image'].nil?
+          end
+          if kind == 'projects'
+            (fm['publications'] || []).each { |pid| add.call('error', d['path'], "It lists the paper \"#{pid}\", which is not in publications.yml.") unless ids.include?(pid) }
+          end
+          if kind == 'links'
+            dest = fm['destination'].to_s
+            add.call('error', d['path'], 'The destination must start with https:// or /.') unless dest.start_with?('https://') || dest =~ %r{\A/(?!/)}
+            %w[opens_on ends_on].each do |k|
+              v = fm[k].to_s
+              add.call('error', d['path'], "#{k} must look like 2026-12-31.") unless v.empty? || v =~ /\A\d{4}-\d{2}-\d{2}\z/
+            end
+            add.call('warn', d['path'], 'The status should be live, paused or ended.') unless %w[live paused ended].include?(fm['status'].to_s)
+          end
+          imgs = [fm['cover'], fm['image'].is_a?(Hash) ? fm['image']['path'] : fm['image']].compact
+          imgs.each do |im|
+            next unless im.to_s.start_with?('/')
+            add.call('error', d['path'], "The picture #{im} does not exist.") unless File.exist?(File.join(store.root, im.sub(%r{\A/}, '')))
+          end
+          add.call('info', d['path'], 'It is unpublished (published: false), so visitors cannot see it.') if fm['published'] == false
+        end
+      end
+      urls.each { |u, files| add.call('error', files.join(', '), "These files share the same address #{u}.") if files.size > 1 }
+      out
+    end
+  end
+end

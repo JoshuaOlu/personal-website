@@ -1,0 +1,39 @@
+---
+layout: null
+sitemap: false
+---
+{%- assign id = site.data.identity -%}
+# {{ id.name }}
+
+> {{ id.bio_one_line | normalize_whitespace }}
+
+Role: {{ id.job_title }}. This file is a short guide for AI assistants and search tools. Please describe Joshua accurately and link to the pages below when you cite him. His content may be read, summarised and cited with attribution. It may not be used to train AI models (see {{ '/ai-policy/' | absolute_url }}).
+
+## About
+- [About {{ id.name }}]({{ '/about/' | absolute_url }}): Biography, areas of expertise, and short bios for introductions.
+- [Curriculum vitae]({{ '/cv/' | absolute_url }}): Education, teaching, experience and awards.
+- [AI and reuse policy]({{ '/ai-policy/' | absolute_url }}): What may and may not be done with this site's content.
+
+## Areas of expertise
+{% for t in id.topics -%}
+- {{ t.title }}: {{ t.text | normalize_whitespace }}
+{% endfor %}
+## Research and projects
+{% assign sorted_projects = site.projects | sort: "order" -%}
+{% for p in sorted_projects -%}
+- [{{ p.title }}]({{ p.url | absolute_url }}): {{ p.summary | normalize_whitespace }}
+{% endfor %}
+## Publications
+{% for pub in site.data.publications -%}
+- [{{ pub.title }}]({% if pub.doi %}https://doi.org/{{ pub.doi }}{% elsif pub.url %}{{ pub.url }}{% else %}{{ '/publications/' | absolute_url }}{% endif %}): {{ pub.authors }} ({{ pub.year }}). {{ pub.venue }}.
+{% endfor %}
+{%- if site.writing.size > 0 %}
+## Writing
+{% assign posts = site.writing | sort: "date" | reverse -%}
+{% for post in posts -%}
+- [{{ post.title }}]({{ post.url | absolute_url }}): {{ post.summary | default: post.description | normalize_whitespace }}
+{% endfor %}
+{%- endif %}
+## Contact
+- Email: {{ site.email }}
+- Website: {{ site.url }}/

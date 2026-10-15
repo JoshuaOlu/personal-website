@@ -1,0 +1,23 @@
+---
+layout: default
+title: Page not found
+permalink: /404.html
+sitemap: false
+noindex: true
+---
+<div class="page-shell">
+  <header class="page-header">
+    <h1>That page is not here</h1>
+    <p class="page-tagline">The address may have changed, or the page may have been retired.</p>
+  </header>
+  <div class="prose">
+    <p>You may be looking for one of these:</p>
+    <ul>
+      <li><a href="{{ '/' | relative_url }}">The home page</a></li>
+      <li><a href="{{ '/research/' | relative_url }}">Research and projects</a></li>
+      <li><a href="{{ '/publications/' | relative_url }}">Publications</a></li>
+      <li><a href="{{ '/cv/' | relative_url }}">Curriculum vitae</a></li>
+    </ul>
+    <p>If a link I shared with you has stopped working, please email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.</p>
+  </div>
+</div>

@@ -1,0 +1,93 @@
+---
+layout: default
+---
+{%- comment -%}
+  A short link: a page at a short address that sends people on to somewhere else.
+  Link previews (LinkedIn, WhatsApp, Slack) read this page's head tags, so the preview
+  can differ from the destination. People are then forwarded.
+  Add and manage these in the _links folder (or in the console). See GUIDE.md, "Short links".
+
+  Front matter used here:
+    destination   where to send people (must start with https:// or /)
+    status        live | paused | ended
+    opens_on      optional date (YYYY-MM-DD): before it, the link shows the "not open yet" message
+    ends_on       optional date (YYYY-MM-DD): the last day it works; after it, the link is closed
+    after_end     message (default) or forward (send people to fallback_url once closed)
+    fallback_url  where people can go instead, a page on this site or any address
+    fallback_label  words for that link, such as "read about the study"
+    label         what the destination is called, for "Taking you to ___"
+    paused_message / ended_message   your own wording for the two closed states
+    pass_query    true to keep ?extra=parts of the address when forwarding
+{%- endcomment -%}
+{%- assign dest = page.destination | strip -%}
+{%- assign dest_start = dest | slice: 0, 8 -%}
+{%- assign dest_first = dest | slice: 0, 1 -%}
+{%- if dest_start == "https://" or dest_first == "/" -%}{%- assign dest_ok = true -%}{%- else -%}{%- assign dest_ok = false -%}{%- endif -%}
+{%- assign today = site.time | date: "%Y-%m-%d" -%}
+{%- assign state = page.status | default: "live" -%}
+{%- if state == "live" and dest_ok == false -%}{%- assign state = "paused" -%}{%- endif -%}
+{%- if state == "live" and page.opens_on -%}{%- assign opens = page.opens_on | date: "%Y-%m-%d" -%}{%- if opens > today -%}{%- assign state = "paused" -%}{%- endif -%}{%- endif -%}
+{%- if state == "live" and page.ends_on -%}{%- assign ends = page.ends_on | date: "%Y-%m-%d" -%}{%- if ends < today -%}{%- assign state = "ended" -%}{%- endif -%}{%- endif -%}
+{%- assign label = page.label | default: "the link" -%}
+{%- assign fallback = page.fallback_url | default: "/" -%}
+{%- assign fallback_label = page.fallback_label | default: "go to the home page" -%}
+{%- if fallback contains "://" -%}{%- assign fallback_href = fallback -%}{%- else -%}{%- assign fallback_href = fallback | relative_url -%}{%- endif -%}
+<div class="page-shell" data-short-link
+     data-state="{{ state }}"
+     data-destination="{{ dest | escape }}"
+     data-opens="{{ page.opens_on | date: '%Y-%m-%d' }}"
+     data-ends="{{ page.ends_on | date: '%Y-%m-%d' }}"
+     data-after-end="{{ page.after_end | default: 'message' }}"
+     data-fallback="{{ fallback_href | escape }}"
+     data-pass-query="{{ page.pass_query | default: false }}">
+  <header class="page-header">
+    <h1>{{ page.title }}</h1>
+    <p class="page-tagline" data-when="live"{% if state != "live" %} hidden{% endif %}>Taking you to {{ label }}&hellip;</p>
+    <p class="page-tagline" data-when="paused"{% if state != "paused" %} hidden{% endif %}>{{ page.paused_title | default: "This link is not open yet" }}</p>
+    <p class="page-tagline" data-when="ended"{% if state != "ended" %} hidden{% endif %}>{{ page.ended_title | default: "This link has closed" }}</p>
+  </header>
+
+  <div class="prose">
+    <div data-when="live"{% if state != "live" %} hidden{% endif %}>
+      {{ content }}
+      <p>
+        Not redirected? <a data-go href="{{ dest | escape }}">Continue to {{ label }}</a>.
+        {% if page.fallback_url %}You can also <a href="{{ fallback_href }}">{{ fallback_label }}</a> first.{% endif %}
+      </p>
+    </div>
+
+    <div class="link-note" data-when="paused"{% if state != "paused" %} hidden{% endif %}>
+      <p>{{ page.paused_message | default: "Please check back soon." }}</p>
+      <p>Questions? Email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.{% if page.fallback_url %} You can also <a href="{{ fallback_href }}">{{ fallback_label }}</a>.{% endif %}</p>
+    </div>
+
+    <div class="link-note" data-when="ended"{% if state != "ended" %} hidden{% endif %}>
+      <p>{{ page.ended_message | default: "Thank you for your interest. This link is no longer open." }}</p>
+      <p>Questions? Email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.{% if page.fallback_url %} You can also <a data-fallback-link href="{{ fallback_href }}">{{ fallback_label }}</a>.{% endif %}</p>
+    </div>
+  </div>
+</div>
+<script>
+  (function () {
+    var root = document.querySelector('[data-short-link]');
+    if (!root) return;
+    var d = root.dataset;
+    var now = new Date();
+    var today = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2);
+    var state = d.state;
+    // The date checks run again here, so a link opens and closes on its date without a rebuild.
+    if (state === 'live' && d.opens && d.opens > today) state = 'paused';
+    if (state === 'live' && d.ends && d.ends < today) state = 'ended';
+    if (state === 'paused' && d.state === 'live' && d.opens && d.opens <= today && (!d.ends || d.ends >= today)) state = 'live';
+    root.querySelectorAll('[data-when]').forEach(function (el) { el.hidden = el.getAttribute('data-when') !== state; });
+    if (state === 'ended' && d.afterEnd === 'forward' && d.fallback) { window.location.replace(d.fallback); return; }
+    if (state !== 'live' || !d.destination) return;
+    var target = d.destination;
+    if (d.passQuery === 'true' && window.location.search) {
+      target += (target.indexOf('?') === -1 ? '?' : '&') + window.location.search.slice(1);
+      var go = root.querySelector('[data-go]'); if (go) go.href = target;
+    }
+    // Link previews read the tags in the page head. People are then sent on.
+    window.location.replace(target);
+  })();
+</script>

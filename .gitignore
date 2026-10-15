@@ -4,3 +4,6 @@ Gemfile.lock
 _site/
 vendor/
 .jekyll-cache/
+
+# The console keeps backups and logs here. Never published.
+.console-data/

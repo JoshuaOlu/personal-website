@@ -1,0 +1,91 @@
+{%- comment -%}
+  Embeds a video, audio player, slide deck or file from another site without hosting it.
+  Use in any Writing piece or page:
+    {% include embed.html url="https://youtu.be/VIDEOID" caption="Optional caption" %}
+  Optional: title="..." (for screen readers), ratio="4/3", poster="/assets/images/x.jpg" (picture shown before play).
+  Click-to-play: nothing from the other site loads until the reader presses play.
+{%- endcomment -%}
+{%- assign u = include.url | strip -%}
+{%- assign provider = "" -%}{%- assign src = "" -%}{%- assign ratio = include.ratio | default: "16/9" -%}{%- assign fixed_h = 0 -%}{%- assign autoplay = "" -%}{%- assign verb = "Play" -%}
+{%- if u contains "youtube.com" or u contains "youtu.be" -%}
+  {%- assign provider = "YouTube" -%}{%- assign id = "" -%}
+  {%- if u contains "list=" and u contains "youtube.com/playlist" -%}
+    {%- assign pl = u | split: "list=" | last | split: "&" | first -%}
+    {%- capture src -%}https://www.youtube-nocookie.com/embed/videoseries?list={{ pl }}{%- endcapture -%}
+  {%- else -%}
+    {%- if u contains "youtu.be/" -%}{%- assign id = u | split: "youtu.be/" | last | split: "?" | first | split: "&" | first -%}
+    {%- elsif u contains "watch?v=" -%}{%- assign id = u | split: "watch?v=" | last | split: "&" | first -%}
+    {%- elsif u contains "&v=" -%}{%- assign id = u | split: "&v=" | last | split: "&" | first -%}
+    {%- elsif u contains "/shorts/" -%}{%- assign id = u | split: "/shorts/" | last | split: "?" | first -%}
+    {%- elsif u contains "/live/" -%}{%- assign id = u | split: "/live/" | last | split: "?" | first -%}
+    {%- elsif u contains "/embed/" -%}{%- assign id = u | split: "/embed/" | last | split: "?" | first -%}
+    {%- endif -%}
+    {%- if id != "" -%}{%- capture src -%}https://www.youtube-nocookie.com/embed/{{ id }}{%- endcapture -%}{%- endif -%}
+  {%- endif -%}
+  {%- assign autoplay = "autoplay=1" -%}
+{%- elsif u contains "vimeo.com" -%}
+  {%- assign provider = "Vimeo" -%}
+  {%- assign id = u | split: "vimeo.com/" | last | split: "?" | first | split: "/" | last -%}
+  {%- if u contains "/video/" -%}{%- capture src -%}{{ u | split: "?" | first }}{%- endcapture -%}{%- elsif id != "" -%}{%- capture src -%}https://player.vimeo.com/video/{{ id }}?dnt=1{%- endcapture -%}{%- endif -%}
+  {%- assign autoplay = "autoplay=1" -%}
+{%- elsif u contains "open.spotify.com" -%}
+  {%- assign provider = "Spotify" -%}{%- assign verb = "Listen" -%}
+  {%- assign path = u | split: "open.spotify.com/" | last | split: "?" | first -%}
+  {%- if path contains "embed/" -%}{%- assign path = path | remove_first: "embed/" -%}{%- endif -%}
+  {%- capture src -%}https://open.spotify.com/embed/{{ path }}{%- endcapture -%}
+  {%- if path contains "track/" or path contains "episode/" -%}{%- assign fixed_h = 152 -%}{%- else -%}{%- assign fixed_h = 352 -%}{%- endif -%}
+{%- elsif u contains "soundcloud.com" -%}
+  {%- assign provider = "SoundCloud" -%}{%- assign verb = "Listen" -%}{%- assign fixed_h = 166 -%}
+  {%- capture src -%}https://w.soundcloud.com/player/?url={{ u | split: "?" | first | url_encode }}&visual=false{%- endcapture -%}
+{%- elsif u contains "podcasts.apple.com" -%}
+  {%- assign provider = "Apple Podcasts" -%}{%- assign verb = "Listen" -%}{%- assign fixed_h = 175 -%}
+  {%- capture src -%}{{ u | replace: "https://podcasts.apple.com", "https://embed.podcasts.apple.com" }}{%- endcapture -%}
+{%- elsif u contains "music.apple.com" -%}
+  {%- assign provider = "Apple Music" -%}{%- assign verb = "Listen" -%}{%- assign fixed_h = 175 -%}
+  {%- capture src -%}{{ u | replace: "https://music.apple.com", "https://embed.music.apple.com" }}{%- endcapture -%}
+{%- elsif u contains "mixcloud.com" -%}
+  {%- assign provider = "Mixcloud" -%}{%- assign verb = "Listen" -%}{%- assign fixed_h = 120 -%}
+  {%- assign mpath = u | split: "mixcloud.com" | last | split: "?" | first -%}
+  {%- capture src -%}https://www.mixcloud.com/widget/iframe/?hide_cover=1&feed={{ mpath | url_encode }}{%- endcapture -%}
+{%- elsif u contains "loom.com/share/" -%}
+  {%- assign provider = "Loom" -%}
+  {%- assign id = u | split: "loom.com/share/" | last | split: "?" | first -%}
+  {%- capture src -%}https://www.loom.com/embed/{{ id }}{%- endcapture -%}
+{%- elsif u contains "dailymotion.com/video/" -%}
+  {%- assign provider = "Dailymotion" -%}
+  {%- assign id = u | split: "/video/" | last | split: "?" | first -%}
+  {%- capture src -%}https://www.dailymotion.com/embed/video/{{ id }}{%- endcapture -%}
+{%- elsif u contains "ted.com/talks/" -%}
+  {%- assign provider = "TED" -%}
+  {%- assign id = u | split: "/talks/" | last | split: "?" | first -%}
+  {%- capture src -%}https://embed.ted.com/talks/{{ id }}{%- endcapture -%}
+{%- elsif u contains "drive.google.com/file/d/" -%}
+  {%- assign provider = "Google Drive" -%}
+  {%- assign id = u | split: "/file/d/" | last | split: "/" | first -%}
+  {%- capture src -%}https://drive.google.com/file/d/{{ id }}/preview{%- endcapture -%}
+{%- elsif u contains "docs.google.com/presentation/d/" -%}
+  {%- assign provider = "Google Slides" -%}{%- assign verb = "Open" -%}{%- assign ratio = include.ratio | default: "16/10" -%}
+  {%- assign id = u | split: "/presentation/d/" | last | split: "/" | first -%}
+  {%- capture src -%}https://docs.google.com/presentation/d/{{ id }}/embed{%- endcapture -%}
+{%- elsif u contains "archive.org/details/" -%}
+  {%- assign provider = "Internet Archive" -%}
+  {%- assign id = u | split: "/details/" | last | split: "?" | first | split: "/" | first -%}
+  {%- capture src -%}https://archive.org/embed/{{ id }}{%- endcapture -%}
+{%- endif -%}
+{%- assign plain = u | split: "?" | first | downcase -%}
+{%- if src != "" -%}
+<figure class="embed{% if fixed_h > 0 %} embed-audio{% endif %}">
+  <div class="embed-frame" data-src="{{ src | escape }}" data-autoplay="{{ autoplay }}" data-title="{{ include.title | default: provider | escape }}"{% if fixed_h > 0 %} style="height: {{ fixed_h }}px"{% else %} style="aspect-ratio: {{ ratio }}"{% endif %}>
+    {% if include.poster %}<img class="embed-poster" src="{{ include.poster | relative_url }}" alt="" loading="lazy">{% endif %}
+    <button type="button" class="embed-play"><span class="embed-icon" aria-hidden="true"></span><span>{{ verb }} on {{ provider }}</span></button>
+  </div>
+  <figcaption>{% if include.caption %}{{ include.caption }} {% endif %}<a class="embed-open" href="{{ u }}" rel="noopener" target="_blank">Open on {{ provider }}</a></figcaption>
+  <noscript><p><a href="{{ u }}">{{ include.title | default: "Open the media" }} on {{ provider }}</a></p></noscript>
+</figure>
+{%- elsif plain contains ".mp3" or plain contains ".m4a" or plain contains ".wav" or plain contains ".ogg" -%}
+<figure class="embed embed-audio"><audio controls preload="none" src="{{ u }}"></audio>{% if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}</figure>
+{%- elsif plain contains ".mp4" or plain contains ".webm" -%}
+<figure class="embed"><video controls preload="none" playsinline src="{{ u }}"{% if include.poster %} poster="{{ include.poster | relative_url }}"{% endif %}></video>{% if include.caption %}<figcaption>{{ include.caption }}</figcaption>{% endif %}</figure>
+{%- else -%}
+<p class="embed-link"><a href="{{ u }}" rel="noopener" target="_blank">{{ include.title | default: u }}</a>{% if include.caption %} <span class="muted">{{ include.caption }}</span>{% endif %}</p>
+{%- endif -%}

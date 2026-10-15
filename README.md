@@ -57,14 +57,15 @@ Then visit `http://localhost:4000`.
 
 ## Plugins
 
-| Plugin | Purpose |
-|---|---|
-| `jekyll-sitemap` | Builds `/sitemap.xml` for search engines |
-| `jekyll-seo-tag` | Writes the page title, description and link preview tags |
-
-Both are supported by GitHub Pages with no extra setup.
+None are switched on. The sitemap is `sitemap.xml` and the page tags are `_includes/seo.html`, both written by hand
+so they can leave out pages that should not be listed.
 
 ## Fonts
 
 The fonts are stored in `assets/fonts/` and served from this site, so visitors'
 browsers do not contact Google. Both are open source (SIL Open Font License).
+
+## Console, short links, visibility
+- `console/` is a local editing console (start with `Start-Console.bat` / `start-console.command`). See `console/README.md`.
+- `_links/` holds short links such as `/siwes/survey/`. See GUIDE.md.
+- `VISIBILITY.md` lists what the site does for search and AI, and what to do off-site.

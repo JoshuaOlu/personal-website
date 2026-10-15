@@ -352,3 +352,106 @@ that was saved in `assets/files/`.
 | Change the colours | The "Tokens" block at the top of `assets/css/main.css` |
 | Change what is on my CV | `_data/cv.yml` (see "Your CV" above) |
 | Point the survey link somewhere else | `redirect_to:` at the top of `siwes/survey/index.html` |
+
+
+## Short links (like /siwes/survey/)
+Create, pause, close or delete them in the console under **Short links**, or add a file to `_links/`
+(copy `_links/siwes-survey.md`). Each link has a status: **live** (forwards), **paused** (shows a short
+notice) or **ended** (shows a notice or forwards elsewhere). Optional `opens_on` / `ends_on` dates flip it
+automatically. Destinations must start with `https://` or `/`. To remove one, close it first, then delete it.
+
+## Writing (articles and notes)
+Add pieces under **Writing** in the console, or as files in `_writing/` (see `templates/writing-template.md`).
+New pieces start as drafts (`published: false`). The Writing page stays hidden from search until one is published.
+
+## About page and your identity
+Your name, short and long bios, topics, affiliations and profile links live in `_data/identity.yml`
+(editable in the console under **About and identity**). The About page, search-engine data (JSON-LD) and
+`llms.txt` all read from it, so change it once.
+
+## Being found, and the AI policy
+`robots.txt`, `llms.txt`, `/.well-known/tdmrep.json` and the `/ai-policy/` page say: AI search and assistants
+may read the site; training crawlers are asked not to. The list is `_data/ai_bots.yml`. These are polite
+requests, not locks, and GitHub Pages cannot set headers. See `VISIBILITY.md` for the off-site checklist.
+
+## The console
+See `console/README.md`. Start it with `Start-Console.bat` (Windows) or `start-console.command` (Mac).
+
+## IndexNow
+After publishing, the console can ping Bing and others (IndexNow). Google does not use it; submit the sitemap in Search Console.
+
+
+## Embedding video, audio and slides in an essay
+In the Writing editor press **Embed**, paste the address, done. Or type it yourself anywhere in a piece:
+
+    {% include embed.html url="https://youtu.be/VIDEOID" caption="Optional caption" %}
+
+Works with YouTube, Vimeo, Spotify (tracks, episodes, shows, playlists), SoundCloud, Apple Podcasts and Music,
+Mixcloud, Loom, TED, Dailymotion, Google Drive, Google Slides and Internet Archive. A link ending in
+.mp3 or .mp4 gets a simple player. Anything else becomes a plain link. Nothing from the other site loads until the
+reader presses play, so pages stay fast and private. The files stay on the other site. Nothing is stored in your repo.
+**Picture** inserts an image with a caption and the description screen readers (and Google) need.
+**Pull quote** and **Footnote** do what they say. A piece with more than three headings gets an "In this piece" contents box.
+
+## Newsletter signup
+It appears under every piece. Set it in `_config.yml` under `newsletter:` (provider `substack`, `buttondown` or `custom`,
+and your handle). Leave `provider` empty to hide it. The Substack form sends people to finish signing up on Substack.
+
+## Podcast
+Paste your podcast's RSS feed address into `_data/podcast.yml` (`feed_url`). Every morning GitHub reads the feed,
+lists new episodes on the Podcast page and rebuilds the site. The Podcast link appears in the menu once there is at
+least one episode. Audio stays on your podcast host. To try it on your computer: `ruby scripts/sync_podcast.rb`.
+
+## Drafts stay private
+A Writing piece marked as a draft (`published: false`) is never sent to GitHub by the console, so nobody can read it in
+the public repository. Turn on "Published" when it is ready and publish.
+
+## Edit from any browser (optional)
+In the console on your computer: Settings, "Edit from any browser", switch it on, then publish. A page appears at
+`/manage/` on your site. You sign in with a GitHub token limited to this one repository (Contents and Pull requests: read and write),
+edit, and press "Send for approval". Your edits wait in that browser until you send them, so drafts stay private there too.
+They go to a side branch (`web-edits`) as a pull request. Nothing is live until you merge it on GitHub (see below).
+While it waits, the browser console shows the site with your waiting edits, and later sends join the same request. It cannot
+preview or run the full site check. Use the computer console for those. To switch it off everywhere: turn the switch
+off, publish (the page disappears), and delete the token at github.com/settings/personal-access-tokens.
+
+## Make approval compulsory (recommended)
+The browser console and (if you choose) the computer console send changes as a **pull request**. That only protects
+the site if GitHub *refuses* direct changes to the live branch. Do this once:
+
+1. On GitHub open the repository, **Settings**, **Rules**, **Rulesets**, **New branch ruleset**.
+2. Name it "Protect main". Enforcement: **Active**. Target branches: **Include default branch**.
+3. Tick **Require a pull request before merging** (required approvals: 0 is fine, you are the approver).
+4. Leave **Bypass list** empty, and tick nothing that lets admins skip the rule. Save.
+
+Then a stolen token can only open pull requests, which do nothing until you merge. You get GitHub's notification and
+press **Merge pull request**. The console shows "Main is protected" when the rule is working.
+
+Important: GitHub treats your token as you. If you are on the bypass list, or the rule is not active, the token can still
+push directly. The console warns you in that case.
+
+For the computer console: Settings, "Send changes as a pull request", switch on. Publish then pushes to a side branch
+(`console-edits`) and gives you the link. After you merge, press "Get the latest from GitHub". If you leave this off
+while the rule is on, direct publishing is refused by GitHub (the console explains why).
+
+Token permissions for the browser console: Repository permissions **Contents** and **Pull requests**, both
+Read and write. Nothing else. Short expiry.
+
+## Automatic preview pictures for writing
+Every Writing piece without its own `image` gets a card made at build time (1200x630): the topic, the title, your
+photo, name and website. It appears when the piece is shared on LinkedIn, WhatsApp, X and others.
+
+- Title: best up to about 70 characters (the card shrinks the type for longer titles up to 82, and clamps at four lines).
+  The console shows a live preview and warns above 90.
+- Topic: the small label on the card. Set `card_topic:` in the piece, otherwise the first tag, otherwise "Essay".
+- Your own picture: set `image:` as usual and that is used instead.
+- Turn the card off for one piece: `card: false` (the site default picture is used).
+- If the card cannot be made on a build, the default picture is used and the site still publishes.
+
+## Visitor counts (GoatCounter)
+1. Make a free account at goatcounter.com. Choose a site code (for example `joshua`; your dashboard is then `joshua.goatcounter.com`).
+2. In `_config.yml` set `goatcounter: "joshua"` and publish. Counting starts on the next deploy.
+3. Open your dashboard to see pages, referrers (where people came from), countries and search words where available.
+
+It uses no cookies and stores no personal data. It counts only the live site (not your local preview) and skips pages marked
+noindex, such as the survey redirect. Tip: GoatCounter's own settings let you ignore your own visits.

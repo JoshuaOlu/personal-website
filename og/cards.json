@@ -1,0 +1,6 @@
+---
+layout: null
+sitemap: false
+noindex: true
+---
+[{% for post in site.writing %}{"slug": {{ post.slug | jsonify }}, "title": {{ post.title | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}]

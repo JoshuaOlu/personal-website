@@ -1,0 +1,3 @@
+# Turns the browser version of the console (/manage/) on or off on the live site.
+# Change it from the console on your computer (Settings), then publish.
+web_console: false

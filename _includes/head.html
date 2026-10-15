@@ -4,17 +4,24 @@
   <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#F3F5F7" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0B141E" media="(prefers-color-scheme: dark)">
-  {% if page.noindex %}<meta name="robots" content="noindex">{% endif %}
+  {%- comment -%}
+    One robots tag for the whole site.
+    Search engines and AI answer tools may index and quote the page. The "noai" words
+    are a request that the page is not used to train AI. Not every company honours them
+    (see /ai-policy/). Pages with noindex: true (the short links) are kept out of search
+    and carry only the plain noindex word, so no search engine can misread the tag.
+  {%- endcomment -%}
+  {% assign podcast_n = site.data.podcast_feed.episodes | size %}
+  {% if page.noindex or page.url == "/writing/" and site.writing.size == 0 or page.url == "/podcast/" and podcast_n == 0 %}<meta name="robots" content="noindex">
+  {% else %}<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai">{% endif %}
+  <meta name="tdm-reservation" content="1">
+  <meta name="author" content="{{ site.data.identity.name | default: site.author }}">
 
-  <!-- jekyll-seo-tag writes the page title, description, canonical link and
-       the tags that control link previews. Set seo_title in a page's front
-       matter to give search engines a different title from the on-page one. -->
-  {% if page.seo_title %}
-    {% seo title=false %}
-    <title>{{ page.seo_title }} | {{ site.title }}</title>
-  {% else %}
-    {% seo %}
-  {% endif %}
+  <!-- Title, description, canonical address and link-preview tags. See _includes/seo.html. -->
+  {% include seo.html %}
+
+  <link rel="alternate" type="application/atom+xml" title="{{ site.title }}: writing" href="{{ '/feed.xml' | relative_url }}">
+  {% include jsonld.html %}
 
   <link rel="preload" href="{{ '/assets/fonts/bricolage-grotesque.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="{{ '/assets/fonts/source-serif-4.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>

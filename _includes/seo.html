@@ -1,0 +1,73 @@
+{%- comment -%}
+  The tags search engines, link previews (LinkedIn, WhatsApp, Slack, X) and AI assistants read:
+  title, description, canonical address, Open Graph and Twitter cards.
+  Written by hand (instead of a plugin) so each page says exactly one thing about itself.
+
+  Per-page front matter that changes it:
+    title / seo_title / seo_title_raw   the browser and search title (see GUIDE.md)
+    description                         the summary under the title in search results (aim for 150 characters)
+    image                               the picture on link previews: a path, or path/width/height/alt
+    canonical_url                       set only when the page first appeared elsewhere (for example Substack)
+{%- endcomment -%}
+{%- if page.seo_title_raw -%}
+  {%- assign full_title = page.seo_title_raw -%}
+{%- elsif page.seo_title -%}
+  {%- assign full_title = page.seo_title | append: " | " | append: site.title -%}
+{%- elsif page.url == "/" -%}
+  {%- assign full_title = site.title | append: " | " | append: site.tagline -%}
+{%- else -%}
+  {%- assign full_title = page.title | append: " | " | append: site.title -%}
+{%- endif -%}
+{%- assign share_title = page.title | default: site.title -%}
+{%- assign desc = page.description | default: page.summary | default: site.description | normalize_whitespace | strip -%}
+{%- if page.canonical_url -%}{%- assign canonical = page.canonical_url -%}{%- else -%}{%- assign canonical = page.url | absolute_url -%}{%- endif -%}
+{%- assign img_path = page.image.path | default: page.image -%}
+{%- if img_path == nil or img_path == "" -%}{%- assign img_path = "/assets/images/og-default.png" -%}{%- endif -%}
+{%- assign auto_card = false -%}
+{%- comment -%} A piece of writing with no picture of its own gets a card made from its title (see /og/ and scripts/make_cards.py). {%- endcomment -%}
+{%- if page.collection == "writing" and img_path == "/assets/images/og-default.png" and page.card != false -%}
+  {%- assign img_path = "/assets/og/" | append: page.slug | append: ".png" -%}{%- assign auto_card = true -%}
+{%- endif -%}
+{%- if img_path contains "://" -%}{%- assign img_url = img_path -%}{%- else -%}{%- assign img_url = img_path | absolute_url -%}{%- endif -%}
+<title>{{ full_title | escape }}</title>
+<meta name="description" content="{{ desc | escape }}">
+<link rel="canonical" href="{{ canonical }}">
+<meta property="og:type" content="{% if page.collection == 'writing' %}article{% else %}website{% endif %}">
+<meta property="og:site_name" content="{{ site.title | escape }}">
+<meta property="og:locale" content="{{ site.lang | default: 'en' }}">
+<meta property="og:title" content="{{ share_title | escape }}">
+<meta property="og:description" content="{{ desc | escape }}">
+<meta property="og:url" content="{{ canonical }}">
+<meta property="og:image" content="{{ img_url }}">
+{%- if auto_card %}
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{ page.title | escape }}">
+{%- elsif page.image.width %}
+<meta property="og:image:width" content="{{ page.image.width }}">
+<meta property="og:image:height" content="{{ page.image.height }}">
+{%- endif %}
+{%- if page.image.alt and auto_card == false %}
+<meta property="og:image:alt" content="{{ page.image.alt | escape }}">
+{%- endif %}
+{%- if page.collection == 'writing' %}
+<meta property="article:published_time" content="{{ page.date | date_to_xmlschema }}">
+<meta property="article:modified_time" content="{{ page.updated | default: page.date | date_to_xmlschema }}">
+<meta property="article:author" content="{{ site.url }}/about/">
+{%- for t in page.tags %}
+<meta property="article:tag" content="{{ t | escape }}">
+{%- endfor %}
+{%- endif %}
+<meta name="twitter:card" content="{{ site.twitter.card | default: 'summary_large_image' }}">
+{%- if site.twitter.username %}
+<meta name="twitter:site" content="@{{ site.twitter.username | remove: '@' }}">
+<meta name="twitter:creator" content="@{{ site.twitter.username | remove: '@' }}">
+{%- endif %}
+<meta name="twitter:title" content="{{ share_title | escape }}">
+<meta name="twitter:description" content="{{ desc | escape }}">
+<meta name="twitter:image" content="{{ img_url }}">
+{%- if auto_card %}
+<meta name="twitter:image:alt" content="{{ page.title | escape }}">
+{%- elsif page.image.alt %}
+<meta name="twitter:image:alt" content="{{ page.image.alt | escape }}">
+{%- endif %}

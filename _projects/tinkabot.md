@@ -6,9 +6,8 @@ summary: >-
   by physically scanning RFID cards, designed for early STEM education
   in underserved, resource-constrained contexts.
 description: >-
-  Tinkabot is a screen-free robotics kit developed as an M.Eng thesis project
-  at Adeleke University. It uses RFID-based physical interaction to teach
-  computational thinking in early education without screens or keyboards.
+  Tinkabot is a screen-free robotics kit, built as an M.Eng thesis at Adeleke
+  University, that teaches early computational thinking through RFID cards.
 status: Completed
 period: M.Eng thesis
 order: 20

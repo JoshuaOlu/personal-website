@@ -1,0 +1,80 @@
+---
+layout: default
+---
+{%- assign idy = site.data.identity -%}
+<article class="page-shell profile-page">
+  <header class="page-header">
+    <h1>{{ page.title }}</h1>
+    {% if page.tagline %}<p class="page-tagline">{{ page.tagline }}</p>{% endif %}
+  </header>
+
+  <div class="profile-grid">
+    <div class="prose">
+      {{ content }}
+
+      <h2 id="what-i-work-on">What I work on</h2>
+      <dl class="topic-list">
+        {% for t in idy.topics %}
+        <div>
+          <dt>{{ t.title }}</dt>
+          <dd>{{ t.text }}</dd>
+        </div>
+        {% endfor %}
+      </dl>
+
+      <h2 id="invite">Invite me, or ask me</h2>
+      <p>
+        I am glad to hear from universities, funders, programme organisers, journalists and
+        fellow researchers who want to talk about engineering education in Nigeria and across
+        Africa, industrial placements, or access to learning. The quickest way is email:
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
+      </p>
+
+      <h2 id="bios">Bios you can copy</h2>
+      <p>Use whichever length fits. Please keep the name as <strong>{{ idy.name }}</strong> so people searching for my work find all of it.</p>
+
+      <div class="bio-block" data-bio>
+        <div class="bio-head"><h3>One line</h3><button type="button" class="copy-btn" data-copy>Copy</button></div>
+        <p>{{ idy.bio_one_line | normalize_whitespace }}</p>
+      </div>
+      <div class="bio-block" data-bio>
+        <div class="bio-head"><h3>Short (about 50 words)</h3><button type="button" class="copy-btn" data-copy>Copy</button></div>
+        <p>{{ idy.bio_short | normalize_whitespace }}</p>
+      </div>
+      <div class="bio-block" data-bio>
+        <div class="bio-head"><h3>Long (about 120 words)</h3><button type="button" class="copy-btn" data-copy>Copy</button></div>
+        {% assign long_paras = idy.bio_long | strip | split: "
+" %}
+        {% for para in long_paras %}{% assign para_text = para | strip %}{% if para_text != "" %}<p>{{ para_text }}</p>{% endif %}{% endfor %}
+      </div>
+
+      <h2 id="elsewhere">Elsewhere online</h2>
+      {% include social.html %}
+    </div>
+
+    <aside aria-label="Quick facts" class="profile-aside">
+      <img class="profile-photo" src="{{ '/assets/images/headshot.jpg' | relative_url }}" alt="Joshua Olunlade, smiling, wearing round glasses and a mint green shirt" width="572" height="571">
+      <dl class="facts">
+        <div><dt>Name</dt><dd>{{ idy.name }}{% if idy.also_known_as.size > 0 %}<br><span class="muted">Also written {{ idy.also_known_as | join: "; " }}</span>{% endif %}</dd></div>
+        <div><dt>Role</dt><dd>{{ idy.job_title }}</dd></div>
+        {% for a in idy.affiliations %}
+        <div><dt>{% if forloop.first %}Affiliations{% endif %}</dt><dd><a href="{{ a.url }}" target="_blank" rel="noopener">{{ a.name }}</a></dd></div>
+        {% endfor %}
+        <div><dt>Email</dt><dd><a href="mailto:{{ site.email }}">{{ site.email }}</a></dd></div>
+        <div><dt>Also see</dt><dd><a href="{{ '/cv/' | relative_url }}">Curriculum vitae</a><br><a href="{{ '/publications/' | relative_url }}">Publications</a><br><a href="{{ '/research/' | relative_url }}">Research</a></dd></div>
+      </dl>
+    </aside>
+  </div>
+</article>
+<script>
+  // "Copy" buttons for the bios. Without JavaScript the text can still be selected by hand.
+  document.querySelectorAll('[data-bio]').forEach(function (block) {
+    var btn = block.querySelector('[data-copy]');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var text = Array.prototype.map.call(block.querySelectorAll('p'), function (p) { return p.textContent.trim(); }).join('\n\n');
+      var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(done, function () {}); }
+    });
+  });
+</script>

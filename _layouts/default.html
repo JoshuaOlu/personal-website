@@ -7,5 +7,9 @@
     {{ content }}
   </main>
   {% include footer.html %}
+  <script src="{{ '/assets/js/embed.js' | relative_url }}" defer></script>
+  {%- if site.goatcounter and site.goatcounter != "" and jekyll.environment == "production" and page.noindex != true %}
+  <script data-goatcounter="https://{{ site.goatcounter }}.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+  {%- endif %}
 </body>
 </html>

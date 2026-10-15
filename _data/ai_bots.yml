@@ -1,0 +1,40 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  WHICH AUTOMATED VISITORS GET IN. /robots.txt is built from this file.
+#
+#  allow  = bots that find you for search or fetch a page when a person asks
+#           an AI assistant about you. You WANT these, so people can find you.
+#  block  = bots that collect pages to train AI models. You said no to these.
+#
+#  A name here is only a request: well-behaved bots obey it; bad ones ignore it.
+#  Names change as companies add bots. VISIBILITY.md says how to keep this fresh.
+#  Last checked: October 2026.
+# ═══════════════════════════════════════════════════════════════════════════
+
+allow:
+  - { name: OAI-SearchBot,     owner: OpenAI,     what: "Finds pages to show in ChatGPT search." }
+  - { name: ChatGPT-User,      owner: OpenAI,     what: "Opens a page when a ChatGPT user asks about it." }
+  - { name: Claude-SearchBot,  owner: Anthropic,  what: "Finds pages for Claude's search results." }
+  - { name: Claude-User,       owner: Anthropic,  what: "Opens a page when a Claude user asks about it." }
+  - { name: PerplexityBot,     owner: Perplexity, what: "Finds pages to cite in Perplexity answers." }
+  - { name: Perplexity-User,   owner: Perplexity, what: "Opens a page when a Perplexity user asks about it." }
+  - { name: DuckAssistBot,     owner: DuckDuckGo, what: "Fetches pages for DuckDuckGo's AI-assisted answers." }
+
+block:
+  - { name: GPTBot,                  owner: OpenAI,        what: "Collects pages to train OpenAI models." }
+  - { name: ClaudeBot,               owner: Anthropic,     what: "Collects pages that may be used to train Claude." }
+  - { name: anthropic-ai,            owner: Anthropic,     what: "Older Anthropic training bot name." }
+  - { name: Claude-Web,              owner: Anthropic,     what: "Older Anthropic crawler name." }
+  - { name: Google-Extended,         owner: Google,        what: "Stops Gemini training and grounding use. Normal Google Search is not affected." }
+  - { name: Applebot-Extended,       owner: Apple,         what: "Stops use for Apple's AI model training. Normal Siri and Spotlight search is not affected." }
+  - { name: CCBot,                   owner: Common Crawl,  what: "Builds the public web archive that many AI models train on." }
+  - { name: Meta-ExternalAgent,      owner: Meta,          what: "Collects pages to train Meta's AI models." }
+  - { name: FacebookBot,             owner: Meta,          what: "Meta's crawler used for AI speech and language training." }
+  - { name: Bytespider,              owner: ByteDance,     what: "Collects pages for ByteDance AI training." }
+  - { name: Amazonbot,               owner: Amazon,        what: "Amazon's crawler, used in part for AI training." }
+  - { name: cohere-ai,               owner: Cohere,        what: "Collects pages for Cohere models." }
+  - { name: cohere-training-data-crawler, owner: Cohere,   what: "Cohere's training-data crawler." }
+  - { name: Diffbot,                 owner: Diffbot,       what: "Scrapes pages into datasets sold for AI use." }
+  - { name: ImagesiftBot,            owner: Hive,          what: "Collects images for AI datasets." }
+  - { name: Omgilibot,               owner: Webz.io,       what: "Collects discussions and pages for datasets." }
+  - { name: Timpibot,                owner: Timpi,         what: "Collects pages for an AI-oriented index." }
+  - { name: AI2Bot,                  owner: Allen Institute for AI, what: "Collects pages for open AI research datasets." }

@@ -1,0 +1,29 @@
+---
+layout: null
+sitemap: false
+---
+{%- comment -%} Built from _data/ai_bots.yml. Do not edit the bot names here. {%- endcomment -%}
+# robots.txt for {{ site.url | remove: "https://" }}
+# Search engines and AI search tools: welcome.
+# Crawlers that collect pages to train AI models: not permitted.
+# Rights are reserved. See {{ '/ai-policy/' | absolute_url }}
+
+User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=no
+Allow: /
+
+# ─── AI search and answer tools (allowed) ─────────────────────────────────────
+{% for bot in site.data.ai_bots.allow -%}
+# {{ bot.owner }}: {{ bot.what }}
+User-agent: {{ bot.name }}
+Content-Signal: search=yes, ai-input=yes, ai-train=no
+Allow: /
+
+{% endfor -%}
+# ─── Crawlers that collect pages to train AI models (not permitted) ───────────
+{% for bot in site.data.ai_bots.block -%}
+User-agent: {{ bot.name }}
+{% endfor -%}
+Disallow: /
+
+Sitemap: {{ '/sitemap.xml' | absolute_url }}

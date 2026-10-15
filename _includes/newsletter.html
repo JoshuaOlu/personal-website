@@ -1,0 +1,29 @@
+{%- assign nl = site.newsletter -%}
+{%- if nl and nl.provider and nl.provider != "" -%}
+<aside class="newsletter" aria-labelledby="nl-title">
+  <h2 id="nl-title">{{ nl.heading | default: "Get new pieces by email" }}</h2>
+  <p>{{ nl.blurb | default: "Occasional essays on engineering education in Nigeria and Africa. No spam, leave any time." }}</p>
+  {%- if nl.provider == "substack" -%}
+  <form action="https://{{ nl.handle }}.substack.com/subscribe" method="get" target="_blank" rel="noopener">
+    <label class="sr-only" for="nl-email">Email address</label>
+    <input id="nl-email" type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+    <button type="submit">Subscribe</button>
+  </form>
+  <p class="small">You will finish signing up on Substack.</p>
+  {%- elsif nl.provider == "buttondown" -%}
+  <form action="https://buttondown.com/api/emails/embed-subscribe/{{ nl.handle }}" method="post" target="_blank" rel="noopener">
+    <label class="sr-only" for="nl-email">Email address</label>
+    <input id="nl-email" type="email" name="email" placeholder="you@example.com" required autocomplete="email">
+    <input type="hidden" value="1" name="embed">
+    <button type="submit">Subscribe</button>
+  </form>
+  <p class="small">Sent through Buttondown.</p>
+  {%- elsif nl.provider == "custom" and nl.action != "" -%}
+  <form action="{{ nl.action }}" method="post" target="_blank" rel="noopener">
+    <label class="sr-only" for="nl-email">Email address</label>
+    <input id="nl-email" type="email" name="{{ nl.field | default: 'email' }}" placeholder="you@example.com" required autocomplete="email">
+    <button type="submit">Subscribe</button>
+  </form>
+  {%- endif -%}
+</aside>
+{%- endif -%}

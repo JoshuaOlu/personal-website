@@ -4,10 +4,12 @@
     <a href="{{ '/' | relative_url }}" class="nav-logo">Joshua Olunlade</a>
     <div class="nav-links">
       {% for item in site.nav %}
+        {% if item.collection and site[item.collection].size == 0 %}{% continue %}{% endif %}
+        {% if item.data %}{% assign dd = site.data[item.data].episodes | size %}{% if dd == 0 %}{% continue %}{% endif %}{% endif %}
         {% if item.external %}
           <a href="{{ item.url | relative_url }}" target="_blank" rel="noopener">{{ item.label }}</a>
         {% else %}
-          <a href="{{ item.url | relative_url }}"{% if page.url == item.url or page.collection == 'projects' and item.url == '/research/' %} aria-current="page"{% endif %}>{{ item.label }}</a>
+          <a href="{{ item.url | relative_url }}"{% if page.url == item.url or page.collection == 'projects' and item.url == '/research/' or page.collection == 'writing' and item.url == '/writing/' %} aria-current="page"{% endif %}>{{ item.label }}</a>
         {% endif %}
       {% endfor %}
     </div>

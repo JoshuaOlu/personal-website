@@ -1,11 +1,10 @@
 ---
 layout: default
 title: Research
+seo_title_raw: "Research on Engineering Education in Nigeria | Joshua Olunlade"
 description: >-
-  Research and projects by Joshua Olunlade, an MPhil candidate in Engineering
-  Education at the University of Cape Town. Work on industrial placements (SIWES)
-  in Nigerian engineering education, computational thinking and educational
-  technology in underserved contexts.
+  Research by Joshua Olunlade: industrial placements (SIWES) in Nigerian engineering
+  education, computational thinking and educational technology in underserved contexts.
 ---
 
 <div class="page-shell">

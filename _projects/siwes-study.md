@@ -1,14 +1,13 @@
 ---
 title: Navigating Access to Industrial Placements
-seo_title: Navigating Access to Industrial Placements (SIWES) in Nigeria
+seo_title: "Access to SIWES Placements in Nigeria"
 tagline: A Constructivist Grounded Theory Study of Nigerian Engineering Undergraduate Students
 summary: >-
   My MPhil study of how final year engineering students at a Nigerian
   university find and secure SIWES placements. Recruitment has begun.
 description: >-
   An MPhil study of how engineering students in Nigeria find and secure SIWES
-  industrial placements, using constructivist grounded theory. Research by
-  Joshua Olunlade, University of Cape Town.
+  industrial placements, using constructivist grounded theory. By Joshua Olunlade.
 permalink: /siwes/
 image:
   path: /assets/images/siwes-study-preview.png

@@ -1,0 +1,43 @@
+---
+layout: null
+sitemap: false
+noindex: true
+---
+{%- comment -%}
+  Every card, one at a time. The build opens /og/#the-piece-name and photographs it
+  (scripts/make_cards.py). Not linked from anywhere and kept out of search.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<title>Preview cards</title>
+<link rel="stylesheet" href="{{ '/assets/css/og-card.css' | relative_url }}">
+<style>html,body{margin:0;background:#0E1A2B}.card-slot{display:none}.card-slot.on{display:block}</style>
+</head>
+<body>
+{%- for post in site.writing %}
+  {%- assign title = post.title | strip -%}
+  {%- assign n = title | size -%}
+  {%- if n <= 34 -%}{%- assign tier = "t1" -%}{%- elsif n <= 58 -%}{%- assign tier = "t2" -%}{%- elsif n <= 82 -%}{%- assign tier = "t3" -%}{%- else -%}{%- assign tier = "t4" -%}{%- endif -%}
+  {%- assign topic = post.card_topic | default: post.tags.first | default: "Essay" -%}
+<div class="card-slot" id="{{ post.slug }}"><div class="ogc {{ tier }}">
+  <div class="ogc-topic">{{ topic | escape }}</div>
+  <h1 class="ogc-title">{{ title | escape }}</h1>
+  <div class="ogc-foot">
+    <img class="ogc-photo" src="{{ '/assets/images/headshot.jpg' | relative_url }}" alt="">
+    <div><div class="ogc-name">{{ site.data.identity.name | default: site.title }}</div><div class="ogc-role">Engineering education, Nigeria &amp; Africa</div></div>
+    <div class="ogc-url">{{ site.url | remove: "https://" }}</div>
+  </div>
+</div></div>
+{%- endfor %}
+<script>
+(function () {
+  var id = decodeURIComponent((location.hash || '').slice(1));
+  var el = id && document.getElementById(id);
+  if (el) el.classList.add('on'); else { var first = document.querySelector('.card-slot'); if (first) first.classList.add('on'); }
+})();
+</script>
+</body>
+</html>

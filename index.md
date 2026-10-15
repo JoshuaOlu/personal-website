@@ -1,11 +1,10 @@
 ---
 layout: default
 title: Joshua Olunlade
+seo_title_raw: "Joshua Olunlade | Engineering Education, Nigeria & Africa"
 description: >-
-  Joshua Olunlade is an MPhil candidate in Engineering Education at the
-  University of Cape Town, researching work-integrated learning access for
-  Nigerian engineering undergraduates. Founder and Executive Director of
-  Care for Knowledge (CFK).
+  Joshua Olunlade is an engineering education researcher at the University of Cape Town
+  studying industrial placements (SIWES) in Nigeria, and founder of Care for Knowledge.
 ---
 
 <section class="hero">
@@ -50,3 +49,31 @@ description: >-
   <h2 id="research-heading">Research</h2>
   {% include project-list.html %}
 </section>
+
+<section class="section" aria-labelledby="focus-heading">
+  <h2 id="focus-heading">What I work on</h2>
+  <ul class="focus-list">
+    {% for t in site.data.identity.topics %}
+    <li><a href="{{ '/about/' | relative_url }}#what-i-work-on">{{ t.title }}</a></li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% assign recent_posts = site.writing | sort: "date" | reverse %}
+{% if recent_posts.size > 0 %}
+<section class="section" aria-labelledby="writing-heading">
+  <h2 id="writing-heading">Writing</h2>
+  <ol class="writing-list">
+    {% for post in recent_posts limit: 3 %}
+    <li class="writing-row">
+      <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %b %Y" }}</time>
+      <div>
+        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+        {% if post.summary %}<p>{{ post.summary }}</p>{% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ol>
+  <p class="more-link"><a href="{{ '/writing/' | relative_url }}">All writing &rarr;</a></p>
+</section>
+{% endif %}

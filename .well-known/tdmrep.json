@@ -1,0 +1,11 @@
+---
+layout: null
+sitemap: false
+permalink: /.well-known/tdmrep.json
+---
+[
+  {
+    "location": "/",
+    "tdm-reservation": 1
+  }
+]
