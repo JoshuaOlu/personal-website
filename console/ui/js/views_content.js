@@ -160,6 +160,10 @@ function ogCardEl(title, topic) {
 async function viewDocEdit(view, kind, path) {
   const k = KIND_INFO[kind];
   const doc = await GET('/api/doc?path=' + q(path));
+  const isWriting = kind === 'writing';
+  let refs = [];
+  try { refs = await loadRefs(); } catch (e) { /* the editor still works without references */ }
+  if (isWriting) { $('#view').classList.add('wide'); onLeave(() => $('#view').classList.remove('wide')); }
   const pubs = kind === 'projects' ? ((await GET('/api/data?name=publications')).data || []) : [];
   let fm = doc.front_raw; let body = doc.body; let parsed = doc.front; let mtime = doc.mtime;
   const orig = { fm, body };
@@ -276,12 +280,22 @@ async function viewDocEdit(view, kind, path) {
     const a = bodyArea; const s = a.selectionStart; const start = a.value.lastIndexOf('\n', s - 1) + 1;
     a.setRangeText(pre, start, start, 'end'); a.focus(); onBody();
   };
-  const onBody = () => { body = bodyArea.value; markDirty(); if (!previewPane.hidden) previewPane.innerHTML = miniMarkdown(bodyArea.value); };
+  let drawOutline = null; let drawRefPanel = null;
+  const roughHtml = () => {
+    let html = miniMarkdown(bodyArea.value);
+    const d = Refs.buildDoc(refs, bodyArea.value);
+    const e = (x) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    d.swaps.forEach((sw) => { html = html.split(e(sw.src)).join(sw.html); });
+    if (d.list.length) html += '<h2>References</h2>' + d.list.map((x) => '<p class="ref-p">' + x.html + '</p>').join('');
+    return html;
+  };
+  const sideRefresh = debounce(() => { if (drawOutline) drawOutline(); if (drawRefPanel) drawRefPanel(); }, 150);
+  const onBody = () => { body = bodyArea.value; markDirty(); if (!previewPane.hidden) previewPane.innerHTML = roughHtml(); sideRefresh(); };
   bodyArea.addEventListener('input', onBody);
   let previewing = false;
   const modeBtn = h('button', { type: 'button', class: 'btn quiet', onclick: () => {
     previewing = !previewing; previewPane.hidden = !previewing; bodyArea.hidden = previewing; modeBtn.textContent = previewing ? 'Back to writing' : 'Rough preview';
-    if (previewing) previewPane.innerHTML = miniMarkdown(bodyArea.value);
+    if (previewing) previewPane.innerHTML = roughHtml();
   } }, 'Rough preview');
   const insertBlock = (text) => { const a = bodyArea; const s0 = a.selectionStart; const before = a.value.slice(0, s0); const lead = before.length && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : ''; a.setRangeText(lead + text + '\n\n', s0, a.selectionEnd, 'end'); a.focus(); onBody(); };
   const escAttr = (v) => String(v || '').replace(/"/g, '&quot;');
@@ -307,6 +321,8 @@ async function viewDocEdit(view, kind, path) {
         insertBlock('{% include embed.html url="' + escAttr(u) + '"' + (cap.value.trim() ? ' caption="' + escAttr(cap.value.trim()) + '"' : '') + ' %}');
       } }] });
   };
+  const insertInline = (t) => { const a = bodyArea; a.setRangeText(t, a.selectionStart, a.selectionEnd, 'end'); a.focus(); onBody(); };
+  const cite = () => openCitePicker(refs, insertInline, () => openReferenceForm(null, async () => { refs = await loadRefs(); S.refs = refs; drawRefPanel(); cite(); }, refs));
   const insertPullQuote = () => { const a = bodyArea; const sel = a.value.slice(a.selectionStart, a.selectionEnd) || 'The sentence you want readers to remember.'; insertBlock('> ' + sel.replace(/\n+/g, ' ') + '\n{: .pullquote}'); };
   const insertFootnote = () => {
     const a = bodyArea; const n = (a.value.match(/\[\^(\d+)\]:/g) || []).length + 1;
@@ -324,7 +340,86 @@ async function viewDocEdit(view, kind, path) {
     h('button', { type: 'button', class: 'btn quiet', onclick: insertEmbed, title: 'Embed a video, audio or slides from another site' }, 'Embed'),
     h('button', { type: 'button', class: 'btn quiet', onclick: insertPullQuote, title: 'Large highlighted quote' }, 'Pull quote'),
     h('button', { type: 'button', class: 'btn quiet', onclick: insertFootnote, title: 'Footnote' }, 'Footnote'),
+    h('button', { type: 'button', class: 'btn quiet cite-btn', onclick: cite, title: 'Cite a source from your references' }, 'Cite'),
     h('span', { class: 'spacer' }), modeBtn);
+
+  /* ── writing aids: outline, references in this piece, and [@ suggestions ── */
+  const plainTxt = (x) => String(x || '').toLowerCase().normalize('NFD').replace(/\p{Mn}/gu, '');
+  function caretXY(ta, pos) {
+    const cs = getComputedStyle(ta); const m = h('div');
+    ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'tabSize', 'wordSpacing'].forEach((p) => { m.style[p] = cs[p]; });
+    Object.assign(m.style, { position: 'absolute', visibility: 'hidden', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', top: '0', left: '-9999px', width: ta.clientWidth + 'px', boxSizing: 'border-box' });
+    m.textContent = ta.value.slice(0, pos); const mark = h('span', {}, '​'); m.append(mark); document.body.append(m);
+    const r = { top: mark.offsetTop, left: mark.offsetLeft, lh: parseFloat(cs.lineHeight) || 22 }; m.remove(); return r;
+  }
+  const outlineEl = h('div', { class: 'outline' });
+  const statEl = h('div', { class: 'small muted', style: { marginTop: '.6rem' } });
+  function headingsOf(textBody) {
+    const out = []; let pos = 0; let code = false;
+    textBody.split('\n').forEach((line) => {
+      if (/^(```|~~~)/.test(line)) code = !code;
+      const m = !code && line.match(/^(#{1,4})\s+(.*?)\s*#*\s*$/);
+      if (m) out.push({ level: m[1].length, text: m[2], pos });
+      pos += line.length + 1;
+    });
+    return out;
+  }
+  drawOutline = () => {
+    clear(outlineEl); const hs = headingsOf(bodyArea.value); const caret = bodyArea.selectionStart;
+    let active = -1; hs.forEach((x, i) => { if (x.pos <= caret) active = i; });
+    if (!hs.length) outlineEl.append(h('p', { class: 'small muted' }, 'Headings you add (the Heading button) appear here, and become the outline beside your essay.'));
+    hs.forEach((x, i) => outlineEl.append(h('a', { href: '#', class: 'ol-item l' + x.level + (i === active ? ' on' : ''), onclick: (e) => {
+      e.preventDefault(); const a = bodyArea; a.focus(); a.setSelectionRange(x.pos, x.pos); a.scrollTop = Math.max(0, caretXY(a, x.pos).top - 70); drawOutline();
+    } }, x.text.replace(/[*_`]/g, ''))));
+    const w = wordCount(bodyArea.value.replace(/\[\^?\d+\]:.*$/gm, ''));
+    statEl.textContent = w.toLocaleString() + ' words · about ' + Math.max(1, Math.round(w / 220)) + ' min read';
+  };
+  const refPanel = h('div', {});
+  drawRefPanel = () => {
+    clear(refPanel); const groups = Refs.findGroups(bodyArea.value); const d = Refs.buildDoc(refs, bodyArea.value);
+    const byId = {}; refs.forEach((r) => { byId[r.id] = r; });
+    if (!d.used.length && !d.unknown.length) refPanel.append(h('p', { class: 'small muted' }, groups.length ? '' : 'Press Cite to add a source. The in-text citation and the reference list at the end are made for you.'));
+    d.used.forEach((id) => refPanel.append(h('div', { class: 'rp-item' }, h('b', {}, Refs.shortRef(byId[id])), h('div', { class: 'small muted' }, byId[id].title || ''))));
+    d.unknown.forEach((k) => refPanel.append(h('div', { class: 'rp-item bad' }, h('b', {}, '[@' + k + ']'), h('div', { class: 'small' }, 'Not in your references.'),
+      h('button', { type: 'button', class: 'btn quiet small', onclick: () => openReferenceForm(null, async () => { refs = await loadRefs(); S.refs = refs; drawRefPanel(); if (!previewPane.hidden) previewPane.innerHTML = roughHtml(); }, refs) }, 'Add it'))));
+    if (d.used.length) refPanel.append(h('div', { class: 'small muted', style: { marginTop: '.5rem' } }, d.used.length + ' source' + (d.used.length === 1 ? '' : 's') + ' will be listed under References.'));
+  };
+  /* suggestions after typing [@ */
+  const acPop = h('div', { class: 'ac-pop', hidden: true });
+  let acItems = []; let acIdx = 0; let acRange = null;
+  const acHide = () => { acPop.hidden = true; acItems = []; };
+  function acAccept(r) {
+    const a = bodyArea; a.setRangeText(r.id, acRange.start, acRange.end, 'end');
+    const nx = a.value.charAt(a.selectionStart); if (nx !== ']' && nx !== ';' && nx !== ',') a.setRangeText(']', a.selectionStart, a.selectionStart, 'end');
+    acHide(); a.focus(); onBody();
+  }
+  function acDraw() {
+    clear(acPop);
+    acItems.forEach((r, i) => acPop.append(h('div', { class: 'ac-item' + (i === acIdx ? ' on' : ''), onmousedown: (e) => { e.preventDefault(); acAccept(r); } }, h('b', {}, Refs.shortRef(r)), h('span', { class: 'small muted' }, ' ' + (r.title || '').slice(0, 60) + '  [@' + r.id + ']'))));
+  }
+  function acUpdate() {
+    const a = bodyArea; if (a.selectionStart !== a.selectionEnd || !refs.length) return acHide();
+    const pos = a.selectionStart; const before = a.value.slice(Math.max(0, pos - 80), pos);
+    const m = before.match(/\[[^\]\n]*@([A-Za-z0-9:-]*)$/); if (!m) return acHide();
+    const term = plainTxt(m[1]);
+    acItems = Refs.sortRefs(refs).filter((r) => !term || plainTxt([Refs.authors(r).map((x) => x.family || x.org).join(' '), r.title, r.year, r.id].join(' ')).includes(term)).slice(0, 6);
+    if (!acItems.length) return acHide();
+    acRange = { start: pos - m[1].length, end: pos }; acIdx = Math.min(acIdx, acItems.length - 1); acDraw();
+    const xy = caretXY(a, pos); acPop.hidden = false;
+    const wrapEl = a.parentElement; const left = Math.min(a.offsetLeft + xy.left - a.scrollLeft, Math.max(0, wrapEl.clientWidth - 360));
+    acPop.style.top = (a.offsetTop + xy.top - a.scrollTop + xy.lh) + 'px'; acPop.style.left = Math.max(8, left) + 'px';
+  }
+  bodyArea.addEventListener('input', acUpdate);
+  bodyArea.addEventListener('blur', () => setTimeout(acHide, 120));
+  bodyArea.addEventListener('keydown', (e) => {
+    if (acPop.hidden) return;
+    if (e.key === 'ArrowDown') { e.preventDefault(); acIdx = (acIdx + 1) % acItems.length; acDraw(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); acIdx = (acIdx - 1 + acItems.length) % acItems.length; acDraw(); }
+    else if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); acAccept(acItems[acIdx]); }
+    else if (e.key === 'Escape') { e.preventDefault(); acHide(); }
+  });
+  const caretMoved = debounce(() => { if (drawOutline) drawOutline(); }, 120);
+  bodyArea.addEventListener('keyup', caretMoved); bodyArea.addEventListener('click', caretMoved);
 
   // the raw front matter
   const reparse = debounce(async () => {
@@ -359,17 +454,31 @@ async function viewDocEdit(view, kind, path) {
   } }, icon('trash'), 'Delete');
 
   refreshPreviews(); markDirty();
-  view.append(h('div', { class: 'editor' },
-    h('div', { class: 'stack' },
-      h('div', { class: 'card' }, titleInput, kind === 'writing' ? titleHint : null, pubToggle ? h('div', { style: { marginTop: '1rem' } }, pubToggle) : null, h('div', { style: { marginTop: '1.2rem' } }, fieldsEl)),
-      h('div', { class: 'card' }, h('h2', {}, 'The page itself'), h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'),
-        h('div', { class: 'md-wrap' }, tools, bodyArea, previewPane)),
-      h('details', { class: 'card' }, h('summary', { style: { cursor: 'pointer', fontWeight: 700 } }, 'Advanced: everything at the top of the file (front matter)'),
-        h('p', { class: 'sub', style: { marginTop: '.6rem' } }, 'This is where the "At a glance" box, the progress timeline and the list of outputs live. The boxes above edit the same text.'), yamlArea, yamlErr)),
-    h('div', { class: 'editor-side' },
-      h('div', { class: 'card' }, h('div', { class: 'row' }, saveBtn, h('a', { class: 'btn secondary', href: viewUrl(S.info ? (doc.url || '/') : '/'), target: '_blank', rel: 'noopener' }, 'View page ', icon('ext'))), h('div', { style: { marginTop: '.7rem' } }, msg), h('div', { style: { marginTop: '1rem' } }, delBtn)),
-      h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'In Google'), h('div', { class: 'serp' }, serp.u, serp.ti, serp.ds)),
-      h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'When shared on LinkedIn'), h('div', { class: 'share-card' }, share.img, h('div', { class: 'meta' }, share.dom, share.t, share.d))))));
+  const advanced = h('details', { class: 'card' }, h('summary', { style: { cursor: 'pointer', fontWeight: 700 } }, 'Advanced: everything at the top of the file (front matter)'),
+    h('p', { class: 'sub', style: { marginTop: '.6rem' } }, 'This is where the "At a glance" box, the progress timeline and the list of outputs live. The boxes above edit the same text.'), yamlArea, yamlErr);
+  const mdBox = h('div', { class: 'md-wrap' + (isWriting ? ' writing' : '') }, tools, bodyArea, previewPane, acPop);
+  const sideCards = [
+    h('div', { class: 'card' }, h('div', { class: 'row' }, saveBtn, h('a', { class: 'btn secondary', href: viewUrl(S.info ? (doc.url || '/') : '/'), target: '_blank', rel: 'noopener' }, 'View page ', icon('ext'))), h('div', { style: { marginTop: '.7rem' } }, msg), h('div', { style: { marginTop: '1rem' } }, delBtn))
+  ];
+  if (isWriting) {
+    drawOutline(); drawRefPanel();
+    sideCards.push(
+      h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'Outline'), outlineEl, statEl),
+      h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'References in this piece'), refPanel,
+        h('div', { class: 'row', style: { marginTop: '.6rem', gap: '.5rem' } }, h('button', { type: 'button', class: 'btn secondary small', onclick: cite }, 'Cite…'), h('a', { class: 'btn quiet small', href: '#/references' }, 'All references'))));
+  }
+  sideCards.push(
+    h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'In Google'), h('div', { class: 'serp' }, serp.u, serp.ti, serp.ds)),
+    h('div', { class: 'card' }, h('div', { class: 'card-title' }, 'When shared on LinkedIn'), h('div', { class: 'share-card' }, share.img, h('div', { class: 'meta' }, share.dom, share.t, share.d))));
+  const fieldsCard = isWriting
+    ? h('details', { class: 'card', open: true }, h('summary', { style: { cursor: 'pointer', fontWeight: 700 } }, 'Summary, tags and sharing'),
+      h('p', { class: 'sub', style: { margin: '.6rem 0 1rem' } }, 'What Google and LinkedIn show, the date and the tags.'), fieldsEl)
+    : null;
+  const titleCard = h('div', { class: 'card' }, titleInput, kind === 'writing' ? titleHint : null, pubToggle ? h('div', { style: { marginTop: '1rem' } }, pubToggle) : null, isWriting ? null : h('div', { style: { marginTop: '1.2rem' } }, fieldsEl));
+  const pageCard = h('div', { class: 'card' }, isWriting ? null : h('h2', {}, 'The page itself'), isWriting ? null : h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox);
+  view.append(h('div', { class: 'editor' + (isWriting ? ' writing' : '') },
+    h('div', { class: 'stack' }, isWriting ? [titleCard, pageCard, fieldsCard, advanced] : [titleCard, h('div', { class: 'card' }, h('h2', {}, 'The page itself'), h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox), advanced]),
+    h('div', { class: 'editor-side' }, sideCards)));
 }
 
 /* ── Publications and CV ── */

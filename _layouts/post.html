@@ -1,9 +1,28 @@
 ---
 layout: default
 ---
+<link rel="stylesheet" href="{{ '/assets/css/essay.css' | relative_url }}">
+{%- include cite-apply.html html=content slug=page.slug -%}
 {%- assign words = content | strip_html | number_of_words -%}
 {%- assign minutes = words | divided_by: 220 | plus: 1 -%}
-<article class="page-shell post-page">
+{%- assign toc_html = "" -%}
+{%- if page.toc != false -%}
+  {%- assign parts = content | split: '<h2 id="' -%}
+  {%- if parts.size > 2 or cited_count > 0 and parts.size > 1 -%}
+    {%- for part in parts offset: 1 -%}
+      {%- capture li -%}<li><a href="#{{ part | split: '"' | first }}">{{ part | split: '>' | slice: 1 | first | split: '</h2' | first | strip_html }}</a></li>{%- endcapture -%}
+      {%- assign toc_html = toc_html | append: li -%}
+    {%- endfor -%}
+    {%- if cited_count > 0 -%}{%- assign toc_html = toc_html | append: '<li><a href="#references">References</a></li>' -%}{%- endif -%}
+  {%- endif -%}
+{%- endif -%}
+<div class="post-wrap{% if toc_html != '' %} has-rail{% endif %}">
+{%- if toc_html != "" %}
+<aside class="post-rail" aria-label="Outline">
+  <nav class="rail-nav"><p class="rail-title">On this page</p><ol id="rail-list">{{ toc_html }}</ol></nav>
+</aside>
+{%- endif %}
+<article class="post-main">
   <header class="page-header">
     <div class="header-meta post-meta">
       <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
@@ -14,19 +33,13 @@ layout: default
     {% if page.summary %}<p class="page-tagline">{{ page.summary }}</p>{% endif %}
   </header>
 
-  {%- if page.toc != false -%}
-  {%- assign parts = content | split: '<h2 id="' -%}
-  {%- if parts.size > 3 -%}
-  <details class="post-toc"><summary>In this piece</summary><ul>
-    {%- for part in parts offset: 1 -%}
-    <li><a href="#{{ part | split: '"' | first }}">{{ part | split: '>' | slice: 1 | first | split: '</h2' | first | strip_html }}</a></li>
-    {%- endfor -%}
-  </ul></details>
-  {%- endif -%}
+  {%- if toc_html != "" -%}
+  <details class="post-toc"><summary>In this piece</summary><ul>{{ toc_html }}</ul></details>
   {%- endif -%}
 
   <div class="prose post-body">
-    {{ content }}
+    {{ cited_html }}
+    {{ cited_refs }}
   </div>
 
   <footer class="post-foot prose">
@@ -42,3 +55,6 @@ layout: default
 
   <p class="back-link"><a href="{{ '/writing/' | relative_url }}">&larr; All writing</a></p>
 </article>
+</div>
+<div class="post-progress" aria-hidden="true"><span></span></div>
+<script src="{{ '/assets/js/post.js' | relative_url }}" defer></script>

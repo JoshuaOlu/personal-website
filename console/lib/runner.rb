@@ -1,5 +1,7 @@
 # Runs Jekyll (build and live preview) and Git, always with a time limit and never
 # through a shell, so file names with spaces or odd characters are safe.
+require 'json'
+require 'uri'
 require 'open3'
 require 'timeout'
 require 'shellwords'
@@ -49,11 +51,43 @@ module Console
       { 'ok' => status.success?, 'output' => out.force_encoding('UTF-8').scrub, 'code' => status.exitstatus }
     end
 
+    # Citations: turns [@key] into text the pages use (see lib/citations.rb). Quick, so it runs on every save.
+    def refresh_citations
+      require_relative 'citations'
+      Citations.build(@root)
+    rescue StandardError => e
+      warn "citations: #{e.message}"
+      nil
+    end
+
+    # Looks a DOI up at doi.org and returns its details as CSL JSON.
+    def doi_lookup(doi)
+      d = doi.to_s.strip.sub(%r{\Ahttps?://(dx\.)?doi\.org/}i, '').sub(/\Adoi:\s*/i, '')
+      raise UserError.new('That does not look like a DOI. It starts with 10.', 422) unless d =~ %r{\A10\.\d{4,9}/\S+\z}
+      uri = URI("https://doi.org/#{d.split('/').map { |p| URI.encode_www_form_component(p) }.join('/')}")
+      res = nil
+      3.times do
+        http = Net::HTTP.new(uri.host, uri.port)
+        http.use_ssl = true
+        http.open_timeout = 8
+        http.read_timeout = 15
+        req = Net::HTTP::Get.new(uri.request_uri, 'Accept' => 'application/vnd.citationstyles.csl+json', 'User-Agent' => 'site-console (personal website; mailto:none)')
+        res = http.request(req)
+        break unless res.is_a?(Net::HTTPRedirection)
+        uri = URI(res['location'])
+      end
+      raise UserError.new('No record was found for that DOI.', 404) unless res.is_a?(Net::HTTPSuccess)
+      { 'csl' => JSON.parse(res.body.force_encoding('UTF-8')) }
+    rescue SocketError, Timeout::Error, Errno::ECONNREFUSED, OpenSSL::SSL::SSLError, JSON::ParserError => e
+      raise UserError.new("Could not reach doi.org (#{e.class}). Check your internet connection, or paste BibTeX instead.", 502)
+    end
+
     def audit_dir
       File.join(@store.runtime_dir, 'audit-site')
     end
 
     def build_for_audit
+      refresh_citations
       @build_lock.synchronize do
         FileUtils.rm_rf(audit_dir)
         FileUtils.mkdir_p(@store.runtime_dir)
@@ -93,6 +127,7 @@ module Console
 
     def start_preview
       return preview_status if preview_running?
+      refresh_citations
       FileUtils.mkdir_p(@store.runtime_dir)
       port = free_port(4000)
       live = free_port(35_729)

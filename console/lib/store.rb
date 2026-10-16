@@ -25,7 +25,8 @@ module Console
     IMAGE_EXT = %w[.png .jpg .jpeg .gif .webp .svg .ico].freeze
     DATA_FILES = {
       'cv' => '_data/cv.yml', 'publications' => '_data/publications.yml', 'social' => '_data/social.yml',
-      'authors' => '_data/authors.yml', 'identity' => '_data/identity.yml', 'ai_bots' => '_data/ai_bots.yml'
+      'authors' => '_data/authors.yml', 'identity' => '_data/identity.yml', 'ai_bots' => '_data/ai_bots.yml',
+      'references' => '_data/references.yml'
     }.freeze
     KINDS = { 'projects' => '_projects', 'writing' => '_writing', 'links' => '_links' }.freeze
     RESERVED_PATHS = %w[assets research writing cv about publications ai-policy feed.xml robots.txt llms.txt

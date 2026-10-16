@@ -1,0 +1,17 @@
+{%- comment -%}
+  Swaps the [@key] markers in a piece for APA in-text citations and prepares the reference list.
+  Input:  html (the rendered text), slug (the piece's slug).
+  Output: cited_html (the text with citations), cited_refs (the reference list, or empty), cited_count.
+  The formatted text comes from _data/cite/<slug>.yml, made by scripts/citations.rb (see guide/references.md).
+{%- endcomment -%}
+{%- assign cited_html = include.html -%}
+{%- assign cited_refs = "" -%}
+{%- assign cited_count = 0 -%}
+{%- assign cite_map = site.data.cite[include.slug] -%}
+{%- if cite_map -%}
+  {%- for p in cite_map.pairs -%}
+    {%- assign cited_html = cited_html | replace: p.src, p.html -%}
+  {%- endfor -%}
+  {%- assign cited_refs = cite_map.references -%}
+  {%- assign cited_count = cite_map.count -%}
+{%- endif -%}

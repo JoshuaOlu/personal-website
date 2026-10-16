@@ -48,6 +48,7 @@ const ICONS = {
   down: 'M6 10l6 6 6-6',
   trash: 'M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13',
   copy: 'M8 8h11v12H8zM5 16V4h11',
+  quote: 'M5 17V11a5 5 0 0 1 5-5M5 17h5v-5H5M14 17v-6a5 5 0 0 1 5-5M14 17h5v-5h-5',
   edit: 'M4 20l4-1 11-11-3-3L5 16z',
   ext: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
   search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5'

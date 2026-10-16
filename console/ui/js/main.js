@@ -3,7 +3,7 @@
 
 const NAV = [
   ['', [['/', 'Overview', 'home']]],
-  ['Content', [['/projects', 'Projects', 'folder'], ['/writing', 'Writing', 'pen'], ['/publications', 'Publications', 'book'], ['/cv', 'CV', 'user'], ['/links', 'Short links', 'link']]],
+  ['Content', [['/projects', 'Projects', 'folder'], ['/writing', 'Writing', 'pen'], ['/publications', 'Publications', 'book'], ['/references', 'References', 'quote'], ['/cv', 'CV', 'user'], ['/links', 'Short links', 'link']]],
   ['Site', [['/seo', 'Search and AI', 'globe'], ['/media', 'Media', 'image'], ['/settings', 'Settings', 'gear'], ['/files', 'All files', 'file']]],
   ['Ship', [['/checks', 'Preview and checks', 'check'], ['/publish', 'Publish', 'upload']]]
 ];
@@ -30,6 +30,7 @@ route('/projects/edit/(.+)', (v, p) => viewDocEdit(v, 'projects', p));
 route('/writing', (v) => viewDocList(v, 'writing'));
 route('/writing/edit/(.+)', (v, p) => viewDocEdit(v, 'writing', p));
 route('/publications', viewPublications);
+route('/references', viewReferences);
 route('/cv', viewCV);
 route('/links', viewLinks);
 route('/links/new', (v) => viewLinkEdit(v, null));

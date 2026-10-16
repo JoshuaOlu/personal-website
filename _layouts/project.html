@@ -1,6 +1,7 @@
 ---
 layout: default
 ---
+<link rel="stylesheet" href="{{ '/assets/css/essay.css' | relative_url }}">
 {%- comment -%} Writing {email} in a project's front matter is replaced by the address in _config.yml. {%- endcomment -%}
 {%- assign email_token = "{email}" -%}
 <article class="page-shell project-page">
@@ -37,8 +38,10 @@ layout: default
     {% endif %}
 
     <div class="project-main">
+      {%- include cite-apply.html html=content slug=page.slug -%}
       <div class="prose">
-        {{ content }}
+        {{ cited_html }}
+        {{ cited_refs }}
       </div>
 
       {% if page.progress %}

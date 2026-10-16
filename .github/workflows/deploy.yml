@@ -48,6 +48,11 @@ jobs:
         # and never stops the build if the feed is down.
         run: ruby scripts/sync_podcast.rb
 
+      - name: Work out citations and the reference list
+        # Turns [@key] in your writing into APA citations using _data/references.yml.
+        # Does nothing if you do not use references.
+        run: ruby scripts/citations.rb
+
       - name: Set up Pages
         uses: actions/configure-pages@v5
 

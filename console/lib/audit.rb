@@ -4,6 +4,7 @@
 require 'json'
 require 'cgi'
 require 'uri'
+require_relative 'citations'
 
 module Console
   class Audit
@@ -65,6 +66,8 @@ module Console
       canonical = html[/<link[^>]*rel="canonical"[^>]*>/i]
       canonical = canonical && attr(canonical, 'href')
       body = html[/<body.*<\/body>/m].to_s
+      left = body.gsub(/<(script|style|pre|code)\b.*?<\/\1>/m, ' ').scan(/\[[-!]?@[A-Za-z0-9][A-Za-z0-9:\-]*[^\]<]{0,60}\]/)
+      left.first(3).each { |m| add(:error, page, "A citation was not turned into text: #{m}", 'Check the marker for odd characters, or save the piece in the console and build again.') }
       text = body.gsub(/<(script|style)\b.*?<\/\1>/m, ' ').gsub(/<[^>]+>/, ' ')
       words = CGI.unescapeHTML(text).split.size
       ids = html.scan(/\sid="([^"]+)"/).flatten
@@ -97,7 +100,10 @@ module Console
       else
         local = og_image.sub(@site_url, '')
         path = File.join(@store.root, local.sub(%r{\A/}, ''))
-        if local.start_with?('/') && !File.exist?(path)
+        if local.start_with?('/assets/og/')
+          # made automatically when the site is published (see scripts/make_cards.py), so it is not here yet
+          add(:info, page, 'The link-preview card for this piece is made automatically when you publish.') unless File.exist?(path)
+        elsif local.start_with?('/') && !File.exist?(path)
           add(:error, page, "The link-preview picture #{local} does not exist.", 'Upload it in Media or fix the path.')
         elsif local.start_with?('/') && (size = @store.image_size(path)) && local !~ /\.svg\z/i
           if size[0] < 600
@@ -263,6 +269,9 @@ module Console
         add.call('warn', '_data/publications.yml', "\"#{p['title'].to_s[0, 50]}\" has no DOI or web address.") if p['doi'].to_s.empty? && p['url'].to_s.empty?
       end
 
+      refs = Citations.load_refs(store.root)
+      ref_ids = refs.map { |r| r['id'].to_s }
+      ref_ids.each_with_index { |id, i| add.call('error', '_data/references.yml', "The reference name \"#{id}\" is used twice.") if ref_ids.index(id) != i }
       urls = Hash.new { |h, k| h[k] = [] }
       Store::KINDS.each_key do |kind|
         store.list_kind(kind).each do |d|
@@ -296,6 +305,19 @@ module Console
             add.call('error', d['path'], "The picture #{im} does not exist.") unless File.exist?(File.join(store.root, im.sub(%r{\A/}, '')))
           end
           add.call('info', d['path'], 'It is unpublished (published: false), so visitors cannot see it.') if fm['published'] == false
+          if %w[writing projects].include?(kind)
+            body = (store.read_doc(d['path'])['body'] rescue '').to_s
+            res = Citations.build_doc(refs, body)
+            res['unknown'].each { |k| add.call('error', d['path'], "It cites [@#{k}], which is not in your references.") }
+            by = refs.each_with_object({}) { |r, h| h[r['id'].to_s] = r }
+            Citations.build_doc(refs, body)['references'].scan(/id="ref-([^"]+)"/).flatten.each do |k|
+              r = by[k] or next
+              miss = []
+              miss << 'author' if Citations.authors(r).empty?
+              miss << 'year' if r['year'].to_s.strip.empty?
+              add.call('warn', d['path'], "The reference \"#{k}\" has no #{miss.join(" or ")}, so it shows as n.d. or by title.") unless miss.empty?
+            end
+          end
         end
       end
       urls.each { |u, files| add.call('error', files.join(', '), "These files share the same address #{u}.") if files.size > 1 }

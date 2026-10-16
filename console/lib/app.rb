@@ -124,6 +124,7 @@ module Console
         j = req.json
         check_doc_path(j['path'])
         mtime = @store.write_doc(j['path'], j['front_raw'], j['body'], j['mtime'], j.fetch('has_front', true))
+        @runner.refresh_citations
         ok('mtime' => mtime)
       when 'POST /api/doc/create'
         j = req.json
@@ -136,6 +137,7 @@ module Console
       when 'POST /api/doc/delete'
         check_doc_path(req.json['path'])
         @store.delete_file(req.json['path'])
+        @runner.refresh_citations
         ok
       when 'POST /api/link/action' then link_action(req.json)
       when 'POST /api/link/check' then link_check(req.json)
@@ -148,7 +150,10 @@ module Console
       when 'GET /api/data' then Response.json(@store.read_data(req.query['name']))
       when 'PUT /api/data'
         @store.write_data(req.query['name'], req.json['data'])
+        @runner.refresh_citations if req.query['name'] == 'references'
         ok
+      when 'POST /api/refs/doi'
+        Response.json(@runner.doi_lookup(req.json['doi']))
       when 'GET /api/config' then Response.json(@store.read_config)
       when 'PUT /api/config'
         @store.write_config(req.json)
