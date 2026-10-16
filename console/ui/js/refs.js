@@ -372,6 +372,57 @@ const Refs = (() => {
   const doisIn = (text) => (String(text).match(DOI_RE) || []).map((d) => d.replace(/[.,;)\]]+$/, ''));
 
   /* A short id: author + year, or the key from the file. */
+  /* "Olunlade, J., Adeleke, K., & Ilori, O."  ->  [{family, given}, ...] (mirrors citations.rb) */
+  function parsePubAuthors(text) {
+    const s = str(text).trim().replace(/,?\s*&\s*/g, ', ');
+    if (!s) return [];
+    return s.split(/(?<=\.),\s+/).map((x) => x.trim()).filter(Boolean).map((piece) => {
+      if (piece.includes(',')) { const i = piece.indexOf(','); return { family: piece.slice(0, i).trim(), given: piece.slice(i + 1).trim() }; }
+      return { org: piece.replace(/\.$/, '') };
+    });
+  }
+  /* A paper from publications.yml as a reference (mirrors citations.rb) */
+  function fromPublication(p) {
+    const venue = str(p.venue).trim(); const details = str(p.details).trim();
+    const r = { id: str(p.id), authors: parsePubAuthors(p.authors), year: str(p.year).trim(), title: str(p.title).trim(), doi: str(p.doi).trim(), url: str(p.url).trim(), _pub: true };
+    let m;
+    switch (str(p.type)) {
+      case 'journal':
+        r.type = 'article'; r.container = venue;
+        if ((m = details.match(/^(\d+)(?:\s*\((\d+)\))?\s*,\s*(.+)$/))) { r.volume = m[1]; r.issue = m[2] || ''; r.pages = m[3].trim(); }
+        break;
+      case 'chapter':
+        r.type = 'chapter'; r.container = venue;
+        if (/^[\w.]+\s*[-–]\s*[\w.]+$/.test(details)) r.pages = details;
+        break;
+      case 'report': r.type = 'report'; r.publisher = venue; break;
+      case 'conference':
+        if (!str(p.prefix).trim() && !details) { r.type = 'conference'; r.container = venue; }
+        else { r.type = 'other'; r.container = venue; r.publisher = details; }
+        break;
+      default: r.type = 'other'; r.container = venue;
+    }
+    Object.keys(r).forEach((k) => { if (r[k] === '' || (Array.isArray(r[k]) && !r[k].length)) delete r[k]; });
+    return r;
+  }
+  /* "Olunlade, J., Adeleke, K., & Ilori, O." from a list of authors, as Publications stores it */
+  function authorString(list) { const s = authorList(list || []); return s && !/\.$/.test(s) ? s + '.' : s; }
+  /* A reference (from a DOI, BibTeX or RIS) turned into an entry for publications.yml */
+  function toPublication(r, takenIds) {
+    const taken = takenIds || new Set();
+    const kinds = { article: 'journal', conference: 'conference', chapter: 'chapter', report: 'report' };
+    const type = kinds[r.type] || (/arxiv|preprint|ssrn|research square|osf|edarxiv|zenodo/i.test(str(r.container) + ' ' + str(r.publisher)) ? 'preprint' : 'journal');
+    const first = authors(r)[0]; const who = first ? plain(family(first)).replace(/[^a-z0-9]/g, '') : 'paper';
+    const word = (plain(str(r.title)).match(/[a-z0-9]{4,}/g) || [''])[0];
+    let base = [who, str(r.year).replace(/\D/g, ''), word].filter(Boolean).join('-') || 'paper'; let id = base; let n = 2;
+    while (taken.has(id)) id = base + '-' + (n++);
+    const p = { id, type, authors: authorString(authors(r)), year: Number(str(r.year).replace(/\D/g, '')) || '', title: str(r.title).replace(/\.$/, ''), venue: type === 'report' ? str(r.publisher) : str(r.container) };
+    const vol = str(r.volume); const iss = str(r.issue); const pg = str(r.pages);
+    if (type === 'journal' || type === 'preprint') { const d = [vol ? vol + (iss ? '(' + iss + ')' : '') : '', pg].filter(Boolean).join(', '); if (d) p.details = d; }
+    else if (pg) p.details = pg;
+    if (str(r.doi)) p.doi = str(r.doi); else if (str(r.url)) p.url = str(r.url);
+    return p;
+  }
   function makeId(r, taken) {
     let base = '';
     if (r._key) base = String(r._key).replace(/[^A-Za-z0-9:\-]+/g, '-').replace(/^-+|-+$/g, '');
@@ -401,5 +452,5 @@ const Refs = (() => {
   /* The shortest useful reading of one entry, for pickers: Kloot & Jansen (2020) */
   const shortRef = (r) => label(r).replace(/&amp;/g, '&').replace(/&ldquo;|&rdquo;/g, '"').replace(/<[^>]+>/g, '') + ' (' + yearOf(r) + ')';
 
-  return { TYPES, esc, authors, editors, family, isOrg, yearOf, label, reference, formatGroup, buildDoc, findGroups, itemsOf, suffixes, sortRefs, sortKey, parse, parseBibtex, parseRis, fromCsl, doisIn, makeId, sameWork, problems, shortRef, blank, tidy, ITALIC_TYPES };
+  return { TYPES, esc, authors, editors, family, isOrg, yearOf, label, reference, formatGroup, buildDoc, findGroups, itemsOf, suffixes, sortRefs, sortKey, parse, parseBibtex, parseRis, fromCsl, fromPublication, parsePubAuthors, authorString, toPublication, doisIn, makeId, sameWork, problems, shortRef, blank, tidy, ITALIC_TYPES };
 })();

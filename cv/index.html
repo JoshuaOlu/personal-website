@@ -21,18 +21,21 @@ permalink: /cv/
   <nav aria-label="CV sections">
     <ul class="cv-toc">
       {% for section in cv.sections %}
-      <li><a href="#{{ section.title | slugify }}">{{ section.title }}</a></li>
+      {%- include cv-visible.html section=section target="web" -%}
+      {% if cv_show_section %}<li><a href="#{{ section.title | slugify }}">{{ section.title }}</a></li>{% endif %}
       {% endfor %}
     </ul>
   </nav>
 
   {% for section in cv.sections %}
+  {%- include cv-visible.html section=section target="web" -%}
+  {% if cv_show_section %}
   <section class="cv-section" id="{{ section.title | slugify }}" aria-labelledby="{{ section.title | slugify }}-heading">
     <h2 id="{{ section.title | slugify }}-heading">{{ section.title }}</h2>
     {% if section.text %}<p class="cv-text">{{ section.text }}</p>{% endif %}
     {% if section.publications %}
     {% for group in section.publications %}
-      {% assign group_items = site.data.publications | where: "type", group.type %}
+      {% assign group_items = cv_pubs_ok | where: "type", group.type %}
       {% if group_items.size > 0 %}
     <h3 class="cv-group">{{ group.heading }}</h3>
     <ol class="cv-entries">
@@ -48,7 +51,7 @@ permalink: /cv/
     {% endif %}
     {% if section.entries %}
     <ol class="cv-entries">
-      {% for entry in section.entries %}
+      {% for entry in cv_entries %}
       <li class="cv-entry">
         <div class="cv-dates">{{ entry.dates }}</div>
         <div class="cv-body">
@@ -71,5 +74,6 @@ permalink: /cv/
     </ol>
     {% endif %}
   </section>
+  {% endif %}
   {% endfor %}
 </div>

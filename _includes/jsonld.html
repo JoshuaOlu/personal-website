@@ -75,7 +75,7 @@
   {%- assign nodes = nodes | append: n | append: "@@" -%}
   {%- for pid in page.publications -%}
     {%- assign pub = site.data.publications | where: "id", pid | first -%}
-    {%- if pub -%}
+    {%- if pub and pub.show != "pdf" and pub.show != "none" -%}
       {%- capture n -%}{% include jsonld-article.html pub=pub %}{%- endcapture -%}
       {%- assign nodes = nodes | append: n | append: "@@" -%}
     {%- endif -%}
@@ -108,6 +108,7 @@
   {%- endcapture -%}
   {%- assign nodes = nodes | append: n | append: "@@" -%}
   {%- for pub in site.data.publications -%}
+    {%- if pub.show == "pdf" or pub.show == "none" %}{% continue %}{% endif -%}
     {%- capture n -%}{% include jsonld-article.html pub=pub %}{%- endcapture -%}
     {%- assign nodes = nodes | append: n | append: "@@" -%}
   {%- endfor -%}

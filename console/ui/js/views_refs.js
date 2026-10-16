@@ -5,6 +5,18 @@ async function loadRefs() {
   const r = await GET('/api/data?name=references');
   return Array.isArray(r.data) ? r.data : [];
 }
+/* Your papers (Publications) can be cited too, with no extra work. They are read-only here. */
+async function loadPubRefs() {
+  try {
+    const r = await GET('/api/data?name=publications');
+    return (Array.isArray(r.data) ? r.data : []).filter((x) => x && x.id).map((x) => Refs.fromPublication(x));
+  } catch (e) { return []; }
+}
+async function loadAllRefs() {
+  const own = await loadRefs();
+  const taken = new Set(own.map((x) => String(x.id)));
+  return own.concat((await loadPubRefs()).filter((x) => !taken.has(String(x.id))));
+}
 async function saveRefs(list) {
   await PUT('/api/data?name=references', { data: list });
 }
@@ -84,9 +96,10 @@ function openReferenceForm(existing, onSaved, library) {
     actions: [{ label: 'Cancel', kind: 'secondary' }, { label: isNew ? 'Add it' : 'Save', onclick: async () => {
       const r = cleanRec(rec);
       if (!r.title) { toast('A title is needed.', 'bad'); return false; }
-      const list = library ? library.slice() : await loadRefs();
+      const everything = library ? library.slice() : await loadAllRefs();
+      const list = everything.filter((x) => !x._pub); // papers are not copied into your references file
       if (isNew) {
-        const taken = new Set(list.map((x) => String(x.id)));
+        const taken = new Set(everything.map((x) => String(x.id)));
         if (r.id) { if (!REF_ID_OK.test(r.id)) { toast('The short name can only use letters, numbers, - and :', 'bad'); return false; } if (taken.has(r.id)) { toast('That short name is already used.', 'bad'); return false; } }
         else r.id = Refs.makeId(r, taken);
         list.push(orderRec(r));
@@ -116,7 +129,7 @@ function openImport(onDone) {
     return out;
   }
   async function show() {
-    library = await loadRefs();
+    library = await loadAllRefs();
     clear(results);
     if (!found.length) { results.append(h('p', { class: 'muted' }, 'Nothing could be read from that. Check it is BibTeX, RIS or CSL JSON' + (window.WEB_MODE ? '.' : ', or paste DOIs one per line.'))); return; }
     const taken = new Set(library.map((x) => String(x.id)));
@@ -125,7 +138,7 @@ function openImport(onDone) {
       const probs = Refs.problems(r);
       const cb = h('input', { type: 'checkbox', checked: !dup, disabled: !!dup });
       return { r, dup, cb, el: h('label', { class: 'imp-row' + (dup ? ' dup' : '') }, cb, h('div', {}, h('div', { html: Refs.reference(r, '') }),
-        dup ? h('div', { class: 'small muted' }, 'Already in your library') : null,
+        dup ? h('div', { class: 'small muted' }, 'Already in your library or your papers') : null,
         probs.length ? h('div', { class: 'small', style: { color: 'var(--warn)' } }, 'Check: ' + probs.join(', ')) : null)) };
     });
     results.append(h('div', { class: 'small muted' }, found.length + ' found (' + (status.dataset.format || 'text') + '). Tick the ones to add.'), h('div', { class: 'imp-list' }, rows.map((x) => x.el)));
@@ -145,6 +158,7 @@ function openImport(onDone) {
     const rows = (results._rows || []).filter((x) => x.cb.checked && !x.dup);
     if (!rows.length) { toast('Nothing ticked.', 'bad'); return false; }
     const list = (await loadRefs()); const taken = new Set(list.map((x) => String(x.id)));
+    (await loadPubRefs()).forEach((x) => taken.add(String(x.id)));
     rows.forEach((x) => { const r = cleanRec(x.r); r.id = Refs.makeId(Object.assign({ _key: x.r._key }, r), taken); taken.add(r.id); list.push(orderRec(r)); });
     await saveRefs(list); toast(rows.length + ' reference' + (rows.length === 1 ? '' : 's') + ' added', 'ok'); if (onDone) await onDone();
   } }] });
@@ -157,18 +171,32 @@ async function viewReferences(view) {
   const search = h('input', { type: 'text', placeholder: 'Search by author, title, year…', 'aria-label': 'Search references' });
   const box = h('div', { class: 'ref-list-ui' });
   let usage = null;
-  async function reload() { list = await loadRefs(); draw(); S.refs = list; }
+  let pubRefs = await loadPubRefs();
+  async function reload() { list = await loadRefs(); pubRefs = await loadPubRefs(); draw(); S.refs = list.concat(pubRefs.filter((x) => !list.some((y) => y.id === x.id))); }
   function draw() {
     clear(box);
     const term = plainText(search.value);
     const shown = Refs.sortRefs(list).filter((r) => !term || plainText([Refs.authors(r).map((a) => a.family || a.org).join(' '), r.title, r.year, r.id, r.container].join(' ')).includes(term));
+    const ownIds = new Set(list.map((x) => String(x.id)));
+    const pubShown = Refs.sortRefs(pubRefs.filter((x) => !ownIds.has(String(x.id)))).filter((r) => !term || plainText([Refs.authors(r).map((a) => a.family || a.org).join(' '), r.title, r.year, r.id].join(' ')).includes(term));
+    const papersBlock = () => {
+      if (!pubShown.length) return;
+      box.append(h('h2', { class: 'subhead', style: { margin: '1.6rem 0 .3rem' } }, 'Your own papers'),
+        h('p', { class: 'small muted', style: { marginBottom: '.8rem' } }, 'Added automatically from Publications, so you can cite them with no extra work. To change one, edit it under Publications.'));
+      pubShown.forEach((r) => box.append(h('div', { class: 'card ref-row' },
+        h('div', { class: 'ref-main' }, h('div', { class: 'ref-text', html: Refs.reference(r, '') }),
+          h('div', { class: 'ref-meta' }, h('button', { type: 'button', class: 'idchip', title: 'Copy the citation marker', onclick: () => copyText('[@' + r.id + ']') }, '[@' + r.id + ']'),
+            h('span', { class: 'small muted', 'data-used': r.id }, usage ? usageText(usage[r.id]) : ''))),
+        h('div', { class: 'ref-actions' }, h('a', { class: 'btn secondary small', href: '#/publications' }, 'Edit under Publications')))));
+    };
     if (!list.length) {
+      papersBlock();
       box.append(h('div', { class: 'card' }, h('h2', {}, 'No references yet'),
         h('p', { class: 'sub' }, 'Add your sources once, then cite them in any piece. The reference list at the end (APA style) is built and kept in order for you.'),
         h('ol', { class: 'steps-list' }, h('li', {}, 'Press "Add references" and paste BibTeX or RIS from Zotero, Mendeley, Google Scholar or a publisher, or choose the file.' + (window.WEB_MODE ? '' : ' You can also paste a DOI.')), h('li', {}, 'In a piece, press Cite and pick the source (or type [@name]).'), h('li', {}, 'Publish. In-text citations such as (Kloot & Jansen, 2020) and the list of references appear on the page.'))));
       return;
     }
-    if (!shown.length) { box.append(h('p', { class: 'muted' }, 'Nothing matches.')); return; }
+    if (!shown.length && !pubShown.length) { box.append(h('p', { class: 'muted' }, 'Nothing matches.')); return; }
     shown.forEach((r) => {
       const probs = Refs.problems(r);
       const used = h('span', { class: 'small muted', 'data-used': r.id }, usage ? usageText(usage[r.id]) : '');
@@ -185,6 +213,7 @@ async function viewReferences(view) {
             }
           } }, 'Delete'))));
     });
+    papersBlock();
   }
   const plainText = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/\p{Mn}/gu, '');
   const usageText = (u) => (u && u.length ? 'Cited in ' + u.length + ' piece' + (u.length === 1 ? '' : 's') : 'Not cited yet');

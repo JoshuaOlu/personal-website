@@ -25,6 +25,7 @@ Role: {{ id.job_title }}. This file is a short guide for AI assistants and searc
 {% endfor %}
 ## Publications
 {% for pub in site.data.publications -%}
+{%- if pub.show == "pdf" or pub.show == "none" %}{% continue %}{% endif -%}
 - [{{ pub.title }}]({% if pub.doi %}https://doi.org/{{ pub.doi }}{% elsif pub.url %}{{ pub.url }}{% else %}{{ '/publications/' | absolute_url }}{% endif %}): {{ pub.authors }} ({{ pub.year }}). {{ pub.venue }}.
 {% endfor %}
 {%- if site.writing.size > 0 %}

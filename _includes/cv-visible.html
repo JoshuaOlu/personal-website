@@ -1,0 +1,28 @@
+{%- comment -%}
+  Works out whether a CV section is shown, and which of its entries.
+    section  the section from _data/cv.yml
+    target   "web" for the website, "pdf" for the PDF CV
+  Each section, entry and paper may carry  show:  web | pdf | none  (left out = shown everywhere).
+  Sets  cv_show_section (true/false)  and  cv_entries (the entries to show).
+{%- endcomment -%}
+{%- assign cv_sec = include.section -%}
+{%- assign cv_show_section = true -%}
+{%- assign cv_entries = cv_sec.entries -%}
+{%- if include.target == "pdf" -%}
+  {%- if cv_sec.show == "web" or cv_sec.show == "none" %}{% assign cv_show_section = false %}{% endif -%}
+  {%- if cv_sec.entries -%}{%- assign cv_entries = cv_sec.entries | where_exp: "e", "e.show != 'web' and e.show != 'none'" -%}{%- endif -%}
+  {%- assign cv_pubs_ok = site.data.publications | where_exp: "p", "p.show != 'web' and p.show != 'none'" -%}
+{%- else -%}
+  {%- if cv_sec.show == "pdf" or cv_sec.show == "none" %}{% assign cv_show_section = false %}{% endif -%}
+  {%- if cv_sec.entries -%}{%- assign cv_entries = cv_sec.entries | where_exp: "e", "e.show != 'pdf' and e.show != 'none'" -%}{%- endif -%}
+  {%- assign cv_pubs_ok = site.data.publications | where_exp: "p", "p.show != 'pdf' and p.show != 'none'" -%}
+{%- endif -%}
+{%- if cv_show_section and cv_sec.entries and cv_entries.size == 0 %}{% assign cv_show_section = false %}{% endif -%}
+{%- if cv_show_section and cv_sec.publications -%}
+  {%- assign cv_any_pub = false -%}
+  {%- for g in cv_sec.publications -%}
+    {%- assign gi = cv_pubs_ok | where: "type", g.type -%}
+    {%- if gi.size > 0 %}{% assign cv_any_pub = true %}{% endif -%}
+  {%- endfor -%}
+  {%- if cv_any_pub == false and cv_sec.entries == nil %}{% assign cv_show_section = false %}{% elsif cv_any_pub == false and cv_entries.size == 0 %}{% assign cv_show_section = false %}{% endif -%}
+{%- endif -%}

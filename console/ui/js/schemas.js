@@ -6,12 +6,19 @@ const PUB_TYPES = [
   { value: 'preprint', label: 'Preprint' }, { value: 'chapter', label: 'Book chapter' }, { value: 'report', label: 'Report' }
 ];
 
+const SHOW_OPTIONS = [
+  { value: 'web', label: 'The website only' }, { value: 'pdf', label: 'The PDF CV only' }, { value: 'none', label: 'Nowhere (kept, but hidden)' }
+];
+const SHOW_FIELD = { k: 'show', label: 'Where to show it', w: 'select', blank: 'Everywhere (default)', options: SHOW_OPTIONS,
+  hint: 'Hide something without deleting it. "Nowhere" keeps it in your file but off the site and the PDF.' };
+const showTag = (x) => (x && x.show === 'web' ? ' · website only' : x && x.show === 'pdf' ? ' · PDF only' : x && x.show === 'none' ? ' · hidden' : '');
+
 const SCHEMA = {
   publications: {
     k: 'items', w: 'objlist', label: 'Your papers', addLabel: 'Add a paper', addFirst: true,
     hint: 'Add each paper once. The CV, the Publications page, project pages, search engines and AI assistants all read from here.',
     empty: 'No papers yet. Press "Add a paper".',
-    itemLabel: (it) => ({ main: it.title || 'New paper', sub: [it.year, it.type].filter(Boolean).join(' · ') }),
+    itemLabel: (it) => ({ main: it.title || 'New paper', sub: [it.year, it.type].filter(Boolean).join(' · ') + showTag(it) }),
     newItem: () => ({ id: '', type: 'journal', authors: '', year: new Date().getFullYear(), title: '', venue: '' }),
     fields: [
       { k: 'id', label: 'Short ID', required: true, hint: 'Lowercase, no spaces, e.g. tinkabot-review. Used to attach the paper to a project.', validate: (v) => (!v ? 'An ID is needed.' : /^[a-z0-9][a-z0-9-]*$/.test(v) ? '' : 'Use lowercase letters, numbers and dashes only.') },
@@ -25,6 +32,7 @@ const SCHEMA = {
       { k: 'details', label: 'Volume and pages, or city (optional)' },
       { k: 'doi', label: 'DOI', hint: 'Without https://doi.org/ . Best for search and AI: a DOI makes the paper unmistakably yours.' },
       { k: 'url', label: 'Web address (only if no DOI)', type: 'url' },
+      Object.assign({}, SHOW_FIELD, { hint: 'Hide a paper without deleting it. It stays citable in your writing; "Nowhere" keeps it off the CV, Publications page, home page and search data.' }),
       { w: 'preview', label: 'How it will read', fn: (it) => [it.authors, '(' + (it.year || '') + (it.month ? ', ' + it.month : '') + ').', it.title + '.', (it.prefix ? it.prefix + ' ' : '') + (it.venue || '') + (it.details ? ', ' + it.details : '') + '.', it.doi ? 'https://doi.org/' + it.doi : (it.url || '')].filter(Boolean).join(' ') }
     ]
   },
@@ -37,20 +45,22 @@ const SCHEMA = {
     {
       k: 'sections', w: 'objlist', label: 'Sections', addLabel: 'Add a section', empty: 'No sections yet.',
       hint: 'Open a section to edit its entries. Use the arrows to reorder.',
-      itemLabel: (s) => ({ main: s.title || 'New section', sub: s.publications ? 'papers (from Publications)' : ((s.entries || []).length + ' entries') }),
+      itemLabel: (s) => ({ main: s.title || 'New section', sub: (s.publications ? 'papers (from Publications)' : ((s.entries || []).length + ' entries')) + showTag(s) }),
       newItem: () => ({ title: '', entries: [] }),
       fields: [
         { k: 'title', label: 'Section title', required: true },
+        Object.assign({}, SHOW_FIELD, { label: 'Where to show this whole section' }),
         { k: 'text', label: 'Intro line (optional)', w: 'area', rows: 2 },
         { w: 'note', text: 'The papers in this section are listed automatically from the Publications page. To add one, go to Publications.', showIf: (s) => !!s.publications },
         { k: 'publications', label: 'Paper groups', w: 'objlist', showIf: (s) => !!s.publications, itemLabel: (g) => ({ main: g.heading || g.type }), newItem: () => ({ type: 'journal', heading: 'Journal Articles' }),
           fields: [{ k: 'type', label: 'Type', w: 'select', required: true, options: PUB_TYPES }, { k: 'heading', label: 'Heading' }] },
         {
           k: 'entries', label: 'Entries', w: 'objlist', addLabel: 'Add an entry', addFirst: true, showIf: (s) => !s.publications, empty: 'No entries yet.',
-          itemLabel: (e) => ({ main: e.title || 'New entry', sub: [e.org, e.dates].filter(Boolean).join(' · ') }),
+          itemLabel: (e) => ({ main: e.title || 'New entry', sub: [e.org, e.dates].filter(Boolean).join(' · ') + showTag(e) }),
           newItem: () => ({ title: '' }),
           fields: [
             { k: 'title', label: 'Role, degree or award', required: true, wide: true },
+            SHOW_FIELD,
             { k: 'org', label: 'Organisation or place' },
             { k: 'dates', label: 'Dates', placeholder: 'Jan 2025 to Present', hint: 'Use "to" between dates. Examples: 2022, Jan 2025 to Jan 2026, Expected 2027.' },
             { k: 'note', label: 'One plain line of detail', wide: true },

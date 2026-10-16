@@ -162,7 +162,7 @@ async function viewDocEdit(view, kind, path) {
   const doc = await GET('/api/doc?path=' + q(path));
   const isWriting = kind === 'writing';
   let refs = [];
-  try { refs = await loadRefs(); } catch (e) { /* the editor still works without references */ }
+  try { refs = await loadAllRefs(); } catch (e) { /* the editor still works without references */ }
   if (isWriting) { $('#view').classList.add('wide'); onLeave(() => $('#view').classList.remove('wide')); }
   const pubs = kind === 'projects' ? ((await GET('/api/data?name=publications')).data || []) : [];
   let fm = doc.front_raw; let body = doc.body; let parsed = doc.front; let mtime = doc.mtime;
@@ -322,7 +322,7 @@ async function viewDocEdit(view, kind, path) {
       } }] });
   };
   const insertInline = (t) => { const a = bodyArea; a.setRangeText(t, a.selectionStart, a.selectionEnd, 'end'); a.focus(); onBody(); };
-  const cite = () => openCitePicker(refs, insertInline, () => openReferenceForm(null, async () => { refs = await loadRefs(); S.refs = refs; drawRefPanel(); cite(); }, refs));
+  const cite = () => openCitePicker(refs, insertInline, () => openReferenceForm(null, async () => { refs = await loadAllRefs(); S.refs = refs; drawRefPanel(); cite(); }, refs));
   const insertPullQuote = () => { const a = bodyArea; const sel = a.value.slice(a.selectionStart, a.selectionEnd) || 'The sentence you want readers to remember.'; insertBlock('> ' + sel.replace(/\n+/g, ' ') + '\n{: .pullquote}'); };
   const insertFootnote = () => {
     const a = bodyArea; const n = (a.value.match(/\[\^(\d+)\]:/g) || []).length + 1;
@@ -381,7 +381,7 @@ async function viewDocEdit(view, kind, path) {
     if (!d.used.length && !d.unknown.length) refPanel.append(h('p', { class: 'small muted' }, groups.length ? '' : 'Press Cite to add a source. The in-text citation and the reference list at the end are made for you.'));
     d.used.forEach((id) => refPanel.append(h('div', { class: 'rp-item' }, h('b', {}, Refs.shortRef(byId[id])), h('div', { class: 'small muted' }, byId[id].title || ''))));
     d.unknown.forEach((k) => refPanel.append(h('div', { class: 'rp-item bad' }, h('b', {}, '[@' + k + ']'), h('div', { class: 'small' }, 'Not in your references.'),
-      h('button', { type: 'button', class: 'btn quiet small', onclick: () => openReferenceForm(null, async () => { refs = await loadRefs(); S.refs = refs; drawRefPanel(); if (!previewPane.hidden) previewPane.innerHTML = roughHtml(); }, refs) }, 'Add it'))));
+      h('button', { type: 'button', class: 'btn quiet small', onclick: () => openReferenceForm(null, async () => { refs = await loadAllRefs(); S.refs = refs; drawRefPanel(); if (!previewPane.hidden) previewPane.innerHTML = roughHtml(); }, refs) }, 'Add it'))));
     if (d.used.length) refPanel.append(h('div', { class: 'small muted', style: { marginTop: '.5rem' } }, d.used.length + ' source' + (d.used.length === 1 ? '' : 's') + ' will be listed under References.'));
   };
   /* suggestions after typing [@ */
@@ -482,8 +482,61 @@ async function viewDocEdit(view, kind, path) {
 }
 
 /* ── Publications and CV ── */
+/* Add papers from a DOI (looked up for you), BibTeX or RIS. They are added to the list as new entries. */
+function openAddPapers() {
+  if (S.dirty) { toast('Save or discard your changes below first, then add papers.', 'bad', 5000); return; }
+  const ta = h('textarea', { rows: 6, spellcheck: 'false', placeholder: window.WEB_MODE ? 'Paste BibTeX or RIS here (publishers have an "Export citation" button).' : 'Paste one or more DOIs, one per line, for example\n10.1002/jee.20321\n\nor paste BibTeX or RIS.' });
+  const status = h('div', { class: 'small muted' });
+  const results = h('div', { class: 'stack', style: { marginTop: '.8rem' } });
+  let rows = [];
+  const readBtn = h('button', { type: 'button', class: 'btn secondary' }, window.WEB_MODE ? 'Read it' : 'Look them up');
+  readBtn.onclick = async () => {
+    const t = ta.value.trim(); if (!t) { toast('Paste a DOI or BibTeX first.', 'bad'); return; }
+    status.textContent = ''; clear(results); rows = [];
+    let found = Refs.parse(t).items;
+    if (!found.length) {
+      const dois = Refs.doisIn(t).slice(0, 30);
+      if (!dois.length) { results.append(h('p', { class: 'muted' }, 'Nothing could be read from that. Paste a DOI (it starts with 10.) or BibTeX.')); return; }
+      if (window.WEB_MODE) { results.append(h('p', { class: 'muted' }, 'Looking up a DOI needs the console on your computer. Paste BibTeX or RIS here instead.')); return; }
+      found = [];
+      for (let i = 0; i < dois.length; i++) {
+        status.textContent = 'Looking up ' + (i + 1) + ' of ' + dois.length + '…';
+        try { const j = await POST('/api/refs/doi', { doi: dois[i] }); found.push(Refs.fromCsl(j.csl)); } catch (e) { toast('Could not find ' + dois[i] + ': ' + e.message, 'bad', 6000); }
+      }
+      status.textContent = '';
+    }
+    const existing = ((await GET('/api/data?name=publications')).data) || [];
+    const taken = new Set(existing.map((x) => x.id));
+    rows = found.map((r) => {
+      const dup = existing.find((x) => (x.doi && r.doi && String(x.doi).toLowerCase() === String(r.doi).toLowerCase()) || (Refs.sameWork({ title: x.title, year: x.year }, { title: r.title, year: r.year })));
+      const entry = Refs.toPublication(r, taken); if (!dup) taken.add(entry.id);
+      const probs = Refs.problems(r);
+      const cb = h('input', { type: 'checkbox', checked: !dup, disabled: !!dup });
+      return { entry, dup, cb, el: h('label', { class: 'imp-row' + (dup ? ' dup' : '') }, cb, h('div', {},
+        h('div', { html: Refs.reference(Object.assign({}, r, { type: r.type }), '') }),
+        h('div', { class: 'small muted' }, 'Added as: ' + entry.type + ' · short ID ' + entry.id),
+        dup ? h('div', { class: 'small muted' }, 'Already in your papers') : null,
+        probs.length ? h('div', { class: 'small', style: { color: 'var(--warn)' } }, 'Check: ' + probs.join(', ')) : null)) };
+    });
+    results.append(h('div', { class: 'small muted' }, rows.length + ' found. Tick the ones to add; you can edit any of them afterwards.'), h('div', { class: 'imp-list' }, rows.map((x) => x.el)));
+  };
+  openModal({ title: 'Add papers', wide: true,
+    body: h('div', { class: 'stack' }, h('div', { class: 'field' }, h('div', { class: 'lbl' }, window.WEB_MODE ? 'Paste BibTeX or RIS' : 'Paste DOIs, BibTeX or RIS'), ta, h('div', { class: 'row', style: { marginTop: '.5rem' } }, readBtn)),
+      h('p', { class: 'small muted' }, 'Papers you add here also become sources you can cite in your writing.'), status, results),
+    actions: [{ label: 'Cancel', kind: 'secondary' }, { label: 'Add the ticked ones', onclick: async () => {
+      const pick = rows.filter((x) => x.cb.checked && !x.dup);
+      if (!pick.length) { toast('Nothing ticked.', 'bad'); return false; }
+      const list = ((await GET('/api/data?name=publications')).data) || [];
+      pick.forEach((x) => { const e = {}; ['id', 'type', 'authors', 'year', 'title', 'venue', 'details', 'doi', 'url'].forEach((k) => { if (x.entry[k] !== undefined && x.entry[k] !== '') e[k] = x.entry[k]; }); list.unshift(e); });
+      await PUT('/api/data?name=publications', { data: list });
+      toast(pick.length + ' paper' + (pick.length === 1 ? '' : 's') + ' added', 'ok'); await refreshInfo(); render();
+    } }] });
+}
 async function viewPublications(view) {
   setTitle('Publications', 'Add each paper once. Everything else is built from this list.', topActions());
+  view.append(h('div', { class: 'row', style: { marginBottom: '1rem', gap: '.7rem', flexWrap: 'wrap' } },
+    h('button', { type: 'button', class: 'btn', onclick: openAddPapers }, icon('plus'), 'Add papers by DOI'),
+    h('span', { class: 'small muted' }, window.WEB_MODE ? 'Paste BibTeX or RIS. Looking up a DOI needs the console on your computer.' : 'Paste a DOI and the details are filled in for you. Papers listed here can also be cited in your writing.')));
   await dataPage(view, {
     name: 'publications', root: 'array', fields: SCHEMA.publications,
     validate: (items) => {

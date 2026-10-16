@@ -12,7 +12,7 @@
   <ul class="output-list">
     {%- for pub_id in page.publications %}
     {%- assign pub = site.data.publications | where: "id", pub_id | first -%}
-    {%- if pub %}
+    {%- if pub and pub.show != "pdf" and pub.show != "none" %}
     <li class="output">
       <span class="output-type">{% if pub.type == "journal" %}Journal{% elsif pub.type == "conference" %}Conference{% else %}{{ pub.type | capitalize }}{% endif %}</span>
       <div><p class="output-citation">{% include citation.html pub=pub %}</p></div>

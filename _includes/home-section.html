@@ -49,7 +49,7 @@
   </section>
 
 {%- elsif include.id == "publications" -%}
-  {%- assign pubs = site.data.publications | sort: "year" | reverse -%}
+  {%- assign pubs = site.data.publications | where_exp: "p", "p.show != 'pdf' and p.show != 'none'" | sort: "year" | reverse -%}
   {%- if pubs.size > 0 -%}
   <section class="section" aria-labelledby="pubs-heading">
     <h2 id="pubs-heading">Recent papers</h2>

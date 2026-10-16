@@ -11,7 +11,7 @@ layout: default
   {%- assign cv_pubs = site.data.cv.sections | where_exp: "s", "s.publications" | first -%}
   {%- assign any_shown = false -%}
   {% for group in cv_pubs.publications %}
-    {%- assign group_items = site.data.publications | where: "type", group.type -%}
+    {%- assign group_items = site.data.publications | where_exp: "p", "p.show != 'pdf' and p.show != 'none'" | where: "type", group.type -%}
     {% if group_items.size > 0 %}
     <section class="pub-group" aria-labelledby="pubs-{{ group.type }}">
       <h2 id="pubs-{{ group.type }}">{{ group.heading }}</h2>

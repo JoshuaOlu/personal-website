@@ -48,7 +48,7 @@ function renderField(obj, f, onChange, ctx) {
     }
     case 'select': {
       const sel = h('select', { onchange: () => set(sel.value) },
-        (f.required ? [] : [h('option', { value: '' }, '(none)')]).concat(f.options.map((o) => {
+        (f.required ? [] : [h('option', { value: '' }, f.blank || '(none)')]).concat(f.options.map((o) => {
           const val = typeof o === 'string' ? o : o.value; const lab = typeof o === 'string' ? o : o.label;
           return h('option', { value: val, selected: String(cur) === val }, lab);
         })));

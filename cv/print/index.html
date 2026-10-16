@@ -51,12 +51,14 @@ sitemap: false
   </header>
 
   {% for section in cv.sections %}
+  {%- include cv-visible.html section=section target="pdf" -%}
+  {% if cv_show_section %}
   <section class="cv-section">
     <h2>{{ section.title }}</h2>
     {% if section.text %}<p class="text">{{ section.text }}</p>{% endif %}
     {% if section.publications %}
     {% for group in section.publications %}
-      {% assign group_items = site.data.publications | where: "type", group.type %}
+      {% assign group_items = cv_pubs_ok | where: "type", group.type %}
       {% if group_items.size > 0 %}
     <div class="pubgroup">{{ group.heading }}</div>
     <ol class="pubs">
@@ -67,7 +69,7 @@ sitemap: false
       {% endif %}
     {% endfor %}
     {% endif %}
-    {% for entry in section.entries %}
+    {% for entry in cv_entries %}
     <div class="entry">
       <div class="row">
         <span class="title">{{ entry.title | escape }}</span>
@@ -88,6 +90,7 @@ sitemap: false
     </div>
     {% endfor %}
   </section>
+  {% endif %}
   {% endfor %}
 
 </main>

@@ -29,13 +29,76 @@ module Console
     end
 
     # ── loading ──────────────────────────────────────────────────────────────
-    def load_refs(root)
-      path = File.join(root, '_data', 'references.yml')
+    # Your own references, plus (unless asked not to) your papers from _data/publications.yml, so
+    # anything you have written can be cited with [@paper-id] without adding it twice. A reference
+    # with the same name in references.yml wins over the paper.
+    def load_refs(root, with_publications: true)
+      own = read_list(File.join(root, '_data', 'references.yml')).select { |r| r.is_a?(Hash) && r['id'] }
+      return own unless with_publications
+      taken = own.map { |r| r['id'].to_s }
+      pubs = read_list(File.join(root, '_data', 'publications.yml')).select { |p| p.is_a?(Hash) && p['id'] && !taken.include?(p['id'].to_s) }
+      own + pubs.map { |p| from_publication(p) }
+    end
+
+    def read_list(path)
       return [] unless File.exist?(path)
       data = YAML.safe_load(File.read(path, encoding: 'UTF-8'), permitted_classes: [Date, Time], aliases: false)
-      data.is_a?(Array) ? data.select { |r| r.is_a?(Hash) && r['id'] } : []
+      data.is_a?(Array) ? data : []
     rescue Psych::Exception
       []
+    end
+
+    # "Olunlade, J., Adeleke, K., & Ilori, O."  ->  [{family, given}, ...]
+    def parse_pub_authors(text)
+      s = text.to_s.strip.gsub(/,?\s*&\s*/, ', ')
+      return [] if s.empty?
+      s.split(/(?<=\.),\s+/).map(&:strip).reject(&:empty?).map do |piece|
+        if piece.include?(',')
+          fam, given = piece.split(',', 2)
+          { 'family' => fam.strip, 'given' => given.to_s.strip }
+        else
+          { 'org' => piece.sub(/\.\z/, '') }
+        end
+      end
+    end
+
+    # A paper from publications.yml, written as a reference (same shape as references.yml)
+    def from_publication(p)
+      type = p['type'].to_s
+      venue = p['venue'].to_s.strip
+      details = p['details'].to_s.strip
+      r = { 'id' => p['id'].to_s, 'authors' => parse_pub_authors(p['authors']), 'year' => p['year'].to_s.strip,
+            'title' => p['title'].to_s.strip, 'doi' => p['doi'].to_s.strip, 'url' => p['url'].to_s.strip }
+      case type
+      when 'journal'
+        r['type'] = 'article'
+        r['container'] = venue
+        if details =~ /\A(\d+)(?:\s*\((\d+)\))?\s*,\s*(.+)\z/
+          r['volume'] = $1
+          r['issue'] = $2.to_s
+          r['pages'] = $3.strip
+        end
+      when 'chapter'
+        r['type'] = 'chapter'
+        r['container'] = venue
+        r['pages'] = details if details =~ /\A[\w.]+\s*[-–]\s*[\w.]+\z/
+      when 'report'
+        r['type'] = 'report'
+        r['publisher'] = venue
+      when 'conference'
+        if p['prefix'].to_s.strip.empty? && details.empty?
+          r['type'] = 'conference'
+          r['container'] = venue
+        else
+          r['type'] = 'other'
+          r['container'] = venue
+          r['publisher'] = details
+        end
+      else
+        r['type'] = 'other'
+        r['container'] = venue
+      end
+      r.reject { |_, v| v.nil? || v == '' || v == [] }
     end
 
     # ── names ────────────────────────────────────────────────────────────────
