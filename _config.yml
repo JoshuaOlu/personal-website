@@ -34,15 +34,17 @@ twitter:
 # Empty = no counting. GoatCounter sets no cookies and keeps no personal data, so no banner is needed.
 goatcounter: "jolunlade"
 
-# ─── Newsletter signup (shown under each piece of writing) ────────────────────
+# ─── Newsletter signup (shown under each piece of writing and on the home page) ─
 # provider: substack | buttondown | custom | "" (empty hides it).
-# handle is your Substack subdomain (josholunlade) or Buttondown username.
+# handle is your Buttondown username (or your Substack subdomain).
+# Export your subscribers from Buttondown every month or two and keep the file
+# somewhere private. Never put it in this repository, which is public.
 newsletter:
-  provider: substack
-  handle: josholunlade
+  provider: buttondown
+  handle: olunlade
   action: ""
-  heading: Get new pieces by email
-  blurb: Occasional essays on engineering education in Nigeria and Africa. No spam, leave any time.
+  heading: Letters from Joshua
+  blurb: One essay a month on engineering education in Nigeria and Africa. No spam, leave any time.
 
 # ─── Navigation ───────────────────────────────────────────────────────────────
 # Add a page here to put it in the menu. "collection: writing" hides an item

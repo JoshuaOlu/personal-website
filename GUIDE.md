@@ -394,8 +394,11 @@ reader presses play, so pages stay fast and private. The files stay on the other
 **Pull quote** and **Footnote** do what they say. A piece with more than three headings gets an "In this piece" contents box.
 
 ## Newsletter signup
-It appears under every piece. Set it in `_config.yml` under `newsletter:` (provider `substack`, `buttondown` or `custom`,
-and your handle). Leave `provider` empty to hide it. The Substack form sends people to finish signing up on Substack.
+It appears under every piece and on the home page. It is called "Letters from Joshua" and runs on Buttondown
+(username `olunlade`). Set it in `_config.yml` under `newsletter:` (provider `buttondown`, `substack` or `custom`,
+and your handle). Leave `provider` empty to hide it. Buttondown sends each new person a confirmation email, and
+every email carries an unsubscribe link. The list lives in your Buttondown account: export it from there every month
+or two and keep the file somewhere private, never in this repository.
 
 ## Podcast
 Paste your podcast's RSS feed address into `_data/podcast.yml` (`feed_url`). Every morning GitHub reads the feed,
