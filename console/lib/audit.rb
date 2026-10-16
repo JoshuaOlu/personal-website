@@ -273,6 +273,16 @@ module Console
         add.call('warn', '_data/publications.yml', "\"#{p['title'].to_s[0, 50]}\" has no DOI or web address.") if p['doi'].to_s.empty? && p['url'].to_s.empty?
       end
 
+      # GitHub Pages builds with Jekyll 3.10, which cannot read two conditions inside one where_exp.
+      Dir.glob(File.join(store.root, '**', '*.{html,md,txt,xml}')).each do |f|
+        rel = f.sub(store.root + '/', '')
+        next if rel =~ %r{\A(?:console|guide|_site|node_modules|\.git|\.console-data|vendor)/}
+        text = File.read(f, encoding: 'UTF-8') rescue next
+        if text =~ /where_exp:\s*"[^"]*"\s*,\s*"[^"]*\s(?:and|or)\s[^"]*"/
+          add.call('error', rel, 'This uses where_exp with two conditions (and / or), which the GitHub Pages version of Jekyll cannot read, so the live build would fail. Chain two where_exp filters instead, one condition each.')
+        end
+      end
+
       home = (store.read_data('home')['data'] rescue nil)
       if home.is_a?(Hash)
         modes = %w[welcome researcher writer]
