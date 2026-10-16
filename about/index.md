@@ -1,7 +1,7 @@
 ---
 layout: profile
 title: About Joshua Olunlade
-tagline: Engineering education researcher working on industrial placements, access and equity in Nigeria and across Africa.
+tagline: Engineering education researcher studying how students in Nigeria find and secure industrial placements.
 seo_title_raw: "About Joshua Olunlade, Engineering Education Researcher"
 description: >-
   Joshua Olunlade, engineering education researcher at the University of Cape Town (CREE).

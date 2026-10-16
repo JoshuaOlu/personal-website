@@ -26,8 +26,11 @@ layout: default
       <p>
         I am glad to hear from universities, funders, programme organisers, journalists and
         fellow researchers who want to talk about engineering education in Nigeria and across
-        Africa, industrial placements, or access to learning. The quickest way is email:
-        <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
+        Africa, industrial placements, or how students find their way into the profession. The quickest way is to write to me.
+      </p>
+      <p class="invite-actions">
+        {% include mail.html label="Write to me" class="button" copy=true %}
+        <noscript><span class="mail-plain">{% include mail-plain.html %}</span></noscript>
       </p>
 
       <h2 id="bios">Bios you can copy</h2>
@@ -60,7 +63,7 @@ layout: default
         {% for a in idy.affiliations %}
         <div><dt>{% if forloop.first %}Affiliations{% endif %}</dt><dd><a href="{{ a.url }}" target="_blank" rel="noopener">{{ a.name }}</a></dd></div>
         {% endfor %}
-        <div><dt>Email</dt><dd><a href="mailto:{{ site.email }}">{{ site.email }}</a></dd></div>
+        <div><dt>Email</dt><dd>{% include mail.html label="Write to me" %}<noscript> <span class="mail-plain">{% include mail-plain.html %}</span></noscript></dd></div>
         <div><dt>Also see</dt><dd><a href="{{ '/cv/' | relative_url }}">Curriculum vitae</a><br><a href="{{ '/publications/' | relative_url }}">Publications</a><br><a href="{{ '/research/' | relative_url }}">Research</a></dd></div>
       </dl>
     </aside>

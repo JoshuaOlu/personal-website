@@ -4,13 +4,13 @@ title: Writing
 seo_title_raw: "Writing on Engineering Education in Africa | Joshua Olunlade"
 description: >-
   Essays by Joshua Olunlade on engineering education in Nigeria and Africa,
-  industrial placements (SIWES) and access to learning.
+  industrial placements (SIWES) and how students find their way into the profession.
 permalink: /writing/
 ---
 <div class="page-shell">
   <header class="page-header">
     <h1>Writing</h1>
-    <p class="page-tagline">Essays and notes on engineering education in Nigeria and across Africa, industrial placements, and who gets access to learning.</p>
+    <p class="page-tagline">Essays and notes on engineering education in Nigeria and across Africa, industrial placements, and how students find their way into the profession.</p>
     <p class="feed-link"><a href="{{ '/feed.xml' | relative_url }}">Subscribe by feed</a></p>
   </header>
   {% assign posts = site.writing | sort: "date" | reverse %}

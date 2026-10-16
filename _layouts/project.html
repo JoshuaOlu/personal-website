@@ -4,6 +4,9 @@ layout: default
 <link rel="stylesheet" href="{{ '/assets/css/essay.css' | relative_url }}">
 {%- comment -%} Writing {email} in a project's front matter is replaced by the address in _config.yml. {%- endcomment -%}
 {%- assign email_token = "{email}" -%}
+{%- capture mail_anchor %}{% include mail.html label="Write to me" %}{% endcapture -%}
+{%- capture mail_plain %}{% include mail-plain.html %}{% endcapture -%}
+{%- assign mail_md = '<a href="mailto:{email}">{email}</a>' -%}
 <article class="page-shell project-page">
   <header class="page-header{% if page.cover %} has-cover{% endif %}">
     <div class="page-header-text">
@@ -30,7 +33,7 @@ layout: default
         {% for fact in page.facts %}
         <div>
           <dt>{{ fact.label }}</dt>
-          <dd>{{ fact.value | replace: email_token, site.email | markdownify | remove: "<p>" | remove: "</p>" | strip }}</dd>
+          <dd>{{ fact.value | markdownify | remove: "<p>" | remove: "</p>" | strip | replace: mail_md, mail_anchor | replace: email_token, mail_plain }}</dd>
         </div>
         {% endfor %}
       </dl>
@@ -52,7 +55,7 @@ layout: default
           {% for step in page.progress %}
           <li class="{{ step.state | default: 'next' }}">
             <p class="progress-label">{{ step.label }}<span class="progress-state">{% if step.state == 'done' %}Done{% elsif step.state == 'now' %}Now{% else %}Next{% endif %}</span></p>
-            {% if step.detail %}<p class="progress-detail">{{ step.detail | replace: email_token, site.email }}</p>{% endif %}
+            {% if step.detail %}<p class="progress-detail">{{ step.detail | replace: email_token, mail_plain }}</p>{% endif %}
           </li>
           {% endfor %}
         </ol>
@@ -64,7 +67,7 @@ layout: default
       {% if page.contact %}
       <section aria-labelledby="contact-heading">
         <h2 id="contact-heading">Get in touch</h2>
-        {{ page.contact | replace: email_token, site.email | markdownify }}
+        {{ page.contact | markdownify | replace: mail_md, mail_anchor | replace: email_token, mail_plain }}
       </section>
       {% endif %}
 

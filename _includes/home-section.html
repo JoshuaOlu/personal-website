@@ -102,7 +102,7 @@
     <div class="hello-band">
       <h2 id="hello-heading">{{ hm.hello.title | default: "Say hello" }}</h2>
       <p>{{ hm.hello.text }}</p>
-      <p><a class="button" href="mailto:{{ site.email }}">{{ hm.hello.button_label | default: "Write to me" }}</a></p>
+      <p>{% include mail.html label=hm.hello.button_label class="button" %}</p>
     </div>
   </section>
 {%- endif -%}

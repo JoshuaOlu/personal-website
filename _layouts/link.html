@@ -58,12 +58,12 @@ layout: default
 
     <div class="link-note" data-when="paused"{% if state != "paused" %} hidden{% endif %}>
       <p>{{ page.paused_message | default: "Please check back soon." }}</p>
-      <p>Questions? Email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.{% if page.fallback_url %} You can also <a href="{{ fallback_href }}">{{ fallback_label }}</a>.{% endif %}</p>
+      <p>Questions? {% include mail.html label="Write to me" %}.{% if page.fallback_url %} You can also <a href="{{ fallback_href }}">{{ fallback_label }}</a>.{% endif %}</p>
     </div>
 
     <div class="link-note" data-when="ended"{% if state != "ended" %} hidden{% endif %}>
       <p>{{ page.ended_message | default: "Thank you for your interest. This link is no longer open." }}</p>
-      <p>Questions? Email <a href="mailto:{{ site.email }}">{{ site.email }}</a>.{% if page.fallback_url %} You can also <a data-fallback-link href="{{ fallback_href }}">{{ fallback_label }}</a>.{% endif %}</p>
+      <p>Questions? {% include mail.html label="Write to me" %}.{% if page.fallback_url %} You can also <a data-fallback-link href="{{ fallback_href }}">{{ fallback_label }}</a>.{% endif %}</p>
     </div>
   </div>
 </div>

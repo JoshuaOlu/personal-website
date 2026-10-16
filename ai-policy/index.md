@@ -20,7 +20,7 @@ This site exists so that people can find my work on engineering education. I wou
 - Using any page, image, paper listing or text on this site to **train, fine-tune or evaluate** an AI model, or adding it to a dataset for that purpose.
 - Bulk copying or republishing the site.
 
-I reserve all rights, including the right to opt out of text and data mining under Article 4 of the European Union Directive 2019/790 on copyright in the digital single market. Questions or licensing requests: <a href="mailto:{{ site.email }}">{{ site.email }}</a>.
+I reserve all rights, including the right to opt out of text and data mining under Article 4 of the European Union Directive 2019/790 on copyright in the digital single market. Questions or licensing requests: {% include mail.html label="write to me" %} <noscript>({% include mail-plain.html %})</noscript>.
 
 ## How I say this to machines
 

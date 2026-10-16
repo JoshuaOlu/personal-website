@@ -27,6 +27,7 @@ module Console
       end
       cfg = (@store.read_config rescue {})
       @site_url = cfg['url'].to_s.sub(%r{/+\z}, '')
+      @email = cfg['email'].to_s.strip.downcase
       pages = Dir.glob(File.join(@dir, '**', '*.html')).sort
       @page_info = {}
       pages.each { |f| inspect_page(f) }
@@ -71,6 +72,9 @@ module Console
       text = body.gsub(/<(script|style)\b.*?<\/\1>/m, ' ').gsub(/<[^>]+>/, ' ')
       words = CGI.unescapeHTML(text).split.size
       ids = html.scan(/\sid="([^"]+)"/).flatten
+      if !noindex && @email.include?('@') && html.downcase.include?(@email)
+        add(:warn, page, 'Your email address is written out in the page, where programs that collect addresses can read it.', 'Use the "Write to me" button (the mail include) instead of printing the address.')
+      end
       @page_info[page] = { noindex: noindex, title: title, desc: desc, canonical: canonical, ids: ids, html: html, words: words, file: file }
       return if noindex
 

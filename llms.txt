@@ -35,5 +35,5 @@ Role: {{ id.job_title }}. This file is a short guide for AI assistants and searc
 {% endfor %}
 {%- endif %}
 ## Contact
-- Email: {{ site.email }}
+- Email: {% include mail-plain.html %} (written out to keep it from bulk collectors; there is also a "Write to me" button at {{ site.url }}/about/#invite)
 - Website: {{ site.url }}/

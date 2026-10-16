@@ -1,0 +1,14 @@
+{%- comment -%}
+  Your email address, shown as a button or link instead of plain text. The address is not written
+  into the page. A small script puts it together only when someone presses the button, so the
+  programs that collect addresses from web pages find nothing. Without JavaScript the reader is
+  sent to the About page, which spells the address out as "name [at] domain [dot] com".
+    label   words on the button or link (default: Write to me)
+    class   CSS class, for example "button"
+    copy    true to add a "Copy address" button beside it
+{%- endcomment -%}
+{%- assign mail_parts = site.email | split: "@" -%}
+{%- assign mail_user = mail_parts[0] | split: "" | reverse | join: "" -%}
+{%- assign mail_domain = mail_parts[1] | split: "" | reverse | join: "" -%}
+<a class="{{ include.class | default: 'mail-link' }}" href="{{ '/about/#invite' | relative_url }}" data-mu="{{ mail_user }}" data-md="{{ mail_domain }}" rel="nofollow">{{ include.label | default: "Write to me" }}</a>
+{%- if include.copy %} <button type="button" class="mail-copy" data-mu="{{ mail_user }}" data-md="{{ mail_domain }}" hidden>Copy address</button>{% endif -%}

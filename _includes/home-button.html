@@ -1,0 +1,8 @@
+{%- comment -%} One hero button. url may be a page (/cv/), a full address, or the word mailto. {%- endcomment -%}
+{%- if include.url == "mailto" or include.url contains "mailto:" -%}
+  {% include mail.html label=include.label class=include.class %}
+{%- elsif include.url contains "://" -%}
+  <a class="{{ include.class }}" href="{{ include.url }}">{{ include.label }}</a>
+{%- else -%}
+  <a class="{{ include.class }}" href="{{ include.url | relative_url }}">{{ include.label }}</a>
+{%- endif -%}

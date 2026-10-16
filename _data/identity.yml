@@ -23,7 +23,7 @@ bio_one_line: Joshua Olunlade is an engineering education researcher at the Univ
 
 bio_short: Joshua Olunlade is an MPhil candidate in Engineering Education at the University of Cape Town's Centre for Research in Engineering Education (CREE). His research examines how Nigerian engineering undergraduates access industrial placements (SIWES). He is the founder and Executive Director of Care for Knowledge (CFK), a Nigerian nonprofit working to make educational resources more accessible.
 
-bio_long: Joshua Olunlade is an MPhil candidate in Engineering Education at the University of Cape Town's Centre for Research in Engineering Education (CREE), supervised by A/Prof. Bruce Kloot and Dr Lauren Jansen. His study, using constructivist grounded theory, examines how final-year engineering undergraduates in Nigeria find and secure industrial placements under the Students Industrial Work Experience Scheme (SIWES), and what that means for equity of access to work-integrated learning. He holds a B.Eng and an M.Eng in Mechanical Engineering from Adeleke University, Ede, where his thesis produced Tinkabot, a screen-free robotics kit for early computational thinking. His publications cover educational robotics and the teaching of engineering graphics in developing countries. He is the founder and Executive Director of Care for Knowledge (CFK), a Nigerian nonprofit working to make educational resources more accessible, and tutors in mechanical engineering at UCT.
+bio_long: Joshua Olunlade is an MPhil candidate in Engineering Education at the University of Cape Town's Centre for Research in Engineering Education (CREE), supervised by A/Prof. Bruce Kloot and Dr Lauren Jansen. His study, using constructivist grounded theory, examines how final-year engineering undergraduates in Nigeria find and secure industrial placements under the Students Industrial Work Experience Scheme (SIWES), trying to understand, from the students' own accounts, what is actually going on as they look for and secure these placements. He holds a B.Eng and an M.Eng in Mechanical Engineering from Adeleke University, Ede, where his thesis produced Tinkabot, a screen-free robotics kit for early computational thinking. His publications cover educational robotics and the teaching of engineering graphics in developing countries. He is the founder and Executive Director of Care for Knowledge (CFK), a Nigerian nonprofit working to make educational resources more accessible, and tutors in mechanical engineering at UCT.
 
 affiliations:
 - name: Centre for Research in Engineering Education (CREE), University of Cape Town
@@ -42,7 +42,7 @@ topics:
 - title: Engineering education in Nigeria
   text: How Nigerian engineering students learn, are placed in industry and move into the profession, studied with the students' own accounts at the centre.
 - title: Work-integrated learning and SIWES
-  text: The Students Industrial Work Experience Scheme (SIWES) and who gets access to a good placement, and why it matters for equity.
+  text: The Students Industrial Work Experience Scheme (SIWES), and how students find, secure and make sense of their industrial placements, understood through their own accounts.
 - title: Engineering education research in Africa
   text: Studying engineering education from within the African context, through the Centre for Research in Engineering Education (CREE) at the University of Cape Town.
 - title: Constructivist grounded theory

@@ -135,7 +135,7 @@ async function viewSettings(view) {
     { k: 'title', label: 'Site name' },
     { k: 'tagline', label: 'Tagline', hint: 'Shown after the name in search results when a page has no title of its own.' },
     { k: 'author', label: 'Author' },
-    { k: 'email', label: 'Contact email', hint: 'The only place your email lives. The home page, projects and short links all read it from here.', type: 'email' },
+    { k: 'email', label: 'Contact email', hint: 'The only place your email lives. Pages show it as a "Write to me" button, put together only when someone presses it, so address collectors find nothing. Projects and short links read it from here.', type: 'email' },
     { k: 'url', label: 'Web address', hint: 'Change this only if the domain changes. It must start with https://', validate: (v) => (/^https:\/\/[^/\s]+$/.test(v) ? '' : 'Must look like https://joshua.olunlade.com (no slash at the end).') },
     { k: 'description', label: 'Site description', w: 'area', rows: 4, wide: true, counter: [100, 300], hint: 'The default description for search results and link previews on pages that do not have their own.' },
     { k: 'nav', label: 'Menu', w: 'objlist', addLabel: 'Add a menu item', hint: 'The links in the top bar. Use "Hide until it has content" for a section that is empty at first, like Writing.',

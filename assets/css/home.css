@@ -113,3 +113,14 @@
   .hello-band p { margin-inline: 0; }
 }
 .hello-band h2, .aside-card h2 { font-family: var(--display); font-weight: 700; font-size: 1.75rem; letter-spacing: -0.02em; line-height: 1.15; }
+
+/* Email as a button (see _includes/mail.html) */
+.invite-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.mail-copy {
+  font-family: var(--display); font-weight: 600; font-size: 0.95rem; line-height: 1;
+  padding: 0.8rem 1.1rem; border-radius: 999px; border: 2px solid var(--line);
+  background: transparent; color: var(--ink); cursor: pointer;
+}
+.mail-copy:hover { border-color: var(--accent); color: var(--accent); }
+.mail-plain { font-family: var(--display); color: var(--muted); }
+.mail-link { color: var(--accent); }
