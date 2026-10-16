@@ -50,7 +50,7 @@ text works fine.
 | `cover_position` | Optional. Which part of the cover to keep if it gets cropped, for example `50% 20%`. |
 | `image` | The picture used when the page is shared on LinkedIn and elsewhere. See section 6. |
 | `facts` | The "at a glance" box beside the text. Each entry has a `label` and a `value`. Values can contain markdown links. |
-| `progress` | The timeline called "Where things stand". Each step has a `label`, a `state` and an optional `detail`. |
+| `progress` | The timeline called "Where things stand". Each step has a `label`, a `state` (`done`, `now` or `next`) and an optional `detail`. In the console, use the "Where things stand" form on the project page: add, reorder, remove and mark steps, no YAML needed. |
 | `publications` | The ids of papers from `_data/publications.yml` that belong to this project. See "Papers and publications". |
 | `outputs` | Videos, slides, code, data and anything else. See section 3. |
 | `contact` | An optional "Get in touch" note at the end. |

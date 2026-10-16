@@ -76,6 +76,44 @@ function setField(raw, key, kind, value, keepEmpty = false) {
   }
   return setKey(raw, key, yamlValue(kind, value));
 }
+
+/* Replace the whole "progress:" timeline (a list of steps). Comment lines inside the old block, such as a
+   commented-out example step, are kept after the new list. An empty list removes the key. */
+function setProgress(raw, steps) {
+  const lines = String(raw).split('\n');
+  const i = keyIndex(lines, 'progress');
+  let end = i + 1; const kept = [];
+  if (i >= 0) {
+    while (end < lines.length) {
+      const l = lines[end];
+      if (/^(\s+\S|-\s|-$)/.test(l)) { if (/^\s*#/.test(l)) kept.push(l); end++; continue; }
+      if (l.trim() === '') {
+        let k = end + 1; while (k < lines.length && lines[k].trim() === '') k++;
+        if (k < lines.length && /^(\s+\S|-\s)/.test(lines[k])) { end++; continue; }
+      }
+      break;
+    }
+  }
+  const clean = steps.filter((x) => x && (String(x.label || '').trim() || String(x.detail || '').trim()));
+  const out = [];
+  if (clean.length) {
+    out.push('progress:');
+    clean.forEach((x) => {
+      out.push('  - label: ' + yq(String(x.label || '').trim()));
+      out.push('    state: ' + (['done', 'now', 'next'].includes(x.state) ? x.state : 'next'));
+      const d = String(x.detail || '').replace(/\s*\n\s*/g, ' ').trim();
+      if (d) out.push('    detail: ' + (d.length > 90 ? foldedBlock(d, '      ') : yq(d)));
+    });
+    out.push(...kept);
+  } else if (kept.length) out.push(...kept);
+  if (i >= 0) lines.splice(i, end - i, ...out);
+  else if (out.length) {
+    while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+    lines.push(...out);
+  }
+  return lines.join('\n');
+}
+
 /* Set a key one level down, inside a block such as "image:". */
 function setNested(raw, parent, key, kind, value) {
   const lines = String(raw).split('\n');

@@ -429,6 +429,7 @@ async function viewDocEdit(view, kind, path) {
         yamlOk = true; yamlErr.textContent = ''; parsed = r.data || {};
         inputs.forEach(({ def, el }) => { if (document.activeElement !== el) { const v = getPath(parsed, def); el.value = Array.isArray(v) ? v.join(', ') : (v == null ? '' : v); } });
         if (document.activeElement !== titleInput) titleInput.value = parsed.title || '';
+        if (drawProgress) drawProgress(false);
         refreshPreviews();
       } else { yamlOk = false; yamlErr.textContent = r.error; }
     } catch (e) { yamlOk = false; yamlErr.textContent = e.message; }
@@ -454,8 +455,56 @@ async function viewDocEdit(view, kind, path) {
   } }, icon('trash'), 'Delete');
 
   refreshPreviews(); markDirty();
+
+  /* the progress timeline ("Where things stand") as a proper form */
+  let progressCard = null; let drawProgress = null;
+  if (kind === 'projects') {
+    const STATES = [['done', 'Done'], ['now', 'Happening now'], ['next', 'Coming next']];
+    const list = h('div', { class: 'stack' });
+    const today = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+    const dateIn = h('input', { type: 'date', value: String(parsed.updated || '').slice(0, 10), oninput: () => applyField({ k: 'updated', kind: 'date' }, dateIn.value) });
+    const steps = () => (Array.isArray(parsed.progress) ? parsed.progress : []).map((x) => ({ label: x && x.label || '', state: x && x.state || 'next', detail: x && x.detail || '' }));
+    let model = steps();
+    const commit = (touchDate = true) => {
+      fm = setProgress(fm, model);
+      parsed.progress = model.filter((x) => x.label.trim() || x.detail.trim()).map((x) => Object.assign({}, x));
+      if (!parsed.progress.length) delete parsed.progress;
+      if (touchDate) { fm = setField(fm, 'updated', 'date', today()); parsed.updated = today(); dateIn.value = today(); }
+      yamlArea.value = fm; refreshPreviews(); markDirty();
+    };
+    drawProgress = (force, keep) => {
+      if (!force && list.contains(document.activeElement)) return;
+      if (!keep) model = steps();
+      clear(list);
+      if (!model.length) list.append(h('p', { class: 'muted' }, 'No steps yet. Press "Add a step" and the "Where things stand" timeline appears on the project page.'));
+      model.forEach((st, i) => {
+        const label = h('input', { type: 'text', value: st.label, placeholder: 'Short name of the step, e.g. Interviews', oninput: () => { st.label = label.value; commit(); } });
+        label.style.cssText = 'flex:1 1 12rem;width:auto;min-width:0';
+        const sel = h('select', { onchange: () => { st.state = sel.value; commit(); } }, STATES.map(([v, t]) => h('option', { value: v, selected: v === st.state }, t)));
+        sel.style.cssText = 'flex:0 0 9.5rem;width:9.5rem';
+        const det = h('textarea', { rows: 2, placeholder: 'One or two sentences on this step (optional)', oninput: () => { st.detail = det.value; commit(); } });
+        det.value = st.detail;
+        const move = (d) => () => { const j = i + d; if (j < 0 || j >= model.length) return; [model[i], model[j]] = [model[j], model[i]]; commit(); drawProgress(true, true); };
+        list.append(h('div', { class: 'prog-step', style: { padding: '.7rem', border: '1px solid var(--line-2)', borderRadius: '10px' } },
+          h('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '.5rem', alignItems: 'center' } }, h('span', { class: 'chip ' + (st.state === 'done' ? 'ok' : st.state === 'now' ? 'signal' : 'info') }, (i + 1) + ''), label, sel,
+            h('span', { style: { display: 'inline-flex', flexWrap: 'nowrap', gap: '.15rem', flex: '0 0 auto' } }, h('button', { type: 'button', class: 'btn quiet small', title: 'Move up', 'aria-label': 'Move up', disabled: i === 0, onclick: move(-1) }, '↑'),
+            h('button', { type: 'button', class: 'btn quiet small', title: 'Move down', 'aria-label': 'Move down', disabled: i === model.length - 1, onclick: move(1) }, '↓'),
+            h('button', { type: 'button', class: 'btn quiet small', title: 'Remove this step', 'aria-label': 'Remove this step', onclick: async () => {
+              if (await confirmDialog('Remove this step?', '"' + (st.label || 'Untitled step') + '" will be taken off the timeline.', 'Remove it', true)) { model.splice(i, 1); commit(); drawProgress(true, true); }
+            } }, icon('trash')))),
+          h('div', { style: { marginTop: '.5rem' } }, det)));
+      });
+    };
+    drawProgress(true);
+    progressCard = h('div', { class: 'card' }, h('h2', {}, 'Where things stand'),
+      h('p', { class: 'sub' }, 'The timeline on the project page. Mark each step Done, Happening now or Coming next. Changing a step sets "Last updated" to today.'),
+      list,
+      h('div', { class: 'row', style: { marginTop: '.8rem', gap: '.8rem', alignItems: 'center', flexWrap: 'wrap' } },
+        h('button', { type: 'button', class: 'btn secondary', onclick: () => { model.push({ label: '', state: model.some((x) => x.state === 'now') ? 'next' : 'now', detail: '' }); drawProgress(true, true); const ins = list.querySelectorAll('input[type=text]'); if (ins.length) ins[ins.length - 1].focus(); } }, icon('plus'), 'Add a step'),
+        h('span', { class: 'spacer' }), h('label', { class: 'small muted' }, 'Last updated ', dateIn)));
+  }
   const advanced = h('details', { class: 'card' }, h('summary', { style: { cursor: 'pointer', fontWeight: 700 } }, 'Advanced: everything at the top of the file (front matter)'),
-    h('p', { class: 'sub', style: { marginTop: '.6rem' } }, 'This is where the "At a glance" box, the progress timeline and the list of outputs live. The boxes above edit the same text.'), yamlArea, yamlErr);
+    h('p', { class: 'sub', style: { marginTop: '.6rem' } }, 'This is where the "At a glance" box, the progress timeline and the list of outputs live. The timeline has its own form above. The boxes above edit the same text.'), yamlArea, yamlErr);
   const mdBox = h('div', { class: 'md-wrap' + (isWriting ? ' writing' : '') }, tools, bodyArea, previewPane, acPop);
   const sideCards = [
     h('div', { class: 'card' }, h('div', { class: 'row' }, saveBtn, h('a', { class: 'btn secondary', href: viewUrl(S.info ? (doc.url || '/') : '/'), target: '_blank', rel: 'noopener' }, 'View page ', icon('ext'))), h('div', { style: { marginTop: '.7rem' } }, msg), h('div', { style: { marginTop: '1rem' } }, delBtn))
@@ -477,7 +526,7 @@ async function viewDocEdit(view, kind, path) {
   const titleCard = h('div', { class: 'card' }, titleInput, kind === 'writing' ? titleHint : null, pubToggle ? h('div', { style: { marginTop: '1rem' } }, pubToggle) : null, isWriting ? null : h('div', { style: { marginTop: '1.2rem' } }, fieldsEl));
   const pageCard = h('div', { class: 'card' }, isWriting ? null : h('h2', {}, 'The page itself'), isWriting ? null : h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox);
   view.append(h('div', { class: 'editor' + (isWriting ? ' writing' : '') },
-    h('div', { class: 'stack' }, isWriting ? [titleCard, pageCard, fieldsCard, advanced] : [titleCard, h('div', { class: 'card' }, h('h2', {}, 'The page itself'), h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox), advanced]),
+    h('div', { class: 'stack' }, isWriting ? [titleCard, pageCard, fieldsCard, advanced] : [titleCard, progressCard, h('div', { class: 'card' }, h('h2', {}, 'The page itself'), h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox), advanced]),
     h('div', { class: 'editor-side' }, sideCards)));
 }
 
