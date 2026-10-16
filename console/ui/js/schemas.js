@@ -96,6 +96,59 @@ const SCHEMA = {
       hint: 'Google Scholar, Zenodo, your UCT page, Wikidata. Profiles on the Social links page are already included.' }
   ],
 
+  home: [
+    { k: 'mode', w: 'cards', label: 'What should the home page lead with?', options: [
+      { value: 'welcome', label: 'Welcome', text: 'A warm hello, your newest piece of writing, and what you are working on now. Best for meeting new people.' },
+      { value: 'researcher', label: 'Researcher', text: 'Your research, papers and CV come first. Best when you are applying or being checked out by academics.' },
+      { value: 'writer', label: 'Writer', text: 'Your essays come first, with the sign-up for new pieces. Best once you are publishing regularly.' }
+    ], hint: 'Pick one, press Save, then Publish. You can switch whenever you like. Each mode keeps its own words below.' },
+    { k: 'welcome', w: 'group', collapsed: true, label: 'Words for Welcome', fields: [
+      { k: 'eyebrow', label: 'Small line above the name', hint: 'Optional. Example: Hello, and welcome.' },
+      { k: 'headline', label: 'Big heading', hint: 'Keep your full name in it, so search engines see it.' },
+      { k: 'lede', label: 'Opening words', w: 'area', rows: 4, wide: true, counter: [80, 300], hint: 'Two or three sentences, in your own voice. Warm and plain works best.' },
+      { k: 'primary_label', label: 'Main button' }, { k: 'primary_url', label: 'Main button goes to', hint: 'A page like /cv/ or /writing/, a full web address, or the word mailto to write to you. A button to /writing/ hides itself until you publish a piece.' },
+      { k: 'secondary_label', label: 'Second button (optional)' }, { k: 'secondary_url', label: 'Second button goes to' },
+      { k: 'sections', label: 'What follows, in order', w: 'objlist', addLabel: 'Add a section', hint: 'Use the arrows to reorder. A section with nothing to show (no writing yet, for example) simply stays out of the way.',
+        itemLabel: (s) => ({ main: ({ latest: 'Newest piece of writing', writing: 'Earlier pieces', now: 'What I am working on', research: 'All research', publications: 'Recent papers', about: 'A little about me', topics: 'Things I think about', newsletter: 'Sign-up for new pieces', hello: 'Say hello' })[s.section] || 'New section' }), newItem: () => ({ section: 'about' }),
+        fields: [{ k: 'section', label: 'Section', w: 'select', required: true, options: [{ value: 'latest', label: 'Newest piece of writing (featured)' }, { value: 'writing', label: 'Earlier pieces of writing' }, { value: 'now', label: 'What I am working on now' }, { value: 'research', label: 'All research' }, { value: 'publications', label: 'Recent papers' }, { value: 'about', label: 'A little about me (with Care for Knowledge)' }, { value: 'topics', label: 'Things I think about' }, { value: 'newsletter', label: 'Sign-up for new pieces' }, { value: 'hello', label: 'Say hello (contact)' }] }] }
+    ] },
+    { k: 'researcher', w: 'group', collapsed: true, label: 'Words for Researcher', fields: [
+      { k: 'eyebrow', label: 'Small line above the name', hint: 'Optional. Example: Hello, and welcome.' },
+      { k: 'headline', label: 'Big heading', hint: 'Keep your full name in it, so search engines see it.' },
+      { k: 'lede', label: 'Opening words', w: 'area', rows: 4, wide: true, counter: [80, 300], hint: 'Two or three sentences, in your own voice. Warm and plain works best.' },
+      { k: 'primary_label', label: 'Main button' }, { k: 'primary_url', label: 'Main button goes to', hint: 'A page like /cv/ or /writing/, a full web address, or the word mailto to write to you. A button to /writing/ hides itself until you publish a piece.' },
+      { k: 'secondary_label', label: 'Second button (optional)' }, { k: 'secondary_url', label: 'Second button goes to' },
+      { k: 'sections', label: 'What follows, in order', w: 'objlist', addLabel: 'Add a section', hint: 'Use the arrows to reorder. A section with nothing to show (no writing yet, for example) simply stays out of the way.',
+        itemLabel: (s) => ({ main: ({ latest: 'Newest piece of writing', writing: 'Earlier pieces', now: 'What I am working on', research: 'All research', publications: 'Recent papers', about: 'A little about me', topics: 'Things I think about', newsletter: 'Sign-up for new pieces', hello: 'Say hello' })[s.section] || 'New section' }), newItem: () => ({ section: 'about' }),
+        fields: [{ k: 'section', label: 'Section', w: 'select', required: true, options: [{ value: 'latest', label: 'Newest piece of writing (featured)' }, { value: 'writing', label: 'Earlier pieces of writing' }, { value: 'now', label: 'What I am working on now' }, { value: 'research', label: 'All research' }, { value: 'publications', label: 'Recent papers' }, { value: 'about', label: 'A little about me (with Care for Knowledge)' }, { value: 'topics', label: 'Things I think about' }, { value: 'newsletter', label: 'Sign-up for new pieces' }, { value: 'hello', label: 'Say hello (contact)' }] }] }
+    ] },
+    { k: 'writer', w: 'group', collapsed: true, label: 'Words for Writer', fields: [
+      { k: 'eyebrow', label: 'Small line above the name', hint: 'Optional. Example: Hello, and welcome.' },
+      { k: 'headline', label: 'Big heading', hint: 'Keep your full name in it, so search engines see it.' },
+      { k: 'lede', label: 'Opening words', w: 'area', rows: 4, wide: true, counter: [80, 300], hint: 'Two or three sentences, in your own voice. Warm and plain works best.' },
+      { k: 'primary_label', label: 'Main button' }, { k: 'primary_url', label: 'Main button goes to', hint: 'A page like /cv/ or /writing/, a full web address, or the word mailto to write to you. A button to /writing/ hides itself until you publish a piece.' },
+      { k: 'secondary_label', label: 'Second button (optional)' }, { k: 'secondary_url', label: 'Second button goes to' },
+      { k: 'sections', label: 'What follows, in order', w: 'objlist', addLabel: 'Add a section', hint: 'Use the arrows to reorder. A section with nothing to show (no writing yet, for example) simply stays out of the way.',
+        itemLabel: (s) => ({ main: ({ latest: 'Newest piece of writing', writing: 'Earlier pieces', now: 'What I am working on', research: 'All research', publications: 'Recent papers', about: 'A little about me', topics: 'Things I think about', newsletter: 'Sign-up for new pieces', hello: 'Say hello' })[s.section] || 'New section' }), newItem: () => ({ section: 'about' }),
+        fields: [{ k: 'section', label: 'Section', w: 'select', required: true, options: [{ value: 'latest', label: 'Newest piece of writing (featured)' }, { value: 'writing', label: 'Earlier pieces of writing' }, { value: 'now', label: 'What I am working on now' }, { value: 'research', label: 'All research' }, { value: 'publications', label: 'Recent papers' }, { value: 'about', label: 'A little about me (with Care for Knowledge)' }, { value: 'topics', label: 'Things I think about' }, { value: 'newsletter', label: 'Sign-up for new pieces' }, { value: 'hello', label: 'Say hello (contact)' }] }] }
+    ] },
+    { k: 'about', w: 'group', label: 'A little about me (shared by every mode)', fields: [
+      { k: 'title', label: 'Heading' },
+      { k: 'text', label: 'Your words', w: 'area', rows: 6, wide: true, hint: 'Write [words](address) to make a link.' },
+      { k: 'link_label', label: 'Link text' }, { k: 'link_url', label: 'Link goes to' }
+    ] },
+    { k: 'cfk', w: 'group', label: 'Care for Knowledge card (shown beside "about me"; leave the words empty to hide it)', fields: [
+      { k: 'title', label: 'Heading' },
+      { k: 'text', label: 'Your words', w: 'area', rows: 4, wide: true },
+      { k: 'link_label', label: 'Link text' }, { k: 'link_url', label: 'Link goes to', type: 'url' }
+    ] },
+    { k: 'hello', w: 'group', label: 'Say hello (the invitation at the bottom)', fields: [
+      { k: 'title', label: 'Heading' },
+      { k: 'text', label: 'Your words', w: 'area', rows: 3, wide: true },
+      { k: 'button_label', label: 'Button text' }
+    ] }
+  ],
+
   ai_bots: [
     { w: 'note', text: 'Allowed bots help people find you: they power AI search and answer tools. Blocked bots collect pages to train AI models. These lists build /robots.txt every time you publish. A name here is a request, not a lock: well-behaved companies follow it.' },
     { k: 'allow', label: 'Allowed (search and answer tools)', w: 'objlist', addLabel: 'Add a bot', itemLabel: (b) => ({ main: b.name || 'New bot', sub: b.owner }), newItem: () => ({ name: '', owner: '', what: '' }),

@@ -4,7 +4,7 @@
 const NAV = [
   ['', [['/', 'Overview', 'home']]],
   ['Content', [['/projects', 'Projects', 'folder'], ['/writing', 'Writing', 'pen'], ['/publications', 'Publications', 'book'], ['/references', 'References', 'quote'], ['/cv', 'CV', 'user'], ['/links', 'Short links', 'link']]],
-  ['Site', [['/seo', 'Search and AI', 'globe'], ['/media', 'Media', 'image'], ['/settings', 'Settings', 'gear'], ['/files', 'All files', 'file']]],
+  ['Site', [['/homepage', 'Home page', 'home'], ['/seo', 'Search and AI', 'globe'], ['/media', 'Media', 'image'], ['/settings', 'Settings', 'gear'], ['/files', 'All files', 'file']]],
   ['Ship', [['/checks', 'Preview and checks', 'check'], ['/publish', 'Publish', 'upload']]]
 ];
 function buildNav() {
@@ -35,6 +35,7 @@ route('/cv', viewCV);
 route('/links', viewLinks);
 route('/links/new', (v) => viewLinkEdit(v, null));
 route('/links/edit/(.+)', (v, p) => viewLinkEdit(v, p));
+route('/homepage', viewHomePage);
 route('/seo', (v) => viewSeo(v, 'you'));
 route('/seo/(\\w+)', viewSeo);
 route('/media', viewMedia);

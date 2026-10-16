@@ -1,0 +1,32 @@
+{%- comment -%} The top of the home page. Words come from _data/home.yml (the chosen mode). {%- endcomment -%}
+{%- assign cfg = include.cfg -%}
+<section class="hero hero-{{ site.data.home.mode | default: 'welcome' }}">
+  <div class="hero-text">
+    {% if cfg.eyebrow %}<p class="eyebrow">{{ cfg.eyebrow }}</p>{% endif %}
+    <h1>{{ cfg.headline | default: "Joshua Olunlade" }}</h1>
+    <p class="hero-lede">{{ cfg.lede }}</p>
+    <div class="hero-actions">
+      {%- assign pu = cfg.primary_url | default: "" -%}
+      {%- assign su = cfg.secondary_url | default: "" -%}
+      {%- assign show_p = true -%}{%- assign show_s = true -%}
+      {%- if pu == "/writing/" and site.writing.size == 0 %}{% assign show_p = false %}{% endif -%}
+      {%- if su == "/writing/" and site.writing.size == 0 %}{% assign show_s = false %}{% endif -%}
+      {%- if cfg.primary_label == nil or cfg.primary_label == "" %}{% assign show_p = false %}{% endif -%}
+      {%- if cfg.secondary_label == nil or cfg.secondary_label == "" %}{% assign show_s = false %}{% endif -%}
+      {%- if show_p == false and show_s == true %}
+        {%- assign pu = su -%}{%- assign su = "" -%}{%- assign show_s = false -%}
+        <a class="button" href="{% if pu == 'mailto' %}mailto:{{ site.email }}{% elsif pu contains '://' or pu contains 'mailto:' %}{{ pu }}{% else %}{{ pu | relative_url }}{% endif %}">{{ cfg.secondary_label }}</a>
+      {%- elsif show_p %}
+        <a class="button" href="{% if pu == 'mailto' %}mailto:{{ site.email }}{% elsif pu contains '://' or pu contains 'mailto:' %}{{ pu }}{% else %}{{ pu | relative_url }}{% endif %}">{{ cfg.primary_label }}</a>
+      {%- endif %}
+      {%- if show_s %}
+        <a class="button secondary" href="{% if su == 'mailto' %}mailto:{{ site.email }}{% elsif su contains '://' or su contains 'mailto:' %}{{ su }}{% else %}{{ su | relative_url }}{% endif %}">{{ cfg.secondary_label }}</a>
+      {%- endif %}
+    </div>
+  </div>
+  <img
+    class="hero-photo"
+    src="{{ '/assets/images/headshot.jpg' | relative_url }}"
+    alt="Joshua Olunlade, smiling, wearing round glasses and a mint green shirt"
+    width="572" height="571">
+</section>

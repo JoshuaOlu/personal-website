@@ -310,3 +310,16 @@ details.item > summary:hover { background: var(--surface-2); }
 .imp-row i { font-style: italic; }
 .steps-list { padding-left: 1.2rem; display: flex; flex-direction: column; gap: .4rem; margin-top: .6rem; }
 @media (max-width: 1100px) { .editor.writing { grid-template-columns: 1fr; } .editor.writing .editor-side { max-height: none; overflow: visible; } }
+
+/* Home page mode picker */
+.mode-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.mode-card { text-align: left; display: flex; flex-direction: column; gap: .35rem; padding: .9rem 1rem; border: 2px solid var(--line, #d5dce3); border-radius: 12px; background: var(--surface, #fff); color: inherit; font: inherit; cursor: pointer; }
+.mode-card b { font-size: 1rem; }
+.mode-card span { font-size: .85rem; line-height: 1.4; color: var(--muted, #4a5868); }
+.mode-card:hover { border-color: var(--accent, #0a6b5b); }
+.mode-card.on { border-color: var(--accent, #0a6b5b); box-shadow: inset 0 0 0 1px var(--accent, #0a6b5b); }
+.mode-card.on b::after { content: " ✓"; color: var(--accent, #0a6b5b); }
+@media (max-width: 760px) { .mode-cards { grid-template-columns: 1fr; } }
+.group-details { border: 1px solid var(--line); border-radius: 12px; padding: .6rem 1rem; background: var(--surface-2); }
+.group-details > summary { cursor: pointer; font-weight: 650; padding: .35rem 0; }
+.group-details[open] > summary { margin-bottom: .8rem; }

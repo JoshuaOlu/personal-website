@@ -1,0 +1,93 @@
+# ═══════════════════════════════════════════════════════════════════════════
+#  THE HOME PAGE. Pick a mode, and the home page puts a different thing first.
+#  Change it from the console (Home page) or here, then publish.
+#
+#    welcome     a warm hello, your newest piece, what you are working on now
+#    researcher  your research, papers and CV first
+#    writer      your essays first, with the sign-up for new pieces
+#
+#  Each mode has its own words and its own order of sections. Edit any of them.
+# ═══════════════════════════════════════════════════════════════════════════
+
+mode: welcome
+
+welcome:
+  eyebrow: Hello, and welcome
+  headline: I'm Joshua Olunlade.
+  lede: >-
+    I study how students in Nigeria find their way into engineering, and I run a small
+    nonprofit that tries to put learning within reach. Come in, have a look around, and
+    tell me what you think.
+  primary_label: Read my writing
+  primary_url: /writing/
+  secondary_label: What I'm working on
+  secondary_url: /research/
+  sections:
+    - section: latest
+    - section: now
+    - section: about
+    - section: topics
+    - section: hello
+
+researcher:
+  eyebrow: Engineering education researcher
+  headline: Joshua Olunlade
+  lede: >-
+    I study how students in Nigeria find their way into industrial placements, and I build
+    programmes and tools that put learning within reach.
+  primary_label: Read my CV
+  primary_url: /cv/
+  secondary_label: Get in touch
+  secondary_url: mailto
+  sections:
+    - section: about
+    - section: research
+    - section: publications
+    - section: latest
+    - section: topics
+    - section: hello
+
+writer:
+  eyebrow: Essays and notes
+  headline: Joshua Olunlade
+  lede: >-
+    I write about how students in Nigeria and across Africa find their way into engineering,
+    and about what it takes to put learning within reach.
+  primary_label: Read the writing
+  primary_url: /writing/
+  secondary_label: About me
+  secondary_url: /about/
+  sections:
+    - section: latest
+    - section: writing
+    - section: newsletter
+    - section: about
+    - section: now
+    - section: hello
+
+# Shared by every mode. Use [words](address) for links.
+about:
+  title: A little about me
+  text: >-
+    I am an MPhil student in Engineering Education at the University of Cape Town,
+    in the [Centre for Research in Engineering Education](https://ebe.uct.ac.za/cree).
+    My research asks [how Nigerian engineering undergraduates find and secure industrial placements](/siwes/),
+    and who gets left out when they do. I trained as a mechanical engineer, and the question
+    that keeps pulling me back is a simple one: who gets a fair chance to learn, and what gets in the way?
+  link_label: More about me
+  link_url: /about/
+
+cfk:
+  title: Care for Knowledge
+  text: >-
+    Care for Knowledge (CFK) is the Nigerian nonprofit I founded. It works to make
+    educational resources easier to reach, starting with secondary-school students.
+  link_label: Visit CFK
+  link_url: https://careforknowledge.org/
+
+hello:
+  title: Say hello
+  text: >-
+    If something here made you think, or you would like to talk about engineering education,
+    industrial placements or access to learning, I would be glad to hear from you.
+  button_label: Write to me

@@ -269,6 +269,25 @@ module Console
         add.call('warn', '_data/publications.yml', "\"#{p['title'].to_s[0, 50]}\" has no DOI or web address.") if p['doi'].to_s.empty? && p['url'].to_s.empty?
       end
 
+      home = (store.read_data('home')['data'] rescue nil)
+      if home.is_a?(Hash)
+        modes = %w[welcome researcher writer]
+        sections = %w[latest writing now research publications about topics newsletter hello]
+        add.call('error', '_data/home.yml', "The mode \"#{home['mode']}\" is not one of: welcome, researcher, writer.") unless modes.include?(home['mode'].to_s)
+        modes.each do |m|
+          cfg = home[m]
+          unless cfg.is_a?(Hash)
+            add.call('error', '_data/home.yml', "There are no words for the #{m} mode.") if home['mode'].to_s == m
+            next
+          end
+          add.call('warn', '_data/home.yml', "The #{m} mode has no opening words.") if cfg['lede'].to_s.strip.empty? && home['mode'].to_s == m
+          add.call('warn', '_data/home.yml', "The heading in the #{m} mode does not contain your name, which helps search engines.") if cfg['headline'].to_s !~ /olunlade|joshua/i && home['mode'].to_s == m
+          Array(cfg['sections']).each { |sec| add.call('error', '_data/home.yml', "The #{m} mode lists a section called \"#{sec.is_a?(Hash) ? sec['section'] : sec}\", which does not exist.") unless sections.include?((sec.is_a?(Hash) ? sec['section'] : sec).to_s) }
+        end
+      elsif home.nil?
+        add.call('error', '_data/home.yml', 'The home page settings file is missing, so the home page will be empty.')
+      end
+
       refs = Citations.load_refs(store.root)
       ref_ids = refs.map { |r| r['id'].to_s }
       ref_ids.each_with_index { |id, i| add.call('error', '_data/references.yml', "The reference name \"#{id}\" is used twice.") if ref_ids.index(id) != i }

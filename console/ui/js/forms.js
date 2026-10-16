@@ -58,12 +58,22 @@ function renderField(obj, f, onChange, ctx) {
       const cb = h('input', { type: 'checkbox', checked: !!cur, onchange: () => { obj[f.k] = cb.checked; onChange(f.k); } });
       return h('div', { class: 'field' + (f.wide ? ' wide' : '') }, h('label', { class: 'toggle' }, cb, f.label), f.hint ? h('div', { class: 'hint' }, f.hint) : null);
     }
+    case 'cards': {
+      const cards = h('div', { class: 'mode-cards', role: 'radiogroup', 'aria-label': f.label });
+      const paint = () => { Array.from(cards.children).forEach((c) => { const on = c.dataset.v === String(obj[f.k] || f.options[0].value); c.setAttribute('aria-checked', String(on)); c.classList.toggle('on', on); }); };
+      f.options.forEach((o) => cards.append(h('button', { type: 'button', role: 'radio', class: 'mode-card', 'data-v': o.value, onclick: () => { obj[f.k] = o.value; onChange(f.k); paint(); } },
+        h('b', {}, o.label), h('span', {}, o.text))));
+      paint();
+      return h('div', { class: 'field wide' }, f.label ? h('div', { class: 'lbl' }, f.label) : null, cards, f.hint ? h('div', { class: 'hint' }, f.hint) : null);
+    }
     case 'strlist': return renderStrList(obj, f, onChange);
     case 'objlist': return renderObjList(obj, f, onChange, ctx);
     case 'group': {
       if (!obj[f.k] || typeof obj[f.k] !== 'object') obj[f.k] = {};
       const sub = obj[f.k];
-      return h('div', { class: 'field wide' }, h('div', { class: 'subhead' }, f.label), renderFields(sub, f.fields, (k) => { if (!Object.keys(sub).length) delete obj[f.k]; onChange(f.k); }, ctx));
+      const inner = renderFields(sub, f.fields, (k) => { if (!Object.keys(sub).length) delete obj[f.k]; onChange(f.k); }, ctx);
+      if (f.collapsed) return h('details', { class: 'field wide group-details' }, h('summary', { class: 'subhead' }, f.label), inner);
+      return h('div', { class: 'field wide' }, h('div', { class: 'subhead' }, f.label), inner);
     }
     case 'note': return h('div', { class: 'banner wide', style: { gridColumn: '1 / -1' } }, f.text);
     case 'preview': {

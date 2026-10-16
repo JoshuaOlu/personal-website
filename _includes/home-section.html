@@ -1,0 +1,108 @@
+{%- comment -%} One block of the home page. id comes from the order set in _data/home.yml. {%- endcomment -%}
+{%- assign hm = site.data.home -%}
+{%- assign mode = hm.mode | default: "welcome" -%}
+{%- assign all_posts = site.writing | sort: "date" | reverse -%}
+{%- if include.id == "latest" -%}
+  {%- if all_posts.size > 0 -%}
+  {%- assign p = all_posts | first -%}
+  <section class="section" aria-labelledby="latest-heading">
+    <h2 id="latest-heading">{% if mode == "writer" %}The newest piece{% else %}Most recently, I wrote{% endif %}</h2>
+    <a class="feature-card" href="{{ p.url | relative_url }}">
+      <span class="feature-meta"><time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %B %Y" }}</time>{% assign wc = p.content | number_of_words %}<span>{{ wc | divided_by: 220 | plus: 1 }} min read</span></span>
+      <span class="feature-title">{{ p.title }}</span>
+      {% if p.summary %}<span class="feature-summary">{{ p.summary }}</span>{% endif %}
+      <span class="feature-go">Read it <span aria-hidden="true">&rarr;</span></span>
+    </a>
+  </section>
+  {%- endif -%}
+
+{%- elsif include.id == "writing" -%}
+  {%- if all_posts.size > 1 -%}
+  <section class="section" aria-labelledby="writing-heading">
+    <h2 id="writing-heading">Earlier pieces</h2>
+    <ol class="writing-list">
+      {%- for post in all_posts offset: 1 limit: 5 %}
+      <li class="writing-row">
+        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%-d %b %Y" }}</time>
+        <div>
+          <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+          {% if post.summary %}<p>{{ post.summary }}</p>{% endif %}
+        </div>
+      </li>
+      {%- endfor %}
+    </ol>
+    <p class="more-link"><a href="{{ '/writing/' | relative_url }}">All writing &rarr;</a></p>
+  </section>
+  {%- endif -%}
+
+{%- elsif include.id == "now" -%}
+  <section class="section" aria-labelledby="now-heading">
+    <h2 id="now-heading">{% if mode == "researcher" %}Research{% else %}What I am working on{% endif %}</h2>
+    {% include project-list.html active=true %}
+    <p class="more-link"><a href="{{ '/research/' | relative_url }}">All research &rarr;</a></p>
+  </section>
+
+{%- elsif include.id == "research" -%}
+  <section class="section" aria-labelledby="research-heading">
+    <h2 id="research-heading">Research</h2>
+    {% include project-list.html %}
+  </section>
+
+{%- elsif include.id == "publications" -%}
+  {%- assign pubs = site.data.publications | sort: "year" | reverse -%}
+  {%- if pubs.size > 0 -%}
+  <section class="section" aria-labelledby="pubs-heading">
+    <h2 id="pubs-heading">Recent papers</h2>
+    <ol class="cv-entries pub-list">
+      {%- for pub in pubs limit: 3 %}
+      <li class="cv-entry pub-entry">
+        <div class="cv-dates">{{ pub.year }}</div>
+        <div class="cv-body output-citation">{% include citation.html pub=pub %}</div>
+      </li>
+      {%- endfor %}
+    </ol>
+    <p class="more-link"><a href="{{ '/publications/' | relative_url }}">All publications &rarr;</a></p>
+  </section>
+  {%- endif -%}
+
+{%- elsif include.id == "newsletter" -%}
+  <section class="section home-newsletter">{% include newsletter.html %}</section>
+
+{%- elsif include.id == "about" -%}
+  <section class="section" aria-labelledby="about-heading">
+    <div class="home-duo{% if hm.cfk.text %} has-aside{% endif %}">
+      <div class="prose">
+        <h2 id="about-heading">{{ hm.about.title | default: "A little about me" }}</h2>
+        {{ hm.about.text | markdownify }}
+        {% if hm.about.link_url %}<p class="more-link"><a href="{{ hm.about.link_url | relative_url }}">{{ hm.about.link_label | default: "More about me" }} &rarr;</a></p>{% endif %}
+      </div>
+      {%- if hm.cfk.text %}
+      <aside class="aside-card" aria-label="{{ hm.cfk.title }}">
+        <p class="eyebrow">Alongside the research</p>
+        <h3>{{ hm.cfk.title }}</h3>
+        <p>{{ hm.cfk.text }}</p>
+        {% if hm.cfk.link_url %}<p class="more-link"><a href="{{ hm.cfk.link_url }}"{% if hm.cfk.link_url contains '://' %} target="_blank" rel="noopener"{% endif %}>{{ hm.cfk.link_label | default: "Learn more" }} &rarr;</a></p>{% endif %}
+      </aside>
+      {%- endif %}
+    </div>
+  </section>
+
+{%- elsif include.id == "topics" -%}
+  <section class="section" aria-labelledby="focus-heading">
+    <h2 id="focus-heading">Things I think about</h2>
+    <ul class="focus-list">
+      {%- for t in site.data.identity.topics %}
+      <li><a href="{{ '/about/' | relative_url }}#what-i-work-on">{{ t.title }}</a></li>
+      {%- endfor %}
+    </ul>
+  </section>
+
+{%- elsif include.id == "hello" -%}
+  <section class="section" aria-labelledby="hello-heading">
+    <div class="hello-band">
+      <h2 id="hello-heading">{{ hm.hello.title | default: "Say hello" }}</h2>
+      <p>{{ hm.hello.text }}</p>
+      <p><a class="button" href="mailto:{{ site.email }}">{{ hm.hello.button_label | default: "Write to me" }}</a></p>
+    </div>
+  </section>
+{%- endif -%}

@@ -18,7 +18,7 @@ window.WEB_MODE = true;
   const TEXT_EXT = ['.md', '.markdown', '.html', '.yml', '.yaml', '.css', '.js', '.json', '.txt', '.xml', '.svg', '.liquid'];
   const IMAGE_EXT = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico'];
   const NO_FRONT_EXT = ['.yml', '.yaml', '.json', '.js', '.css', '.svg'];
-  const DATA_FILES = { cv: '_data/cv.yml', publications: '_data/publications.yml', social: '_data/social.yml', authors: '_data/authors.yml', identity: '_data/identity.yml', ai_bots: '_data/ai_bots.yml', references: '_data/references.yml' };
+  const DATA_FILES = { cv: '_data/cv.yml', publications: '_data/publications.yml', social: '_data/social.yml', authors: '_data/authors.yml', identity: '_data/identity.yml', ai_bots: '_data/ai_bots.yml', references: '_data/references.yml', home: '_data/home.yml' };
   const KINDS = { projects: '_projects', writing: '_writing', links: '_links' };
   const RESERVED_PATHS = ['assets', 'research', 'writing', 'cv', 'about', 'publications', 'ai-policy', 'feed.xml', 'robots.txt', 'llms.txt', 'sitemap.xml', '404.html', 'siwes', 'console', 'admin', 'manage', 'podcast'];
 

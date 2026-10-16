@@ -120,6 +120,12 @@ async function viewSeo(view, tab) {
   }
 }
 
+/* ── Home page ── */
+async function viewHomePage(view) {
+  setTitle('Home page', 'Choose what the front page leads with, and the words it uses.', topActions());
+  await dataPage(view, { name: 'home', fields: SCHEMA.home });
+}
+
 /* ── Site settings ── */
 async function viewSettings(view) {
   setTitle('Site settings', 'Name, description, contact address and menu.', topActions());

@@ -3,6 +3,10 @@
   (lowest first). Used on the home page and the Research page.
 {%- endcomment -%}
 {%- assign sorted_projects = site.projects | sort: "order" -%}
+{%- if include.active -%}
+  {%- assign active_projects = sorted_projects | where_exp: "p", "p.status != 'Completed'" -%}
+  {%- if active_projects.size > 0 -%}{%- assign sorted_projects = active_projects -%}{%- endif -%}
+{%- endif -%}
 <ol class="project-list">
   {%- for project in sorted_projects %}
   <li class="project-row">
