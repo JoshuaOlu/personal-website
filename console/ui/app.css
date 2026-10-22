@@ -323,3 +323,12 @@ details.item > summary:hover { background: var(--surface-2); }
 .group-details { border: 1px solid var(--line); border-radius: 12px; padding: .6rem 1rem; background: var(--surface-2); }
 .group-details > summary { cursor: pointer; font-weight: 650; padding: .35rem 0; }
 .group-details[open] > summary { margin-bottom: .8rem; }
+
+/* Series and themes */
+.theme-picks { display: flex; flex-wrap: wrap; gap: .5rem; }
+.theme-pick { display: inline-flex; align-items: center; gap: .5rem; padding: .4rem .75rem; border: 1px solid var(--line); border-radius: 99px; cursor: pointer; font-size: .9rem; font-weight: 600; background: var(--surface); }
+.theme-pick:hover { border-color: var(--accent); }
+.theme-pick.on { background: var(--info-bg); border-color: var(--accent); color: var(--accent); }
+.theme-pick.bad { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+.theme-pick input { width: 1rem; height: 1rem; margin: 0; accent-color: var(--accent); }
+.theme-pick small { font-weight: 500; }

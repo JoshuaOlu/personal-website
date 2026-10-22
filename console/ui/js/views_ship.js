@@ -61,7 +61,7 @@ async function viewPublish(view) {
     const parts = [];
     const has = (re) => changes.some((c) => re.test(c.path));
     if (has(/^_data\/cv/)) parts.push('Update CV'); if (has(/^_data\/publications/)) parts.push('Update publications');
-    if (has(/^_projects\//)) parts.push('Update projects'); if (has(/^_writing\//)) parts.push('Update writing'); if (has(/^_links\//)) parts.push('Update short links');
+    if (has(/^_projects\//)) parts.push('Update projects'); if (has(/^_writing\//)) parts.push('Update writing'); if (has(/^_(series|themes)\//)) parts.push('Update series and themes'); if (has(/^_links\//)) parts.push('Update short links');
     if (has(/^assets\/images/)) parts.push('Update pictures'); if (has(/^_data\/home/)) parts.push('Update home page'); if (has(/^_data\/(identity|ai_bots|social|authors)/)) parts.push('Update identity settings');
     return parts.join(', ') || (changes.length ? 'Update site' : '');
   };

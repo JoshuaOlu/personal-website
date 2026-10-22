@@ -136,7 +136,7 @@ module Console
       end
       add(:warn, page, 'There is no structured data about you (Person).', 'Check _includes/jsonld.html.') unless types.include?('Person')
 
-      if words < 120 && !%w[/ /404 /writing/ /research/].include?(page) && page !~ %r{\A/(siwes/survey)}
+      if words < 120 && !%w[/ /404 /writing/ /research/].include?(page) && page !~ %r{\A/(siwes/survey|writing/(series|themes)/)}
         add(:info, page, "The page has little text (#{words} words).", 'Search engines favour pages that explain themselves.')
       end
     end
@@ -354,6 +354,52 @@ module Console
         end
       end
       urls.each { |u, files| add.call('error', files.join(', '), "These files share the same address #{u}.") if files.size > 1 }
+
+      # Series and themes: every link between a piece and its series or themes has to point at something real.
+      series = store.list_kind('series').reject { |d| d['error'] }
+      themes = store.list_kind('themes').reject { |d| d['error'] }
+      pieces = store.list_kind('writing').reject { |d| d['error'] || d['front']['published'] == false }
+      store.list_kind('writing').reject { |d| d['error'] }.each do |d|
+        fm = d['front']
+        sl = fm['series'].to_s
+        if sl != ''
+          sr = series.find { |x| x['slug'] == sl }
+          if sr.nil?
+            add.call('error', d['path'], "It belongs to the series \"#{sl}\", which does not exist. Pick a series in the piece's Series and themes card, or create it first.")
+          else
+            part = fm['series_part']
+            if part.to_s !~ /\A\d+\z/ || part.to_i < 1
+              add.call('warn', d['path'], 'It is in a series but has no part number, so the series cannot place it in order. Set the part number.')
+            else
+              tot = sr['front']['total_parts'].to_i
+              add.call('warn', d['path'], "It is part #{part} but the series says it has #{tot} parts. Raise the number of parts, or fix the part number.") if tot > 0 && part.to_i > tot
+              twin = store.list_kind('writing').find { |o| o['path'] != d['path'] && !o['error'] && o['front']['series'].to_s == sl && o['front']['series_part'].to_s == part.to_s }
+              add.call('error', d['path'], "Part #{part} of this series is also used by #{twin['path']}. Each part number can only be used once.") if twin
+            end
+          end
+        elsif fm['series_part'].to_s != ''
+          add.call('warn', d['path'], 'It has a part number but no series. Choose its series, or clear the part number.')
+        end
+        Array(fm['themes']).each do |t|
+          add.call('error', d['path'], "It lists the theme \"#{t}\", which does not exist. Pick from your themes, or create it first.") unless themes.any? { |x| x['slug'] == t.to_s }
+        end
+        add.call('info', d['path'], 'It is not in any theme yet, so readers cannot find it through the themes.') if Array(fm['themes']).empty? && fm['published'] != false && !themes.empty?
+      end
+      series.each do |sr|
+        fm = sr['front']
+        add.call('warn', sr['path'], 'The status should be ongoing or complete.') unless %w[ongoing complete].include?(fm['status'].to_s)
+        add.call('warn', sr['path'], 'The number of parts should be a whole number, or left empty if you do not know yet.') unless fm['total_parts'].to_s =~ /\A\d*\z/
+        add.call('warn', sr['path'], 'There is no summary. It shows on the Writing page and in search results.') if fm['summary'].to_s.strip.empty?
+        add.call('info', sr['path'], 'No published piece is in this series yet, so its page is hidden from visitors and search engines.') unless pieces.any? { |x| x['front']['series'].to_s == sr['slug'] }
+        Array(fm['planned']).each do |pl|
+          add.call('warn', sr['path'], 'A planned part is missing its part number or title.') unless pl.is_a?(Hash) && pl['part'].to_s =~ /\A\d+\z/ && pl['title'].to_s.strip != ''
+        end
+      end
+      themes.each do |t|
+        n = pieces.count { |x| Array(x['front']['themes']).include?(t['slug']) }
+        add.call('warn', t['path'], 'There is no summary. It shows on the themes page.') if t['front']['summary'].to_s.strip.empty?
+        add.call('info', t['path'], 'Only one piece uses this theme so far. The theme page appears when a second one does.') if n == 1
+      end
       out
     end
   end

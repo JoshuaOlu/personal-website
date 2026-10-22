@@ -82,6 +82,12 @@
   {%- endfor -%}
 
 {%- elsif page.collection == "writing" -%}
+  {%- assign ld_series = nil -%}
+  {%- if page.series -%}{%- for s in site.series -%}{%- if s.slug == page.series -%}{%- assign ld_series = s -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+  {%- capture ld_themes -%}{%- for tslug in page.themes -%}{%- for t in site.themes -%}{%- if t.slug == tslug -%}{{ t.title }}|{%- endif -%}{%- endfor -%}{%- endfor -%}{%- endcapture -%}
+  {%- assign ld_theme_list = ld_themes | split: "|" -%}
+  {%- assign ld_tags = "" | split: "," -%}
+  {%- if page.tags -%}{%- assign ld_tags = page.tags -%}{%- endif -%}
   {%- capture n -%}
   {
     "@type": "Article",
@@ -94,10 +100,51 @@
     "dateModified": {{ page.updated | default: page.date | date_to_xmlschema | jsonify }},
     "author": {"@id": {{ person_id | jsonify }}},
     "publisher": {"@id": {{ person_id | jsonify }}},
-    "isPartOf": {"@id": {{ site_id | jsonify }}},
+    "isPartOf": [{"@id": {{ site_id | jsonify }}}{% if ld_series %}, {"@type": "CreativeWorkSeries", "@id": {{ ld_series.url | absolute_url | append: "#series" | jsonify }}, "name": {{ ld_series.title | jsonify }}, "url": {{ ld_series.url | absolute_url | jsonify }}}{% endif %}],
+    {%- if ld_series and page.series_part %}
+    "position": {{ page.series_part | plus: 0 }},
+    {%- endif %}
     "inLanguage": "en",
     "image": {{ img_abs | jsonify }},
-    "keywords": {{ page.tags | join: ", " | jsonify }}
+    {%- if ld_theme_list.size > 0 %}
+    "about": [{% for t in ld_theme_list %}{"@type": "Thing", "name": {{ t | jsonify }}}{% unless forloop.last %}, {% endunless %}{% endfor %}],
+    {%- endif %}
+    "keywords": {{ ld_tags | concat: ld_theme_list | join: ", " | jsonify }}
+  }
+  {%- endcapture -%}
+  {%- assign nodes = nodes | append: n | append: "@@" -%}
+
+{%- elsif page.collection == "series" -%}
+  {%- include series-info.html slug=page.slug -%}
+  {%- capture n -%}
+  {
+    "@type": "CreativeWorkSeries",
+    "@id": {{ here | append: "#series" | jsonify }},
+    "name": {{ page.title | jsonify }},
+    "description": {{ page.description | default: page.summary | normalize_whitespace | jsonify }},
+    "url": {{ here | jsonify }},
+    "author": {"@id": {{ person_id | jsonify }}},
+    "isPartOf": {"@id": {{ site_id | jsonify }}},
+    "inLanguage": "en"
+    {%- if ser_parts.size > 0 %},
+    "hasPart": [{% for p in ser_parts %}{"@id": {{ p.url | absolute_url | append: "#article" | jsonify }}}{% unless forloop.last %}, {% endunless %}{% endfor %}]
+    {%- endif %}
+  }
+  {%- endcapture -%}
+  {%- assign nodes = nodes | append: n | append: "@@" -%}
+
+{%- elsif page.collection == "themes" -%}
+  {%- capture n -%}
+  {
+    "@type": "CollectionPage",
+    "@id": {{ here | append: "#webpage" | jsonify }},
+    "name": {{ page.title | jsonify }},
+    "description": {{ page.description | default: page.summary | normalize_whitespace | jsonify }},
+    "url": {{ here | jsonify }},
+    "isPartOf": {"@id": {{ site_id | jsonify }}},
+    "about": {"@type": "Thing", "name": {{ page.title | jsonify }}},
+    "author": {"@id": {{ person_id | jsonify }}},
+    "hasPart": [{% assign tfirst = true %}{% for p in site.writing %}{% if p.themes contains page.slug %}{% unless tfirst %}, {% endunless %}{% assign tfirst = false %}{"@id": {{ p.url | absolute_url | append: "#article" | jsonify }}}{% endif %}{% endfor %}]
   }
   {%- endcapture -%}
   {%- assign nodes = nodes | append: n | append: "@@" -%}
@@ -124,7 +171,7 @@
 {%- if page.url != "/" and page.noindex != true -%}
   {%- if page.collection == "projects" -%}
     {%- assign crumb_mid_name = "Research" -%}{%- assign crumb_mid_url = "/research/" | absolute_url -%}
-  {%- elsif page.collection == "writing" -%}
+  {%- elsif page.collection == "writing" or page.collection == "series" or page.collection == "themes" -%}
     {%- assign crumb_mid_name = "Writing" -%}{%- assign crumb_mid_url = "/writing/" | absolute_url -%}
   {%- else -%}
     {%- assign crumb_mid_name = "" -%}{%- assign crumb_mid_url = "" -%}

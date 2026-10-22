@@ -1,0 +1,10 @@
+{%- comment -%} A row of theme links for the Writing page (only themes with two or more pieces). {%- endcomment -%}
+{%- capture chips -%}
+{%- for t in site.themes -%}
+  {%- assign tn = 0 -%}
+  {%- for p in site.writing -%}{%- if p.themes contains t.slug -%}{%- assign tn = tn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if tn > 1 %}<a class="tag tag-link" href="{{ t.url | relative_url }}">{{ t.title }}</a> {% endif -%}
+{%- endfor -%}
+{%- endcapture -%}
+{%- assign chips = chips | strip -%}
+{%- if chips != "" -%}<p class="theme-row"><span class="post-themes-label">Themes</span> {{ chips }} <a class="theme-row-all" href="{{ '/writing/themes/' | relative_url }}">All themes</a></p>{%- endif -%}

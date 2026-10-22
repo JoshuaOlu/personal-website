@@ -1,0 +1,13 @@
+{%- comment -%} Every theme that two or more published pieces share, with how many. {%- endcomment -%}
+{%- assign any_theme = false -%}
+<ul class="theme-list">
+{%- for t in site.themes -%}
+  {%- assign tn = 0 -%}
+  {%- for p in site.writing -%}{%- if p.themes contains t.slug -%}{%- assign tn = tn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if tn > 1 -%}
+  {%- assign any_theme = true %}
+  <li><a href="{{ t.url | relative_url }}"><span class="theme-list-title">{{ t.title }}</span>{% if t.summary %}<span class="theme-list-text">{{ t.summary }}</span>{% endif %}<span class="theme-list-count">{{ tn }} pieces</span></a></li>
+  {%- endif -%}
+{%- endfor %}
+</ul>
+{%- unless any_theme -%}<p class="muted">Themes will appear here as more pieces are published.</p>{%- endunless -%}

@@ -1,0 +1,39 @@
+---
+layout: default
+---
+<link rel="stylesheet" href="{{ '/assets/css/writing-hubs.css' | relative_url }}">
+{%- assign posts = site.writing | sort: "date" | reverse -%}
+<div class="page-shell hub">
+  <p class="hub-crumb"><a href="{{ '/writing/' | relative_url }}">Writing</a> <span aria-hidden="true">/</span> <a href="{{ '/writing/themes/' | relative_url }}">Themes</a></p>
+  <header class="page-header">
+    <p class="hub-kicker">Theme</p>
+    <h1>{{ page.title }}</h1>
+    {% if page.summary %}<p class="page-tagline">{{ page.summary }}</p>{% endif %}
+  </header>
+
+  {%- if content != "" %}
+  <div class="prose hub-intro">{{ content }}</div>
+  {%- endif %}
+
+  <ol class="writing-list">
+    {%- assign shown = 0 -%}
+    {%- for p in posts -%}
+    {%- if p.themes contains page.slug -%}
+    {%- assign shown = shown | plus: 1 %}
+    <li class="writing-row">
+      <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %b %Y" }}</time>
+      <div>
+        <h2><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h2>
+        {% if p.series %}{% include series-info.html slug=p.series %}{% if ser %}<p class="row-series">{% if p.series_part %}Part {{ p.series_part }}{% if ser_known %} of {{ ser_total }}{% endif %} of {% else %}Series: {% endif %}<a href="{{ ser.url | relative_url }}">{{ ser.short_title | default: ser.title }}</a></p>{% endif %}{% endif %}
+        {% if p.summary %}<p>{{ p.summary }}</p>{% endif %}
+      </div>
+    </li>
+    {%- endif -%}
+    {%- endfor %}
+  </ol>
+  {%- if shown == 0 %}
+  <p class="muted">Nothing on this theme has been published yet.</p>
+  {%- endif %}
+
+  <p class="back-link"><a href="{{ '/writing/' | relative_url }}">&larr; All writing</a></p>
+</div>

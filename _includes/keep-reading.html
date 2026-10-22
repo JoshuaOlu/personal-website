@@ -1,0 +1,39 @@
+{%- comment -%}
+  "Keep reading" under a piece: other pieces that share the most themes with this one,
+  newest first when they tie. The previous and next parts of a series are left out
+  because the series box already shows them. Usage: {% include keep-reading.html %}
+{%- endcomment -%}
+{%- assign kr_skip = "," -%}
+{%- if prev_p -%}{%- assign kr_skip = kr_skip | append: prev_p.slug | append: "," -%}{%- endif -%}
+{%- if next_p -%}{%- assign kr_skip = kr_skip | append: next_p.slug | append: "," -%}{%- endif -%}
+{%- capture kr_keys -%}
+  {%- for p in site.writing -%}
+    {%- assign probe = "," | append: p.slug | append: "," -%}
+    {%- if p.slug == page.slug or kr_skip contains probe -%}{%- continue -%}{%- endif -%}
+    {%- assign score = 0 -%}
+    {%- for t in page.themes -%}{%- if p.themes contains t -%}{%- assign score = score | plus: 1 -%}{%- endif -%}{%- endfor -%}
+    {%- if score > 8 -%}{%- assign score = 8 -%}{%- endif -%}
+    {%- assign ymd = p.date | date: "%Y%m%d" | plus: 0 -%}
+    {{ 9 | minus: score }}{{ 99999999 | minus: ymd }}~{{ p.slug }}|
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign kr_list = kr_keys | strip | split: "|" | sort -%}
+{%- if kr_list.size > 0 -%}
+<section class="keep-reading" aria-labelledby="kr-title">
+  <h2 id="kr-title">Keep reading</h2>
+  <ol class="writing-list">
+  {%- for k in kr_list limit: 3 -%}
+    {%- assign kr_slug = k | split: "~" | last -%}
+    {%- for p in site.writing -%}{%- if p.slug == kr_slug -%}
+    <li class="writing-row">
+      <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %b %Y" }}</time>
+      <div>
+        <h3><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h3>
+        {% if p.summary %}<p>{{ p.summary }}</p>{% endif %}
+      </div>
+    </li>
+    {%- endif -%}{%- endfor -%}
+  {%- endfor -%}
+  </ol>
+</section>
+{%- endif -%}

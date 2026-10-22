@@ -21,7 +21,10 @@ noindex: true
   {%- assign title = post.title | strip -%}
   {%- assign n = title | size -%}
   {%- if n <= 34 -%}{%- assign tier = "t1" -%}{%- elsif n <= 58 -%}{%- assign tier = "t2" -%}{%- elsif n <= 82 -%}{%- assign tier = "t3" -%}{%- else -%}{%- assign tier = "t4" -%}{%- endif -%}
-  {%- assign topic = post.card_topic | default: post.tags.first | default: "Essay" -%}
+  {%- assign first_theme = "" -%}
+  {%- if post.themes -%}{%- for t in site.themes -%}{%- if t.slug == post.themes.first -%}{%- assign first_theme = t.title -%}{%- endif -%}{%- endfor -%}{%- endif -%}
+  {%- if first_theme == "" -%}{%- assign first_theme = post.tags.first -%}{%- endif -%}
+  {%- assign topic = post.card_topic | default: first_theme | default: "Essay" -%}
 <div class="card-slot" id="{{ post.slug }}"><div class="ogc {{ tier }}">
   <div class="ogc-topic">{{ topic | escape }}</div>
   <h1 class="ogc-title">{{ title | escape }}</h1>

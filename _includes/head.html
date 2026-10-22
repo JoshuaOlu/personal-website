@@ -12,7 +12,9 @@
     and carry only the plain noindex word, so no search engine can misread the tag.
   {%- endcomment -%}
   {% assign podcast_n = site.data.podcast_feed.episodes | size %}
-  {% if page.noindex or page.url == "/writing/" and site.writing.size == 0 or page.url == "/podcast/" and podcast_n == 0 %}<meta name="robots" content="noindex">
+  {% assign hub_off = false %}
+  {% if page.collection == "series" or page.collection == "themes" or page.url == "/writing/series/" or page.url == "/writing/themes/" %}{% include hub-state.html %}{% endif %}
+  {% if page.noindex or hub_off or page.url == "/writing/" and site.writing.size == 0 or page.url == "/podcast/" and podcast_n == 0 %}<meta name="robots" content="noindex">
   {% else %}<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1, noai, noimageai">{% endif %}
   <meta name="tdm-reservation" content="1">
   <meta name="author" content="{{ site.data.identity.name | default: site.author }}">

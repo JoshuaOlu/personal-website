@@ -3,7 +3,7 @@
 
 const NAV = [
   ['', [['/', 'Overview', 'home']]],
-  ['Content', [['/projects', 'Projects', 'folder'], ['/writing', 'Writing', 'pen'], ['/publications', 'Publications', 'book'], ['/references', 'References', 'quote'], ['/cv', 'CV', 'user'], ['/links', 'Short links', 'link']]],
+  ['Content', [['/projects', 'Projects', 'folder'], ['/writing', 'Writing', 'pen'], ['/series', 'Series', 'layers'], ['/themes', 'Themes', 'tag'], ['/publications', 'Publications', 'book'], ['/references', 'References', 'quote'], ['/cv', 'CV', 'user'], ['/links', 'Short links', 'link']]],
   ['Site', [['/homepage', 'Home page', 'home'], ['/seo', 'Search and AI', 'globe'], ['/media', 'Media', 'image'], ['/settings', 'Settings', 'gear'], ['/files', 'All files', 'file']]],
   ['Ship', [['/checks', 'Preview and checks', 'check'], ['/publish', 'Publish', 'upload']]]
 ];
@@ -29,6 +29,10 @@ route('/projects', (v) => viewDocList(v, 'projects'));
 route('/projects/edit/(.+)', (v, p) => viewDocEdit(v, 'projects', p));
 route('/writing', (v) => viewDocList(v, 'writing'));
 route('/writing/edit/(.+)', (v, p) => viewDocEdit(v, 'writing', p));
+route('/series', (v) => viewHubList(v, 'series'));
+route('/series/edit/(.+)', (v, p) => viewHubEdit(v, 'series', p));
+route('/themes', (v) => viewHubList(v, 'themes'));
+route('/themes/edit/(.+)', (v, p) => viewHubEdit(v, 'themes', p));
 route('/publications', viewPublications);
 route('/references', viewReferences);
 route('/cv', viewCV);

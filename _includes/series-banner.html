@@ -1,0 +1,7 @@
+{%- comment -%} The small "Part 2 of 3" line above a piece that belongs to a series. {%- endcomment -%}
+{%- if page.series -%}
+{%- include series-info.html slug=page.series -%}
+{%- if ser -%}
+<p class="series-banner"><a href="{{ ser.url | relative_url }}"><span class="series-banner-part">{% if page.series_part %}Part {{ page.series_part }}{% if ser_known %} of {{ ser_total }}{% endif %}{% else %}Series{% endif %}</span><span class="series-banner-name">{{ ser.short_title | default: ser.title }}</span></a></p>
+{%- endif -%}
+{%- endif -%}

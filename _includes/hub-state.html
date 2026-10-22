@@ -1,0 +1,18 @@
+{%- comment -%}
+  Sets hub_off to true on a series or theme page that has nothing to show yet, and on the
+  Series and Themes list pages while none is ready. head.html then tells search engines to skip it.
+{%- endcomment -%}
+{%- assign hub_off = false -%}
+{%- if page.collection == "series" -%}
+  {%- assign hn = 0 -%}
+  {%- for p in site.writing -%}{%- if p.series == page.slug -%}{%- assign hn = hn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if hn < 1 -%}{%- assign hub_off = true -%}{%- endif -%}
+{%- elsif page.collection == "themes" -%}
+  {%- assign hn = 0 -%}
+  {%- for p in site.writing -%}{%- if p.themes contains page.slug -%}{%- assign hn = hn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if hn < 2 -%}{%- assign hub_off = true -%}{%- endif -%}
+{%- else -%}
+  {%- include hub-totals.html -%}
+  {%- if page.url == "/writing/series/" and series_live_n == 0 -%}{%- assign hub_off = true -%}{%- endif -%}
+  {%- if page.url == "/writing/themes/" and themes_live_n == 0 -%}{%- assign hub_off = true -%}{%- endif -%}
+{%- endif -%}

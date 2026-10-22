@@ -20,6 +20,10 @@ sitemap: false
     <id>{{ post.url | absolute_url }}</id>
     <published>{{ post.date | date_to_xmlschema }}</published>
     <updated>{{ post.updated | default: post.date | date_to_xmlschema }}</updated>
+    {%- for tslug in post.themes %}{% for t in site.themes %}{% if t.slug == tslug %}
+    <category term="{{ t.slug }}" label="{{ t.title | xml_escape }}"/>{% endif %}{% endfor %}{% endfor %}
+    {%- if post.series %}{% for s in site.series %}{% if s.slug == post.series %}
+    <category scheme="{{ '/writing/series/' | absolute_url }}" term="{{ s.slug }}" label="{{ s.title | xml_escape }}"/>{% endif %}{% endfor %}{% endif %}
     <summary>{{ post.summary | default: post.description | normalize_whitespace | xml_escape }}</summary>
     <content type="html">{{ cited_html | append: cited_refs | xml_escape }}</content>
   </entry>

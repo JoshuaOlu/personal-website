@@ -28,7 +28,8 @@ module Console
       'authors' => '_data/authors.yml', 'identity' => '_data/identity.yml', 'ai_bots' => '_data/ai_bots.yml',
       'references' => '_data/references.yml', 'home' => '_data/home.yml'
     }.freeze
-    KINDS = { 'projects' => '_projects', 'writing' => '_writing', 'links' => '_links' }.freeze
+    KINDS = { 'projects' => '_projects', 'writing' => '_writing', 'links' => '_links',
+              'series' => '_series', 'themes' => '_themes' }.freeze
     RESERVED_PATHS = %w[assets research writing cv about publications ai-policy feed.xml robots.txt llms.txt
                         sitemap.xml 404.html siwes console admin].freeze
 
@@ -274,6 +275,8 @@ module Console
       case kind
       when 'projects' then "/research/#{slug}/"
       when 'writing' then "/writing/#{slug}/"
+      when 'series' then "/writing/series/#{slug}/"
+      when 'themes' then "/writing/themes/#{slug}/"
       else "/#{slug}/"
       end
     end
@@ -324,7 +327,7 @@ module Console
             updated: #{today}
           FM
         when 'writing'
-          [<<~FM, "Write your piece here.\n"]
+          wfm = <<~FM
             title: #{q.call(title)}
             date: #{today}
             summary: >-
@@ -333,6 +336,32 @@ module Console
               About 150 characters for Google and link previews.
             tags: []
             published: false
+          FM
+          extra_lines = []
+          if extra['series'].to_s != ''
+            extra_lines << "series: #{extra['series'].to_s.gsub(/[^a-z0-9-]/, '')}"
+            extra_lines << "series_part: #{extra['series_part'].to_i}" if extra['series_part'].to_i > 0
+          end
+          th = Array(extra['themes']).map { |t| t.to_s.gsub(/[^a-z0-9-]/, '') }.reject(&:empty?)
+          extra_lines << "themes: [#{th.join(', ')}]" if th.any?
+          wfm = wfm.rstrip + "\n" + extra_lines.join("\n") + "\n" if extra_lines.any?
+          [wfm, "Write your piece here.\n"]
+        when 'series'
+          [<<~FM, "Say, in a few lines, what this series argues and why it is worth reading in order. This shows at the top of the series page.\n"]
+            title: #{q.call(title)}
+            short_title: #{q.call(title)}
+            summary: >-
+              One or two sentences about what the series argues.
+            status: ongoing
+            total_parts: 3
+            planned: []
+          FM
+        when 'themes'
+          [<<~FM, ""]
+            title: #{q.call(title)}
+            summary: >-
+              One sentence that says what this theme is about.
+            order: #{(list_kind('themes').map { |t| t['front']['order'].to_i }.max || 0) + 10}
           FM
         else
           raise UserError.new('Use the short links tool to create a short link.', 400)

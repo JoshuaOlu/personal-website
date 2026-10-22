@@ -1,0 +1,58 @@
+---
+layout: default
+---
+<link rel="stylesheet" href="{{ '/assets/css/writing-hubs.css' | relative_url }}">
+{%- include series-info.html slug=page.slug -%}
+{%- assign total_words = 0 -%}
+{%- for p in ser_parts -%}{%- assign w = p.content | strip_html | number_of_words -%}{%- assign total_words = total_words | plus: w -%}{%- endfor -%}
+{%- assign total_minutes = total_words | divided_by: 220 | plus: 1 -%}
+<div class="page-shell hub">
+  <p class="hub-crumb"><a href="{{ '/writing/' | relative_url }}">Writing</a> <span aria-hidden="true">/</span> <a href="{{ '/writing/series/' | relative_url }}">Series</a></p>
+  <header class="page-header">
+    <p class="hub-kicker">Series{% if ser_known %} · {{ ser_total }} part{% if ser_total != 1 %}s{% endif %}{% endif %}{% if page.status == "complete" %} · Complete{% elsif ser_parts.size > 0 %} · Ongoing{% endif %}</p>
+    <h1>{{ page.title }}</h1>
+    {% if page.summary %}<p class="page-tagline">{{ page.summary }}</p>{% endif %}
+    {%- if ser_parts.size > 0 %}
+    {%- assign first_p = ser_parts | first %}
+    <p class="hub-meta">{{ ser_parts.size }} published{% if ser_coming.size > 0 %}, {{ ser_coming.size }} to come{% endif %} · about {{ total_minutes }} min of reading</p>
+    <p><a class="button" href="{{ first_p.url | relative_url }}">Start with {% if first_p.series_part %}Part {{ first_p.series_part }}{% else %}the first piece{% endif %}</a></p>
+    {%- endif %}
+  </header>
+
+  {%- if content != "" %}
+  <div class="prose hub-intro">{{ content }}</div>
+  {%- endif %}
+
+  {%- if ser_parts.size > 0 or ser_coming.size > 0 %}
+  <ol class="series-parts">
+    {%- assign shown_coming = 0 -%}
+    {%- for p in ser_parts %}
+    {%- assign pw = p.content | strip_html | number_of_words %}
+    <li class="series-part">
+      <span class="series-part-num">{{ p.series_part | default: forloop.index }}</span>
+      <div>
+        <h2><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h2>
+        {% if p.summary %}<p>{{ p.summary }}</p>{% endif %}
+        <p class="series-part-meta"><time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %B %Y" }}</time> · {{ pw | divided_by: 220 | plus: 1 }} min read</p>
+      </div>
+    </li>
+    {%- endfor %}
+    {%- for q in ser_coming %}
+    <li class="series-part is-coming">
+      <span class="series-part-num">{{ q.part }}</span>
+      <div>
+        <h2>{{ q.title }}</h2>
+        {% if q.note %}<p>{{ q.note }}</p>{% endif %}
+        <p class="series-part-meta">Coming</p>
+      </div>
+    </li>
+    {%- endfor %}
+  </ol>
+  {%- else %}
+  <p class="muted">The first piece of this series has not been published yet.</p>
+  {%- endif %}
+
+  {% include newsletter.html %}
+
+  <p class="back-link"><a href="{{ '/writing/' | relative_url }}">&larr; All writing</a></p>
+</div>

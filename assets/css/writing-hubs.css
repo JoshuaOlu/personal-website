@@ -1,0 +1,113 @@
+/* Series and themes: the banner on a piece, the series box at its end, "Keep reading",
+   the series and theme pages, and the cards on the Writing page. Uses the site's own colours. */
+
+/* The small line above a piece's date: "Part 2 of 3 · series name" */
+.series-banner { margin: 0 0 1rem; font-family: var(--display); font-size: 0.9rem; }
+.series-banner a {
+  display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.7rem;
+  padding: 0.35rem 0.8rem 0.35rem 0.4rem; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--surface); color: var(--ink); text-decoration: none; line-height: 1.2;
+}
+.series-banner a:hover { border-color: var(--accent); }
+.series-banner-part {
+  background: var(--accent); color: var(--on-accent); font-weight: 700; font-size: 0.78rem;
+  padding: 0.28rem 0.6rem; border-radius: 999px; letter-spacing: 0.01em;
+}
+.series-banner-name { font-weight: 600; color: var(--ink); }
+
+/* Themes of a piece */
+.post-themes { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin-bottom: 0.6rem; }
+.post-themes-label { font-family: var(--display); font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-right: 0.3rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.tag-link { color: var(--ink); text-decoration: none; }
+.tag-link:hover { border-color: var(--accent); color: var(--accent); }
+.theme-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem; margin: 0 0 2rem; }
+.theme-row-all { font-family: var(--display); font-size: 0.85rem; margin-left: 0.4rem; }
+
+/* The box at the end of a piece in a series */
+.series-nav { max-width: 46rem; margin-top: 3rem; padding: 1.4rem 1.5rem 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+.series-nav-title { font-family: var(--display); font-size: 0.95rem; color: var(--muted); margin-bottom: 1rem; }
+.series-nav-title a { color: var(--ink); font-weight: 700; text-decoration: none; }
+.series-nav-title a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 0.2em; }
+.series-nav-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 0.9rem; }
+.nav-card {
+  display: flex; flex-direction: column; gap: 0.3rem; padding: 1rem 1.1rem; border: 1px solid var(--line);
+  border-radius: 12px; background: var(--paper); color: var(--ink); text-decoration: none;
+}
+a.nav-card:hover { border-color: var(--accent); }
+.nav-next { border-color: var(--accent); }
+.nav-card-label { font-family: var(--display); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.nav-next .nav-card-label { color: var(--accent); }
+.nav-card-title { font-family: var(--display); font-weight: 700; font-size: 1.15rem; line-height: 1.25; letter-spacing: -0.01em; }
+.nav-card-text { color: var(--muted); font-size: 0.95rem; line-height: 1.45; }
+.nav-coming { border-style: dashed; }
+.nav-coming .nav-card-label::before { content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--signal); margin-right: 0.45rem; }
+.nav-card-link { font-family: var(--display); font-size: 0.92rem; font-weight: 600; margin-top: 0.3rem; }
+
+/* Keep reading */
+.keep-reading { max-width: 46rem; margin-top: 3.5rem; }
+.keep-reading h2 { font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.01em; margin-bottom: 1rem; }
+
+/* Series and theme pages */
+.hub-crumb { font-family: var(--display); font-size: 0.9rem; color: var(--muted); margin-bottom: 1.25rem; }
+.hub-crumb a { color: var(--muted); text-decoration: none; }
+.hub-crumb a:hover { color: var(--accent); text-decoration: underline; }
+.hub-kicker { font-family: var(--display); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.7rem; }
+.hub-meta { font-family: var(--display); color: var(--muted); font-size: 0.95rem; margin-top: 1rem; }
+.hub-intro { margin-bottom: 2.5rem; }
+.hub-block { margin-bottom: 2.5rem; }
+.hub-block h2, .hub-sub { font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.01em; margin-bottom: 1rem; }
+.hub-sub { margin-top: 2.5rem; }
+.page-header .button { margin-top: 0.4rem; }
+
+/* The parts of a series, in order */
+.series-parts { list-style: none; border-top: 1px solid var(--line); margin-bottom: 1rem; }
+.series-part { display: grid; grid-template-columns: 3.2rem minmax(0, 1fr); gap: 0.4rem 1.2rem; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+.series-part-num {
+  width: 2.6rem; height: 2.6rem; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--display); font-weight: 700; font-size: 1.1rem; background: var(--accent); color: var(--on-accent);
+}
+.series-part h2 { font-family: var(--display); font-weight: 700; font-size: 1.4rem; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 0.35rem; }
+.series-part h2 a { color: var(--ink); text-decoration: none; }
+.series-part h2 a:hover { color: var(--accent); text-decoration: underline; text-underline-offset: 0.2em; }
+.series-part p { color: var(--muted); max-width: 56ch; }
+.series-part-meta { font-family: var(--display); font-size: 0.9rem; margin-top: 0.4rem; }
+.series-part.is-coming .series-part-num { background: transparent; color: var(--muted); border: 1.5px dashed var(--muted); }
+.series-part.is-coming h2 { color: var(--muted); }
+.series-part.is-coming .series-part-meta { color: var(--ink); font-weight: 600; }
+.series-part.is-coming .series-part-meta::before { content: ""; display: inline-block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--signal); margin-right: 0.4rem; }
+
+/* Cards for series, and the theme list */
+.hub-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+.hub-card {
+  display: flex; flex-direction: column; gap: 0.5rem; padding: 1.3rem 1.4rem; border: 1px solid var(--line);
+  border-radius: var(--radius); background: var(--surface); color: var(--ink); text-decoration: none;
+}
+.hub-card:hover { border-color: var(--accent); }
+.hub-card-kicker { font-family: var(--display); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.hub-card-title { font-family: var(--display); font-weight: 700; font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.015em; }
+.hub-card-text { color: var(--muted); font-size: 0.98rem; line-height: 1.5; }
+.hub-card-go { font-family: var(--display); font-size: 0.92rem; font-weight: 600; color: var(--accent); margin-top: auto; padding-top: 0.4rem; }
+.theme-list { list-style: none; border-top: 1px solid var(--line); }
+.theme-list li { border-bottom: 1px solid var(--line); }
+.theme-list a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.2rem 1.5rem; padding: 1.2rem 0; color: var(--ink); text-decoration: none; }
+.theme-list a:hover .theme-list-title { color: var(--accent); }
+.theme-list-title { font-family: var(--display); font-weight: 700; font-size: 1.25rem; letter-spacing: -0.015em; }
+.theme-list-text { grid-column: 1; color: var(--muted); max-width: 56ch; }
+.theme-list-count { grid-row: 1; grid-column: 2; font-family: var(--display); font-size: 0.9rem; color: var(--muted); }
+
+/* Which series a piece is in, inside a list row */
+.row-series { font-family: var(--display); font-size: 0.88rem; color: var(--muted); margin-bottom: 0.4rem; }
+.row-series a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.row-series a:hover { text-decoration: underline; }
+.feature-series { font-family: var(--display); font-size: 0.88rem; font-weight: 600; color: var(--accent); }
+
+@media (max-width: 640px) {
+  .series-part { grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.3rem 0.9rem; }
+  .series-part-num { width: 2.2rem; height: 2.2rem; font-size: 1rem; }
+  .theme-list a { grid-template-columns: 1fr; }
+  .theme-list-count { grid-row: auto; grid-column: 1; }
+  .series-nav { padding: 1.1rem; }
+}
+
+/* Home: series label on the newest-piece card */
+.feature-series{display:block;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#5b6b7d);margin:.25rem 0 .1rem}

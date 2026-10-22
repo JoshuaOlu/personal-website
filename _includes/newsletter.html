@@ -1,6 +1,6 @@
 {%- assign nl = site.newsletter -%}
 {%- if nl and nl.provider and nl.provider != "" -%}
-<aside class="newsletter" aria-labelledby="nl-title">
+<aside class="newsletter" id="subscribe" aria-labelledby="nl-title">
   <h2 id="nl-title">{{ nl.heading | default: "Get new pieces by email" }}</h2>
   <p>{{ nl.blurb | default: "Occasional essays on engineering education in Nigeria and Africa. No spam, leave any time." }}</p>
   {%- if nl.provider == "substack" -%}

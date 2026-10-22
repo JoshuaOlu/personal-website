@@ -1,0 +1,14 @@
+{%- comment -%}
+  Counts the series and themes that are ready to show. A series shows once it has one
+  published piece; a theme once two pieces share it. Sets series_live_n and themes_live_n.
+{%- endcomment -%}
+{%- assign series_live_n = 0 -%}
+{%- for s in site.series -%}
+  {%- for p in site.writing -%}{%- if p.series == s.slug -%}{%- assign series_live_n = series_live_n | plus: 1 -%}{%- break -%}{%- endif -%}{%- endfor -%}
+{%- endfor -%}
+{%- assign themes_live_n = 0 -%}
+{%- for t in site.themes -%}
+  {%- assign tn = 0 -%}
+  {%- for p in site.writing -%}{%- if p.themes contains t.slug -%}{%- assign tn = tn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if tn > 1 -%}{%- assign themes_live_n = themes_live_n | plus: 1 -%}{%- endif -%}
+{%- endfor -%}

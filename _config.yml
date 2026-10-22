@@ -83,6 +83,13 @@ collections:
   # Short links that forward to somewhere else (see GUIDE.md, "Short links").
   links:
     output: true
+  # Series of connected pieces, and the themes pieces belong to (see GUIDE.md, "Series and themes").
+  series:
+    output: true
+    permalink: /writing/series/:name/
+  themes:
+    output: true
+    permalink: /writing/themes/:name/
 
 # ─── Default front matter ─────────────────────────────────────────────────────
 defaults:
@@ -101,6 +108,16 @@ defaults:
       type: "writing"
     values:
       layout: post
+  - scope:
+      path: ""
+      type: "series"
+    values:
+      layout: series
+  - scope:
+      path: ""
+      type: "themes"
+    values:
+      layout: theme
   - scope:
       path: ""
       type: "links"

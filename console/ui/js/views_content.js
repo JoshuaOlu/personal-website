@@ -46,6 +46,8 @@ async function viewHome(view) {
     h('h2', { style: { margin: '2rem 0 .8rem' } }, 'Do something'),
     h('div', { class: 'grid cols-3' },
       tile('pen', 'Write something', 'Start a new piece of writing (saved as a draft).', () => newDocDialog('writing')),
+      tile('layers', 'Start a series', 'Essays that build on each other, with Part 1, Part 2 and so on.', () => newDocDialog('series')),
+      tile('tag', 'Add a theme', 'A subject you keep coming back to, so readers can follow it.', () => newDocDialog('themes')),
       tile('folder', 'Add a project', 'A new research or project page.', () => newDocDialog('projects')),
       tile('book', 'Add a paper', 'A new publication for the CV and search.', () => go('/publications')),
       tile('link', 'Make a short link', 'A tidy address that forwards, with its own preview.', () => go('/links/new')),
@@ -79,28 +81,70 @@ async function viewDocList(view, kind) {
       const stateChip = kind === 'projects' ? h('span', { class: 'chip ' + (fm.status === 'Recruiting' ? 'signal' : fm.status === 'Completed' ? 'ok' : 'info') }, fm.status || '—')
         : h('span', { class: 'chip ' + (fm.published === false ? 'warn' : 'ok') }, fm.published === false ? 'Draft' : 'Published');
       return h('tr', {},
-        h('td', {}, h('a', { class: 't-title', href: '#/' + k.route + '/edit/' + q(it.path), style: { textDecoration: 'none' } }, it.title), it.error ? h('div', { class: 'err small' }, it.error) : h('div', { class: 'small muted mono' }, it.url)),
+        h('td', {}, h('a', { class: 't-title', href: '#/' + k.route + '/edit/' + q(it.path), style: { textDecoration: 'none' } }, it.title), it.error ? h('div', { class: 'err small' }, it.error) : h('div', { class: 'small muted mono' }, it.url),
+          kind === 'writing' && fm.series ? h('div', { class: 'small muted' }, 'Series: ' + fm.series + (fm.series_part ? ' · Part ' + fm.series_part : '')) : null),
         h('td', {}, stateChip), h('td', { class: 'muted' }, kind === 'projects' ? String(fm.order == null ? '' : fm.order) : String(fm.date || '')),
         h('td', {}, h('div', { class: 't-actions' }, h('a', { class: 'btn quiet small', href: viewUrl(it.url || '/'), target: '_blank', rel: 'noopener' }, 'View'), h('a', { class: 'btn secondary small', href: '#/' + k.route + '/edit/' + q(it.path) }, 'Edit'))));
     })))));
 }
-function newDocDialog(kind) {
+function newDocDialog(kind, preset) {
+  preset = preset || {};
   const k = KIND_INFO[kind];
-  const title = h('input', { type: 'text', placeholder: kind === 'projects' ? 'Name of the project' : 'Title of the piece' });
+  const title = h('input', { type: 'text', placeholder: kind === 'projects' ? 'Name of the project' : kind === 'series' ? 'Title of the series' : kind === 'themes' ? 'Name of the theme' : 'Title of the piece' });
   const slug = h('input', { type: 'text', placeholder: 'short-name-for-the-address' });
   let slugTouched = false;
   title.addEventListener('input', () => { if (!slugTouched) slug.value = slugify(title.value); });
   slug.addEventListener('input', () => { slugTouched = true; });
   const pathHint = h('div', { class: 'hint' });
-  const upd = () => { pathHint.textContent = 'Address: ' + (S.info ? S.info.site.url.replace('https://', '') : '') + (kind === 'projects' ? '/research/' : '/writing/') + (slug.value || '…') + '/'; };
+  const base = kind === 'projects' ? '/research/' : kind === 'series' ? '/writing/series/' : kind === 'themes' ? '/writing/themes/' : '/writing/';
+  const upd = () => { pathHint.textContent = 'Address: ' + (S.info ? S.info.site.url.replace('https://', '') : '') + base + (slug.value || '…') + '/'; };
   slug.addEventListener('input', upd); title.addEventListener('input', upd); upd();
+
+  /* a new piece can be placed in a series and given themes straight away */
+  const extra = { series: preset.series || '', series_part: preset.part || '', themes: [] };
+  const hubBox = h('div', { class: 'stack' });
+  let hubs = null;
+  if (kind === 'writing') {
+    loadHubs().then((hb) => {
+      hubs = hb;
+      const sel = h('select', { 'aria-label': 'Series' }, h('option', { value: '' }, 'Not part of a series'),
+        hb.series.map((x) => h('option', { value: x.slug, selected: x.slug === extra.series }, x.front.short_title || x.title)));
+      const part = h('input', { type: 'number', min: '1', step: '1', style: { maxWidth: '6rem' }, 'aria-label': 'Part number' });
+      const partRow = h('div', { class: 'field', hidden: !extra.series }, h('label', {}, 'Part number'), part);
+      const onSeries = () => {
+        extra.series = sel.value; partRow.hidden = !sel.value;
+        if (sel.value) {
+          const n = nextFreePart(hb, sel.value, null); part.value = String(n); extra.series_part = n;
+          const sr = hb.series.find((x) => x.slug === sel.value);
+          const plan = sr ? plannedOf(sr).find((x) => parseInt(x.part, 10) === n) : null;
+          if (plan && !title.value.trim()) { title.value = plan.title; if (!slugTouched) slug.value = slugify(plan.title).split('-').slice(0, 8).join('-'); upd(); }
+        } else extra.series_part = '';
+      };
+      sel.addEventListener('change', onSeries);
+      part.addEventListener('input', () => { extra.series_part = parseInt(part.value, 10) || ''; });
+      if (extra.series) { sel.value = extra.series; onSeries(); }
+      hubBox.append(
+        hb.series.length ? h('div', { class: 'field' }, h('label', {}, 'Series (optional)'), sel) : null,
+        hb.series.length ? partRow : null,
+        hb.themes.length ? h('div', { class: 'field' }, h('label', {}, 'Themes (optional)'),
+          h('div', { class: 'theme-picks' }, hb.themes.slice().sort((x, y) => (x.front.order || 0) - (y.front.order || 0)).map((t) => {
+            const cb = h('input', { type: 'checkbox', onchange: () => { cb.checked ? extra.themes.push(t.slug) : extra.themes.splice(extra.themes.indexOf(t.slug), 1); lab.classList.toggle('on', cb.checked); } });
+            const lab = h('label', { class: 'theme-pick' }, cb, h('span', {}, t.title));
+            return lab;
+          })), h('div', { class: 'hint' }, 'You can change all of this later, in the piece.')) : null);
+    }).catch(() => { /* the dialog still works without them */ });
+  }
+
   openModal({
     title: 'New ' + k.noun,
-    body: h('div', { class: 'stack' }, h('div', { class: 'field' }, h('label', {}, 'Title'), title), h('div', { class: 'field' }, h('label', {}, 'Short name'), slug, pathHint, h('div', { class: 'hint' }, 'This becomes the web address. You cannot change it later without breaking links.'))),
+    body: h('div', { class: 'stack' }, h('div', { class: 'field' }, h('label', {}, 'Title'), title), h('div', { class: 'field' }, h('label', {}, 'Short name'), slug, pathHint, h('div', { class: 'hint' }, 'This becomes the web address. You cannot change it later without breaking links.')), hubBox),
     actions: [{ label: 'Cancel', kind: 'secondary' }, { label: 'Create', close: false, onclick: async (btn, close) => {
       if (!title.value.trim()) { toast('Please give it a title.', 'bad'); return false; }
-      try { const r = await POST('/api/doc/create', { kind, title: title.value.trim(), slug: slug.value || title.value }); close(); go('/' + k.route + '/edit/' + q(r.path)); }
-      catch (e) { fail(e); }
+      try {
+        const payload = { kind, title: title.value.trim(), slug: slug.value || title.value };
+        if (kind === 'writing') payload.extra = { series: extra.series, series_part: extra.series_part, themes: extra.themes };
+        const r = await POST('/api/doc/create', payload); close(); await refreshInfo(); go('/' + k.route + '/edit/' + q(r.path));
+      } catch (e) { fail(e); }
       return false;
     } }]
   });
@@ -430,6 +474,7 @@ async function viewDocEdit(view, kind, path) {
         inputs.forEach(({ def, el }) => { if (document.activeElement !== el) { const v = getPath(parsed, def); el.value = Array.isArray(v) ? v.join(', ') : (v == null ? '' : v); } });
         if (document.activeElement !== titleInput) titleInput.value = parsed.title || '';
         if (drawProgress) drawProgress(false);
+        if (drawHubs) drawHubs();
         refreshPreviews();
       } else { yamlOk = false; yamlErr.textContent = r.error; }
     } catch (e) { yamlOk = false; yamlErr.textContent = e.message; }
@@ -503,6 +548,11 @@ async function viewDocEdit(view, kind, path) {
         h('button', { type: 'button', class: 'btn secondary', onclick: () => { model.push({ label: '', state: model.some((x) => x.state === 'now') ? 'next' : 'now', detail: '' }); drawProgress(true, true); const ins = list.querySelectorAll('input[type=text]'); if (ins.length) ins[ins.length - 1].focus(); } }, icon('plus'), 'Add a step'),
         h('span', { class: 'spacer' }), h('label', { class: 'small muted' }, 'Last updated ', dateIn)));
   }
+  let hubsCard = null; let drawHubs = null;
+  if (isWriting) {
+    const hc = await buildSeriesThemesCard({ parsed, path, apply: (def, val) => applyField(def, val) });
+    hubsCard = hc.el; drawHubs = hc.redraw;
+  }
   const advanced = h('details', { class: 'card' }, h('summary', { style: { cursor: 'pointer', fontWeight: 700 } }, 'Advanced: everything at the top of the file (front matter)'),
     h('p', { class: 'sub', style: { marginTop: '.6rem' } }, 'This is where the "At a glance" box, the progress timeline and the list of outputs live. The timeline has its own form above. The boxes above edit the same text.'), yamlArea, yamlErr);
   const mdBox = h('div', { class: 'md-wrap' + (isWriting ? ' writing' : '') }, tools, bodyArea, previewPane, acPop);
@@ -526,7 +576,7 @@ async function viewDocEdit(view, kind, path) {
   const titleCard = h('div', { class: 'card' }, titleInput, kind === 'writing' ? titleHint : null, pubToggle ? h('div', { style: { marginTop: '1rem' } }, pubToggle) : null, isWriting ? null : h('div', { style: { marginTop: '1.2rem' } }, fieldsEl));
   const pageCard = h('div', { class: 'card' }, isWriting ? null : h('h2', {}, 'The page itself'), isWriting ? null : h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox);
   view.append(h('div', { class: 'editor' + (isWriting ? ' writing' : '') },
-    h('div', { class: 'stack' }, isWriting ? [titleCard, pageCard, fieldsCard, advanced] : [titleCard, progressCard, h('div', { class: 'card' }, h('h2', {}, 'The page itself'), h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox), advanced]),
+    h('div', { class: 'stack' }, isWriting ? [titleCard, hubsCard, pageCard, fieldsCard, advanced] : [titleCard, progressCard, h('div', { class: 'card' }, h('h2', {}, 'The page itself'), h('p', { class: 'sub' }, 'Written in Markdown. Use the buttons above the box, or type the marks yourself.'), mdBox), advanced]),
     h('div', { class: 'editor-side' }, sideCards)));
 }
 

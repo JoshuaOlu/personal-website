@@ -9,12 +9,15 @@ sitemap: false
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 {%- assign writing_n = site.writing | size -%}
+{%- include hub-totals.html -%}
 {%- assign podcast_n = site.data.podcast_feed.episodes | size -%}
 {%- for p in site.pages -%}
   {%- assign last = p.url | slice: -1, 1 -%}
   {%- if p.sitemap == false or p.noindex or last != "/" -%}{%- continue -%}{%- endif -%}
   {%- if p.url == "/writing/" and writing_n == 0 -%}{%- continue -%}{%- endif -%}
   {%- if p.url == "/podcast/" and podcast_n == 0 -%}{%- continue -%}{%- endif -%}
+  {%- if p.url == "/writing/series/" and series_live_n == 0 -%}{%- continue -%}{%- endif -%}
+  {%- if p.url == "/writing/themes/" and themes_live_n == 0 -%}{%- continue -%}{%- endif -%}
   {%- assign lm = p.updated -%}
   <url><loc>{{ p.url | absolute_url | xml_escape }}</loc>{% if lm %}<lastmod>{{ lm | date_to_xmlschema }}</lastmod>{% endif %}</url>
 {%- endfor -%}
@@ -27,5 +30,17 @@ sitemap: false
   {%- if d.sitemap == false or d.noindex -%}{%- continue -%}{%- endif -%}
   {%- assign lm = d.updated | default: d.date -%}
   <url><loc>{{ d.url | absolute_url | xml_escape }}</loc>{% if lm %}<lastmod>{{ lm | date_to_xmlschema }}</lastmod>{% endif %}</url>
+{%- endfor -%}
+{%- for s in site.series -%}
+  {%- assign sn = 0 -%}
+  {%- for p in site.writing -%}{%- if p.series == s.slug -%}{%- assign sn = sn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if sn < 1 or s.sitemap == false or s.noindex -%}{%- continue -%}{%- endif -%}
+  <url><loc>{{ s.url | absolute_url | xml_escape }}</loc></url>
+{%- endfor -%}
+{%- for t in site.themes -%}
+  {%- assign tn = 0 -%}
+  {%- for p in site.writing -%}{%- if p.themes contains t.slug -%}{%- assign tn = tn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if tn < 2 or t.sitemap == false or t.noindex -%}{%- continue -%}{%- endif -%}
+  <url><loc>{{ t.url | absolute_url | xml_escape }}</loc></url>
 {%- endfor %}
 </urlset>

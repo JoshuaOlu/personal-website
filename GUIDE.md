@@ -364,6 +364,19 @@ automatically. Destinations must start with `https://` or `/`. To remove one, cl
 Add pieces under **Writing** in the console, or as files in `_writing/` (see `templates/writing-template.md`).
 New pieces start as drafts (`published: false`). The Writing page stays hidden from search until one is published.
 
+### Series and themes
+A **series** is a run of essays that build on each other (Part 1, Part 2 ...). A **theme** is a subject that several pieces share. Both are made and edited in the console, under **Series** and **Themes** in the menu. Nothing needs to be typed into a file.
+
+- **Start a series:** Series > New series. Give it a title, a short title (used in the "Part 2 of 3" banner), a summary and an introduction in your own words. Set **Status** to Ongoing, and the **Total number of parts** if you know it.
+- **Plan parts ahead:** on the series page, use **Plan a part** to add a part number and a title. Readers see it as "Coming" (title only) until you publish a piece with that part number. The note box is only for you.
+- **Put a piece in a series:** open the piece, and in the **Series and themes** card choose the series. The next free part number is filled in for you. Or press **Write a part** on the series page, which starts a draft with the series, the part number and the planned title already set.
+- **Themes:** in the same card, tick the subjects the piece is about, or press **New theme** to make one on the spot. Two or three is plenty.
+- **What readers get:** a part banner and next and previous links in each piece, a series page listing every part in order, theme pages listing every piece with that theme, "keep reading" suggestions, and a Series and Themes section on the Writing page.
+- **What stays hidden:** a series page is hidden (and kept out of search) until its first piece is published. A theme page is hidden until two published pieces use it. Drafts never show.
+- **The checks** (Preview and checks) tell you about a piece pointing at a series or theme that does not exist, two pieces with the same part number, or a part number past the total.
+
+In the files: a piece has `series: <file name>`, `series_part: 2` and `themes: [file-name, file-name]` at the top. Series live in `_series/`, themes in `_themes/`. The file name is the address (`/writing/series/<name>/`), so choose it carefully.
+
 ## About page and your identity
 Your name, short and long bios, topics, affiliations and profile links live in `_data/identity.yml`
 (editable in the console under **About and identity**). The About page, search-engine data (JSON-LD) and

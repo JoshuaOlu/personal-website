@@ -1,0 +1,39 @@
+{%- comment -%}
+  Gathers what the pages need to know about one series. Usage: {% include series-info.html slug=SLUG %}
+  It sets these for the page that included it:
+    ser          the series itself (empty if the name is not found)
+    ser_parts    its published pieces, in part order
+    ser_total    how many parts there will be (0 if nobody has said)
+    ser_known    true when the total is worth showing ("Part 2 of 3")
+    ser_coming   planned parts that are not published yet, in part order
+  Only plain Liquid is used, so the GitHub Pages build can read it.
+{%- endcomment -%}
+{%- assign ser = nil -%}
+{%- for s in site.series -%}{%- if s.slug == include.slug -%}{%- assign ser = s -%}{%- endif -%}{%- endfor -%}
+{%- capture ser_keys -%}{%- for p in site.writing -%}{%- if p.series == include.slug -%}{{ p.series_part | default: 998 | plus: 1000 }}~{{ p.slug }}|{%- endif -%}{%- endfor -%}{%- endcapture -%}
+{%- assign ser_key_list = ser_keys | split: "|" | sort -%}
+{%- assign ser_parts = "" | split: "," -%}
+{%- for k in ser_key_list -%}
+  {%- assign ser_slug = k | split: "~" | last -%}
+  {%- for p in site.writing -%}{%- if p.slug == ser_slug -%}{%- assign ser_parts = ser_parts | push: p -%}{%- endif -%}{%- endfor -%}
+{%- endfor -%}
+{%- assign ser_total = ser.total_parts | default: 0 | plus: 0 -%}
+{%- for p in ser_parts -%}{%- assign n = p.series_part | default: 0 | plus: 0 -%}{%- if n > ser_total -%}{%- assign ser_total = n -%}{%- endif -%}{%- endfor -%}
+{%- for q in ser.planned -%}{%- assign n = q.part | default: 0 | plus: 0 -%}{%- if n > ser_total -%}{%- assign ser_total = n -%}{%- endif -%}{%- endfor -%}
+{%- assign ser_known = false -%}
+{%- if ser.total_parts or ser.planned.size > 0 or ser.status == "complete" -%}{%- assign ser_known = true -%}{%- endif -%}
+{%- capture ser_ckeys -%}
+  {%- for q in ser.planned -%}
+    {%- assign n = q.part | default: 0 | plus: 0 -%}
+    {%- assign have = false -%}
+    {%- for p in ser_parts -%}{%- assign pn = p.series_part | default: 0 | plus: 0 -%}{%- if pn == n -%}{%- assign have = true -%}{%- endif -%}{%- endfor -%}
+    {%- unless have -%}{{ n | plus: 1000 }}~{{ forloop.index0 }}|{%- endunless -%}
+  {%- endfor -%}
+{%- endcapture -%}
+{%- assign ser_ckey_list = ser_ckeys | strip | split: "|" | sort -%}
+{%- assign ser_coming = "" | split: "," -%}
+{%- for k in ser_ckey_list -%}
+  {%- assign ser_idx = k | split: "~" | last | plus: 0 -%}
+  {%- assign q = ser.planned[ser_idx] -%}
+  {%- if q -%}{%- assign ser_coming = ser_coming | push: q -%}{%- endif -%}
+{%- endfor -%}

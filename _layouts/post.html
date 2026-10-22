@@ -2,6 +2,7 @@
 layout: default
 ---
 <link rel="stylesheet" href="{{ '/assets/css/essay.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/css/writing-hubs.css' | relative_url }}">
 {%- include cite-apply.html html=content slug=page.slug -%}
 {%- assign words = content | strip_html | number_of_words -%}
 {%- assign minutes = words | divided_by: 220 | plus: 1 -%}
@@ -24,6 +25,7 @@ layout: default
 {%- endif %}
 <article class="post-main">
   <header class="page-header">
+    {% include series-banner.html %}
     <div class="header-meta post-meta">
       <time datetime="{{ page.date | date_to_xmlschema }}">{{ page.date | date: "%-d %B %Y" }}</time>
       <span>{{ minutes }} min read</span>
@@ -43,6 +45,7 @@ layout: default
   </div>
 
   <footer class="post-foot prose">
+    {% include theme-chips.html %}
     {% if page.tags and page.tags.size > 0 %}<p class="post-tags">{% for t in page.tags %}<span class="tag">{{ t }}</span>{% endfor %}</p>{% endif %}
     {% if page.canonical_url %}<p class="muted">This piece first appeared at <a href="{{ page.canonical_url }}" rel="canonical">{{ page.canonical_url | remove: "https://" | remove: "http://" | split: "/" | first }}</a>.</p>{% endif %}
     <p class="muted">
@@ -50,6 +53,9 @@ layout: default
     </p>
     <p class="muted">Written by <a href="{{ '/about/' | relative_url }}">Joshua Olunlade</a>, an engineering education researcher at the University of Cape Town.</p>
   </footer>
+
+  {% include series-nav.html %}
+  {% include keep-reading.html %}
 
   {% include newsletter.html %}
 

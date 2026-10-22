@@ -1,0 +1,17 @@
+{%- comment -%}
+  The themes of a piece, as small links. A theme only becomes a link once at least two
+  pieces share it, so nobody lands on a page with a single item.
+{%- endcomment -%}
+{%- if page.themes and page.themes.size > 0 -%}
+<p class="post-themes"><span class="post-themes-label">Themes</span>
+{%- for tslug in page.themes -%}
+  {%- assign th = nil -%}
+  {%- for t in site.themes -%}{%- if t.slug == tslug -%}{%- assign th = t -%}{%- endif -%}{%- endfor -%}
+  {%- if th -%}
+    {%- assign tn = 0 -%}
+    {%- for p in site.writing -%}{%- if p.themes contains tslug -%}{%- assign tn = tn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+    {%- if tn > 1 %} <a class="tag tag-link" href="{{ th.url | relative_url }}">{{ th.title }}</a>{% else %} <span class="tag">{{ th.title }}</span>{% endif -%}
+  {%- endif -%}
+{%- endfor -%}
+</p>
+{%- endif -%}

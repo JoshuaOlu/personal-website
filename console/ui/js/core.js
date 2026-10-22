@@ -51,7 +51,9 @@ const ICONS = {
   quote: 'M5 17V11a5 5 0 0 1 5-5M5 17h5v-5H5M14 17v-6a5 5 0 0 1 5-5M14 17h5v-5h-5',
   edit: 'M4 20l4-1 11-11-3-3L5 16z',
   ext: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
-  search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5'
+  search: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-5-5',
+  layers: 'M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5',
+  tag: 'M3 12V4h8l10 10-8 8zM7.5 8.5h.01'
 };
 function icon(name) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

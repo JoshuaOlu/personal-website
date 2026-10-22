@@ -131,7 +131,7 @@ module Console
         if j['kind'] == 'links'
           path = @store.create_link(j)
         else
-          path = @store.new_doc(j['kind'], j['slug'] || j['title'], j['title'])
+          path = @store.new_doc(j['kind'], j['slug'] || j['title'], j['title'], j['extra'] || {})
         end
         ok('path' => path)
       when 'POST /api/doc/delete'

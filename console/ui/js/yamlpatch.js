@@ -114,6 +114,44 @@ function setProgress(raw, steps) {
   return lines.join('\n');
 }
 
+/* Replace the whole "planned:" list of a series (parts that are planned but not yet published). Each item is
+   {part, title, note}. An empty list is written as "planned: []" so the series file stays easy to read. */
+function setPlanned(raw, items) {
+  const lines = String(raw).split('\n');
+  const i = keyIndex(lines, 'planned');
+  let end = i + 1;
+  if (i >= 0) {
+    while (end < lines.length) {
+      const l = lines[end];
+      if (/^(\s+\S|-\s|-$)/.test(l)) { end++; continue; }
+      if (l.trim() === '') {
+        let k = end + 1; while (k < lines.length && lines[k].trim() === '') k++;
+        if (k < lines.length && /^(\s+\S|-\s)/.test(lines[k])) { end++; continue; }
+      }
+      break;
+    }
+  }
+  const clean = items.filter((x) => x && String(x.title || '').trim())
+    .map((x) => ({ part: parseInt(x.part, 10) || 0, title: String(x.title).trim(), note: String(x.note || '').replace(/\s*\n\s*/g, ' ').trim() }))
+    .sort((a, b) => a.part - b.part);
+  const out = [];
+  if (!clean.length) out.push('planned: []');
+  else {
+    out.push('planned:');
+    clean.forEach((x) => {
+      out.push('  - part: ' + x.part);
+      out.push('    title: ' + yq(x.title));
+      if (x.note) out.push('    note: ' + yq(x.note));
+    });
+  }
+  if (i >= 0) lines.splice(i, end - i, ...out);
+  else {
+    while (lines.length && lines[lines.length - 1].trim() === '') lines.pop();
+    lines.push(...out);
+  }
+  return lines.join('\n');
+}
+
 /* Set a key one level down, inside a block such as "image:". */
 function setNested(raw, parent, key, kind, value) {
   const lines = String(raw).split('\n');

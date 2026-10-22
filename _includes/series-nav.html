@@ -1,0 +1,37 @@
+{%- comment -%} Previous, next and "coming next" at the end of a piece in a series. {%- endcomment -%}
+{%- if page.series -%}
+{%- include series-info.html slug=page.series -%}
+{%- if ser -%}
+  {%- assign prev_p = nil -%}{%- assign next_p = nil -%}{%- assign found = false -%}
+  {%- for p in ser_parts -%}
+    {%- if p.slug == page.slug -%}
+      {%- assign found = true -%}
+    {%- else -%}
+      {%- if found -%}{%- if next_p == nil -%}{%- assign next_p = p -%}{%- endif -%}{%- else -%}{%- assign prev_p = p -%}{%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- assign cur_part = page.series_part | default: 0 | plus: 0 -%}
+  {%- assign coming_next = nil -%}
+  {%- if next_p == nil -%}
+    {%- for q in ser_coming -%}
+      {%- assign qn = q.part | default: 0 | plus: 0 -%}
+      {%- if qn > cur_part and coming_next == nil -%}{%- assign coming_next = q -%}{%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+<nav class="series-nav" aria-label="This series">
+  <p class="series-nav-title">This piece is {% if page.series_part %}part {{ page.series_part }}{% if ser_known %} of {{ ser_total }}{% endif %}{% else %}part{% endif %} of the series <a href="{{ ser.url | relative_url }}">{{ ser.title }}</a></p>
+  <div class="series-nav-grid">
+    {%- if prev_p %}
+    <a class="nav-card nav-prev" href="{{ prev_p.url | relative_url }}"><span class="nav-card-label">&larr; Previous{% if prev_p.series_part %} · Part {{ prev_p.series_part }}{% endif %}</span><span class="nav-card-title">{{ prev_p.title }}</span></a>
+    {%- endif %}
+    {%- if next_p %}
+    <a class="nav-card nav-next" href="{{ next_p.url | relative_url }}"><span class="nav-card-label">Next{% if next_p.series_part %} · Part {{ next_p.series_part }}{% endif %} &rarr;</span><span class="nav-card-title">{{ next_p.title }}</span>{% if next_p.summary %}<span class="nav-card-text">{{ next_p.summary }}</span>{% endif %}</a>
+    {%- elsif coming_next %}
+    <div class="nav-card nav-coming"><span class="nav-card-label">Coming next · Part {{ coming_next.part }}</span><span class="nav-card-title">{{ coming_next.title }}</span>{% if coming_next.note %}<span class="nav-card-text">{{ coming_next.note }}</span>{% endif %}{% if site.newsletter.provider and site.newsletter.provider != "" %}<a class="nav-card-link" href="#subscribe">Get it by email when it is out</a>{% endif %}</div>
+    {%- elsif ser.status == "complete" %}
+    <a class="nav-card nav-done" href="{{ ser.url | relative_url }}"><span class="nav-card-label">The end of the series</span><span class="nav-card-title">See all {{ ser_parts.size }} parts</span></a>
+    {%- endif %}
+  </div>
+</nav>
+{%- endif -%}
+{%- endif -%}

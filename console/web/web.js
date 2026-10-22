@@ -19,7 +19,7 @@ window.WEB_MODE = true;
   const IMAGE_EXT = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg', '.ico'];
   const NO_FRONT_EXT = ['.yml', '.yaml', '.json', '.js', '.css', '.svg'];
   const DATA_FILES = { cv: '_data/cv.yml', publications: '_data/publications.yml', social: '_data/social.yml', authors: '_data/authors.yml', identity: '_data/identity.yml', ai_bots: '_data/ai_bots.yml', references: '_data/references.yml', home: '_data/home.yml' };
-  const KINDS = { projects: '_projects', writing: '_writing', links: '_links' };
+  const KINDS = { projects: '_projects', writing: '_writing', links: '_links', series: '_series', themes: '_themes' };
   const RESERVED_PATHS = ['assets', 'research', 'writing', 'cv', 'about', 'publications', 'ai-policy', 'feed.xml', 'robots.txt', 'llms.txt', 'sitemap.xml', '404.html', 'siwes', 'console', 'admin', 'manage', 'podcast'];
 
   class UserError extends Error {
@@ -327,6 +327,8 @@ window.WEB_MODE = true;
     if (fm && String(fm.permalink || '').startsWith('/')) return fm.permalink;
     if (kind === 'projects') return '/research/' + slug + '/';
     if (kind === 'writing') return '/writing/' + slug + '/';
+    if (kind === 'series') return '/writing/series/' + slug + '/';
+    if (kind === 'themes') return '/writing/themes/' + slug + '/';
     return '/' + slug + '/';
   }
   async function listKind(kind) {
@@ -350,7 +352,8 @@ window.WEB_MODE = true;
     tops.forEach((t) => urls.push('/' + t + '/'));
     return urls;
   }
-  async function newDoc(kind, slug, title) {
+  async function newDoc(kind, slug, title, extra) {
+    extra = extra || {};
     const dir = KINDS[kind]; if (!dir) throw new UserError('Unknown kind.', 404);
     slug = slugifyW(slug);
     if (!slug) throw new UserError('Please give it a short name made of letters, numbers and dashes.', 422);
@@ -364,7 +367,18 @@ window.WEB_MODE = true;
       body = 'Write the page here. Use the headings you want, for example **What is this?** and **Why it matters**.\n';
     } else if (kind === 'writing') {
       front = ['title: ' + Q(title), 'date: ' + today, 'summary: >-', '  One or two sentences that say what this piece argues. Shown in the list and on search results.', 'description: >-', '  About 150 characters for Google and link previews.', 'tags: []', 'published: false'].join('\n');
+      const sl = String(extra.series || '').replace(/[^a-z0-9-]/g, '');
+      if (sl) { front += '\nseries: ' + sl; if (parseInt(extra.series_part, 10) > 0) front += '\nseries_part: ' + parseInt(extra.series_part, 10); }
+      const th = (Array.isArray(extra.themes) ? extra.themes : []).map((t) => String(t).replace(/[^a-z0-9-]/g, '')).filter(Boolean);
+      if (th.length) front += '\nthemes: [' + th.join(', ') + ']';
       body = 'Write your piece here.\n';
+    } else if (kind === 'series') {
+      front = ['title: ' + Q(title), 'short_title: ' + Q(title), 'summary: >-', '  One or two sentences about what the series argues.', 'status: ongoing', 'total_parts: 3', 'planned: []'].join('\n');
+      body = 'Say, in a few lines, what this series argues and why it is worth reading in order. This shows at the top of the series page.\n';
+    } else if (kind === 'themes') {
+      const orders = (await listKind('themes')).map((t) => parseInt(t.front.order, 10) || 0);
+      front = ['title: ' + Q(title), 'summary: >-', '  One sentence that says what this theme is about.', 'order: ' + ((orders.length ? Math.max(...orders) : 0) + 10)].join('\n');
+      body = '';
     } else throw new UserError('Use the short links tool to create a short link.', 400);
     writeText(rel, '---\n' + front + '\n---\n' + body);
     return rel;
@@ -710,7 +724,7 @@ window.WEB_MODE = true;
         return { ok: true, mtime };
       }
       case 'POST /api/doc/create': {
-        const rel = body.kind === 'links' ? await createLink(body) : await newDoc(body.kind, body.slug || body.title, body.title);
+        const rel = body.kind === 'links' ? await createLink(body) : await newDoc(body.kind, body.slug || body.title, body.title, body.extra);
         return { ok: true, path: rel };
       }
       case 'POST /api/doc/delete': {

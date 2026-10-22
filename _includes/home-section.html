@@ -9,6 +9,7 @@
     <h2 id="latest-heading">{% if mode == "writer" %}The newest piece{% else %}Most recently, I wrote{% endif %}</h2>
     <a class="feature-card" href="{{ p.url | relative_url }}">
       <span class="feature-meta"><time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %B %Y" }}</time>{% assign wc = p.content | number_of_words %}<span>{{ wc | divided_by: 220 | plus: 1 }} min read</span></span>
+      {%- if p.series -%}{%- for sr in site.series -%}{%- if sr.slug == p.series -%}<span class="feature-series">{{ sr.short_title | default: sr.title }}{% if p.series_part %} &middot; Part {{ p.series_part }}{% endif %}</span>{%- endif -%}{%- endfor -%}{%- endif -%}
       <span class="feature-title">{{ p.title }}</span>
       {% if p.summary %}<span class="feature-summary">{{ p.summary }}</span>{% endif %}
       <span class="feature-go">Read it <span aria-hidden="true">&rarr;</span></span>

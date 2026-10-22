@@ -34,6 +34,29 @@ Role: {{ id.job_title }}. This file is a short guide for AI assistants and searc
 {% for post in posts -%}
 - [{{ post.title }}]({{ post.url | absolute_url }}): {{ post.summary | default: post.description | normalize_whitespace }}
 {% endfor %}
+{%- include hub-totals.html %}
+{%- if series_live_n > 0 %}
+## Series of essays (best read in order)
+{% for s in site.series -%}
+{%- include series-info.html slug=s.slug -%}
+{%- if ser_parts.size > 0 -%}
+- [{{ s.title }}]({{ s.url | absolute_url }}): {{ s.summary | default: s.description | normalize_whitespace }}
+{%- for p in ser_parts %}
+  - Part {{ p.series_part }}: [{{ p.title }}]({{ p.url | absolute_url }})
+{%- endfor %}
+{% endif -%}
+{% endfor %}
+{%- endif %}
+{%- if themes_live_n > 0 %}
+## Themes in the writing
+{% for t in site.themes -%}
+{%- assign tn = 0 -%}
+{%- for p in site.writing %}{% if p.themes contains t.slug %}{% assign tn = tn | plus: 1 %}{% endif %}{% endfor -%}
+{%- if tn > 1 -%}
+- [{{ t.title }}]({{ t.url | absolute_url }}): {{ t.summary | normalize_whitespace }}
+{% endif -%}
+{% endfor %}
+{%- endif %}
 {%- endif %}
 ## Contact
 - Email: {% include mail-plain.html %} (written out to keep it from bulk collectors; there is also a "Write to me" button at {{ site.url }}/about/#invite)
