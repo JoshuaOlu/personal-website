@@ -1,39 +1,87 @@
 {%- comment -%}
   "Keep reading" under a piece: other pieces that share the most themes with this one,
-  newest first when they tie. The previous and next parts of a series are left out
-  because the series box already shows them. Usage: {% include keep-reading.html %}
+  newest first when they tie. Rules:
+    - the rest of the piece's own series is left out (the series box already covers it);
+    - a story is matched with other stories first, then with anything that shares themes;
+    - a series shows once (as one card for the series), not once for each of its parts;
+    - on the last part of a finished story series, the best other story gets a bigger
+      card, "Finished? Another story you might like".
+  Usage: {% include keep-reading.html %}
 {%- endcomment -%}
-{%- assign kr_skip = "," -%}
-{%- if prev_p -%}{%- assign kr_skip = kr_skip | append: prev_p.slug | append: "," -%}{%- endif -%}
-{%- if next_p -%}{%- assign kr_skip = kr_skip | append: next_p.slug | append: "," -%}{%- endif -%}
+{%- assign kr_cur_series = page.series | default: "" -%}
 {%- capture kr_keys -%}
   {%- for p in site.writing -%}
-    {%- assign probe = "," | append: p.slug | append: "," -%}
-    {%- if p.slug == page.slug or kr_skip contains probe -%}{%- continue -%}{%- endif -%}
+    {%- if p.slug == page.slug -%}{%- continue -%}{%- endif -%}
+    {%- if kr_cur_series != "" and p.series == kr_cur_series -%}{%- continue -%}{%- endif -%}
     {%- assign score = 0 -%}
     {%- for t in page.themes -%}{%- if p.themes contains t -%}{%- assign score = score | plus: 1 -%}{%- endif -%}{%- endfor -%}
     {%- if score > 8 -%}{%- assign score = 8 -%}{%- endif -%}
+    {%- if page.fiction and p.fiction -%}{%- assign score = score | plus: 10 -%}{%- endif -%}
     {%- assign ymd = p.date | date: "%Y%m%d" | plus: 0 -%}
-    {{ 9 | minus: score }}{{ 99999999 | minus: ymd }}~{{ p.slug }}|
+    {{ 30 | minus: score }}{{ 99999999 | minus: ymd }}~{{ p.slug }}|
   {%- endfor -%}
 {%- endcapture -%}
 {%- assign kr_list = kr_keys | strip | split: "|" | sort -%}
-{%- if kr_list.size > 0 -%}
-<section class="keep-reading" aria-labelledby="kr-title">
-  <h2 id="kr-title">Keep reading</h2>
-  <ol class="writing-list">
-  {%- for k in kr_list limit: 3 -%}
+{%- comment -%} Is this the last part of a finished series? {%- endcomment -%}
+{%- assign kr_end = false -%}
+{%- if page.fiction and kr_cur_series != "" -%}
+  {%- include series-info.html slug=kr_cur_series -%}
+  {%- assign kr_last = ser_parts | last -%}
+  {%- if kr_last.slug == page.slug and ser_coming.size == 0 and ser.status == "complete" -%}{%- assign kr_end = true -%}{%- endif -%}
+{%- endif -%}
+{%- assign kr_seen = "," -%}
+{%- assign kr_shown = 0 -%}
+{%- capture kr_html -%}
+  {%- for k in kr_list -%}
+    {%- if kr_shown >= 3 -%}{%- break -%}{%- endif -%}
     {%- assign kr_slug = k | split: "~" | last -%}
     {%- for p in site.writing -%}{%- if p.slug == kr_slug -%}
-    <li class="writing-row">
-      <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %b %Y" }}</time>
-      <div>
-        <h3><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h3>
-        {% if p.summary %}<p>{{ p.summary }}</p>{% endif %}
-      </div>
-    </li>
+      {%- assign skey = "," | append: p.series | append: "," -%}
+      {%- if p.series and kr_seen contains skey -%}{%- break -%}{%- endif -%}
+      {%- if p.series -%}{%- assign kr_seen = kr_seen | append: p.series | append: "," -%}{%- endif -%}
+      {%- assign kr_shown = kr_shown | plus: 1 -%}
+      {%- assign is_top = false -%}
+      {%- if kr_shown == 1 and kr_end and p.fiction -%}{%- assign is_top = true -%}{%- assign kr_top_html = "" -%}{%- endif -%}
+      {%- if p.series -%}{%- include series-info.html slug=p.series -%}{%- endif -%}
+      {%- capture kr_item -%}
+        {%- if p.series and ser -%}
+        <time datetime="{{ ser_parts.first.date | date_to_xmlschema }}">{{ ser_parts.first.date | date: "%-d %b %Y" }}</time>
+        <div>
+          <h3><a href="{{ ser.url | relative_url }}">{{ ser.title }}</a></h3>
+          <p class="row-series">{% if ser_fiction %}Story series{% else %}Series{% endif %}{% if ser_known %} · {{ ser_total }} parts{% endif %}</p>
+          {% if ser.summary %}<p>{{ ser.summary }}</p>{% endif %}
+        </div>
+        {%- else -%}
+        <time datetime="{{ p.date | date_to_xmlschema }}">{{ p.date | date: "%-d %b %Y" }}</time>
+        <div>
+          <h3><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h3>
+          {% if p.summary %}<p>{{ p.summary }}</p>{% endif %}
+        </div>
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- if is_top -%}
+        {%- capture kr_top_html -%}
+        <aside class="next-story" aria-labelledby="ns-title">
+          <p class="next-story-label" id="ns-title">Finished? Another story you might like</p>
+          {%- if p.series and ser %}
+          <a class="next-story-card" href="{{ ser.url | relative_url }}"><span class="next-story-kicker">Story series{% if ser_known %} · {{ ser_total }} parts{% endif %}</span><span class="next-story-title">{{ ser.title }}</span>{% if ser.summary %}<span class="next-story-text">{{ ser.summary }}</span>{% endif %}<span class="next-story-go">Start reading &rarr;</span></a>
+          {%- else %}
+          <a class="next-story-card" href="{{ p.url | relative_url }}"><span class="next-story-kicker">Story</span><span class="next-story-title">{{ p.title }}</span>{% if p.summary %}<span class="next-story-text">{{ p.summary }}</span>{% endif %}<span class="next-story-go">Read it &rarr;</span></a>
+          {%- endif %}
+        </aside>
+        {%- endcapture -%}
+      {%- else -%}
+        <li class="writing-row">{{ kr_item }}</li>
+      {%- endif -%}
+      {%- break -%}
     {%- endif -%}{%- endfor -%}
   {%- endfor -%}
-  </ol>
+{%- endcapture -%}
+{%- if kr_top_html -%}{{ kr_top_html }}{%- endif -%}
+{%- assign kr_rows = kr_html | strip -%}
+{%- if kr_rows != "" -%}
+<section class="keep-reading" aria-labelledby="kr-title">
+  <h2 id="kr-title">{% if kr_top_html %}More to read{% else %}Keep reading{% endif %}</h2>
+  <ol class="writing-list">{{ kr_rows }}</ol>
 </section>
 {%- endif -%}

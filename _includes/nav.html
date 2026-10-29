@@ -7,7 +7,8 @@
     </button>
     <div class="nav-links" id="nav-links">
       {% for item in site.nav %}
-        {% if item.collection and site[item.collection].size == 0 %}{% continue %}{% endif %}
+        {% if item.collection == "stories" %}{% assign story_n = 0 %}{% for w in site.writing %}{% if w.fiction %}{% assign story_n = story_n | plus: 1 %}{% endif %}{% endfor %}{% if story_n == 0 %}{% continue %}{% endif %}
+        {% elsif item.collection and site[item.collection].size == 0 %}{% continue %}{% endif %}
         {% if item.data %}{% assign dd = site.data[item.data].episodes | size %}{% if dd == 0 %}{% continue %}{% endif %}{% endif %}
         {% if item.external %}
           <a href="{{ item.url | relative_url }}" target="_blank" rel="noopener">{{ item.label }}</a>

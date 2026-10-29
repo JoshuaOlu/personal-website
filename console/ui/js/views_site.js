@@ -140,7 +140,7 @@ async function viewSettings(view) {
     { k: 'description', label: 'Site description', w: 'area', rows: 4, wide: true, counter: [100, 300], hint: 'The default description for search results and link previews on pages that do not have their own.' },
     { k: 'nav', label: 'Menu', w: 'objlist', addLabel: 'Add a menu item', hint: 'The links in the top bar. Use "Hide until it has content" for a section that is empty at first, like Writing.',
       itemLabel: (n) => ({ main: n.label || 'New item', sub: n.url }), newItem: () => ({ label: '', url: '/' }),
-      fields: [{ k: 'label', label: 'Label' }, { k: 'url', label: 'Address', hint: 'Starts with / for a page on this site.' }, { k: 'collection', label: 'Hide until it has content (optional)', w: 'select', options: [{ value: 'writing', label: 'Writing has a published piece' }, { value: 'projects', label: 'Projects has an entry' }] }] }
+      fields: [{ k: 'label', label: 'Label' }, { k: 'url', label: 'Address', hint: 'Starts with / for a page on this site.' }, { k: 'collection', label: 'Hide until it has content (optional)', w: 'select', options: [{ value: 'writing', label: 'Writing has a published piece' }, { value: 'stories', label: 'A story is published' }, { value: 'projects', label: 'Projects has an entry' }] }] }
   ];
   const msg = h('span', { class: 'msg' }, 'No changes yet'); const saveBtn = h('button', { type: 'button', class: 'btn', disabled: true }, 'Save changes');
   const update = () => { const ch = JSON.stringify(work) !== original; setDirty(ch); msg.textContent = ch ? 'You have unsaved changes' : 'All changes saved'; msg.className = 'msg' + (ch ? ' dirty' : ''); saveBtn.disabled = !ch; };

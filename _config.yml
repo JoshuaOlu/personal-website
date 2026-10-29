@@ -48,13 +48,17 @@ newsletter:
 
 # ─── Navigation ───────────────────────────────────────────────────────────────
 # Add a page here to put it in the menu. "collection: writing" hides an item
-# until that collection has at least one published entry.
+# until that collection has at least one published entry. "collection: stories" hides
+# an item until a piece marked as fiction is published.
 nav:
   - label: Research
     url: /research/
   - label: Writing
     url: /writing/
     collection: writing
+  - label: Stories
+    url: /writing/#stories
+    collection: stories
   - label: Podcast
     url: /podcast/
     data: podcast_feed

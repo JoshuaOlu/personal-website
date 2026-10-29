@@ -1,12 +1,18 @@
-{%- comment -%} Cards for every series that has at least one published piece. {%- endcomment -%}
+{%- comment -%}
+  Cards for every series that has at least one published piece.
+  Usage: {% include hub-series-cards.html %} for all, or kind="stories" / kind="essays" for one kind.
+{%- endcomment -%}
 {%- assign any_series = false -%}
 <div class="hub-cards">
 {%- for s in site.series -%}
   {%- include series-info.html slug=s.slug -%}
-  {%- if ser_parts.size > 0 -%}
+  {%- assign want = true -%}
+  {%- if include.kind == "stories" and ser_fiction == false -%}{%- assign want = false -%}{%- endif -%}
+  {%- if include.kind == "essays" and ser_fiction -%}{%- assign want = false -%}{%- endif -%}
+  {%- if ser_parts.size > 0 and want -%}
   {%- assign any_series = true -%}
   <a class="hub-card" href="{{ s.url | relative_url }}">
-    <span class="hub-card-kicker">Series{% if ser_known %} · {{ ser_total }} parts{% endif %}{% if s.status == "complete" %} · Complete{% endif %}</span>
+    <span class="hub-card-kicker">{% if ser_fiction %}Story series{% else %}Series{% endif %}{% if ser_known %} · {{ ser_total }} parts{% endif %}{% if s.status == "complete" %} · Complete{% endif %}</span>
     <span class="hub-card-title">{{ s.title }}</span>
     {% if s.summary %}<span class="hub-card-text">{{ s.summary }}</span>{% endif %}
     <span class="hub-card-go">{{ ser_parts.size }} published{% if ser_coming.size > 0 %}, {{ ser_coming.size }} to come{% endif %} <span aria-hidden="true">&rarr;</span></span>

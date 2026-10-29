@@ -6,6 +6,7 @@
     ser_total    how many parts there will be (0 if nobody has said)
     ser_known    true when the total is worth showing ("Part 2 of 3")
     ser_coming   planned parts that are not published yet, in part order
+    ser_fiction  true when its first published piece is marked as fiction
   Only plain Liquid is used, so the GitHub Pages build can read it.
 {%- endcomment -%}
 {%- assign ser = nil -%}
@@ -37,3 +38,6 @@
   {%- assign q = ser.planned[ser_idx] -%}
   {%- if q -%}{%- assign ser_coming = ser_coming | push: q -%}{%- endif -%}
 {%- endfor -%}
+{%- assign ser_fiction = false -%}
+{%- assign ser_first = ser_parts | first -%}
+{%- if ser_first.fiction -%}{%- assign ser_fiction = true -%}{%- endif -%}

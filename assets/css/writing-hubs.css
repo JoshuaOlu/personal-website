@@ -114,3 +114,22 @@ a.nav-card:hover { border-color: var(--accent); }
 
 /* Works of fiction */
 .fiction-note { max-width: 42rem; margin: 0 0 1.6rem; padding: 0.7rem 1rem; border-left: 3px solid var(--accent); background: var(--surface); color: var(--muted); font-size: 0.92rem; line-height: 1.5; border-radius: 0 var(--radius) var(--radius) 0; }
+
+/* Stories and essays on the Writing page */
+.hub-lede { color: var(--muted); margin: -0.5rem 0 1.25rem; }
+.hub-sub-first { margin-top: 0; }
+h3.hub-sub { font-size: 1.1rem; }
+#stories, #essays { scroll-margin-top: 5rem; }
+
+/* "Finished? Another story you might like" at the end of the last part of a story */
+.next-story { max-width: 46rem; margin-top: 2rem; }
+.next-story-label { font-family: var(--display); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.7rem; }
+.next-story-card {
+  display: flex; flex-direction: column; gap: 0.35rem; padding: 1.3rem 1.5rem; border: 1px solid var(--accent);
+  border-radius: var(--radius); background: var(--surface); color: var(--ink); text-decoration: none;
+}
+.next-story-card:hover { background: var(--paper); }
+.next-story-kicker { font-family: var(--display); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.next-story-title { font-family: var(--display); font-weight: 700; font-size: 1.4rem; line-height: 1.2; letter-spacing: -0.01em; }
+.next-story-text { color: var(--muted); line-height: 1.5; }
+.next-story-go { font-family: var(--display); font-weight: 600; color: var(--accent); margin-top: 0.3rem; }
