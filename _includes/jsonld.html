@@ -90,7 +90,7 @@
   {%- if page.tags -%}{%- assign ld_tags = page.tags -%}{%- endif -%}
   {%- capture n -%}
   {
-    "@type": "Article",
+    "@type": {% if page.fiction %}"ShortStory"{% else %}"Article"{% endif %},
     "@id": {{ here | append: "#article" | jsonify }},
     "headline": {{ page.title | jsonify }},
     "description": {{ page.summary | default: page.description | normalize_whitespace | jsonify }},

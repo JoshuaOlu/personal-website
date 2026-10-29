@@ -364,6 +364,11 @@ automatically. Destinations must start with `https://` or `/`. To remove one, cl
 Add pieces under **Writing** in the console, or as files in `_writing/` (see `templates/writing-template.md`).
 New pieces start as drafts (`published: false`). The Writing page stays hidden from search until one is published.
 
+### Fiction, and pieces first published elsewhere
+In the console, open a piece and tick **This is a work of fiction** (under "Summary, tags and sharing"). The piece then carries a short "work of fiction" note, and leaves out the "Cite as" line and the researcher byline. To credit an earlier home for a piece, fill **Originally published on** (for example Substack) and its address, and the piece ends with "First published on Substack, 20 November 2025". In the file these are `fiction: true`, `originally_on` and `originally_url`.
+
+*Dear Dr. Wilkerson* is set up this way: one series (`_series/dear-dr-wilkerson.md`) with nine letters in `_writing/`, each keeping its original Substack date.
+
 ### Series and themes
 A **series** is a run of essays that build on each other (Part 1, Part 2 ...). A **theme** is a subject that several pieces share. Both are made and edited in the console, under **Series** and **Themes** in the menu. Nothing needs to be typed into a file.
 

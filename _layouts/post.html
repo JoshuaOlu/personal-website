@@ -39,6 +39,9 @@ layout: default
   <details class="post-toc"><summary>In this piece</summary><ul>{{ toc_html }}</ul></details>
   {%- endif -%}
 
+  {%- if page.fiction %}
+  <p class="fiction-note">A work of fiction. The characters, institutions and events are invented, though inspired by real challenges in engineering education.</p>
+  {%- endif %}
   <div class="prose post-body">
     {{ cited_html }}
     {{ cited_refs }}
@@ -48,10 +51,15 @@ layout: default
     {% include theme-chips.html %}
     {% if page.tags and page.tags.size > 0 %}<p class="post-tags">{% for t in page.tags %}<span class="tag">{{ t }}</span>{% endfor %}</p>{% endif %}
     {% if page.canonical_url %}<p class="muted">This piece first appeared at <a href="{{ page.canonical_url }}" rel="canonical">{{ page.canonical_url | remove: "https://" | remove: "http://" | split: "/" | first }}</a>.</p>{% endif %}
+    {% if page.originally_url and page.originally_on %}<p class="muted">First published on <a href="{{ page.originally_url }}" rel="noopener">{{ page.originally_on }}</a>, {{ page.date | date: "%-d %B %Y" }}.</p>{% endif %}
+    {%- if page.fiction %}
+    <p class="muted">Written by <a href="{{ '/about/' | relative_url }}">Joshua Olunlade</a>.</p>
+    {%- else %}
     <p class="muted">
       Cite as: Olunlade, J. ({{ page.date | date: "%Y" }}). {{ page.title }}. {{ site.title }}. {{ page.url | absolute_url }}
     </p>
     <p class="muted">Written by <a href="{{ '/about/' | relative_url }}">Joshua Olunlade</a>, an engineering education researcher at the University of Cape Town.</p>
+    {%- endif %}
   </footer>
 
   {% include series-nav.html %}

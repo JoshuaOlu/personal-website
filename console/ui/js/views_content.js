@@ -174,6 +174,9 @@ function quickFieldsFor(kind, pubs) {
     { k: 'date', label: 'Date', kind: 'date' },
     { k: 'updated', label: 'Updated on (optional)', kind: 'date' },
     { k: 'tags', label: 'Tags (separate with commas)', kind: 'list', csv: true, wide: true },
+    { k: 'fiction', label: 'This is a work of fiction', kind: 'bool', wide: true, hint: 'Adds a short "work of fiction" note, and leaves out the "Cite as" line and the researcher byline.' },
+    { k: 'originally_on', label: 'Originally published on (optional)', kind: 'str', hint: 'For example Substack. Shows "First published on …" at the end of the piece.' },
+    { k: 'originally_url', label: 'Address of that original (optional)', kind: 'str' },
     { k: 'canonical_url', label: 'First published elsewhere? Its address', kind: 'str', wide: true, hint: 'Only fill this if the piece appeared first on another site (for example Substack). Search engines will then credit that page.' },
     { k: 'seo_title', label: 'Title for Google (optional)', kind: 'str', counter: [30, 60] },
     { k: 'card_topic', label: 'Topic on the preview card (optional)', kind: 'str', hint: 'Defaults to the first tag.' },
@@ -287,6 +290,10 @@ async function viewDocEdit(view, kind, path) {
         if (def.k === 'image.path' && m.width) { fm = setNested(fm, 'image', 'width', 'num', m.width); fm = setNested(fm, 'image', 'height', 'num', m.height); yamlArea.value = fm; markDirty(); }
       }) }, 'Choose…'));
       inputs.push({ def, el: inp });
+    } else if (def.kind === 'bool') {
+      const cb = h('input', { type: 'checkbox', checked: !!cur, onchange: () => applyField(def, cb.checked) });
+      control = h('label', { class: 'toggle' }, cb, h('span', {}, 'Yes'));
+      inputs.push({ def, el: cb, bool: true });
     } else if (def.options) {
       const dl = 'dl' + def.k.replace(/\W/g, '');
       const inp = h('input', { type: 'text', value: cur || '', list: dl, oninput: () => applyField(def, inp.value) });
@@ -471,7 +478,7 @@ async function viewDocEdit(view, kind, path) {
       const r = await POST('/api/yaml/parse', { text: fm });
       if (r.ok) {
         yamlOk = true; yamlErr.textContent = ''; parsed = r.data || {};
-        inputs.forEach(({ def, el }) => { if (document.activeElement !== el) { const v = getPath(parsed, def); el.value = Array.isArray(v) ? v.join(', ') : (v == null ? '' : v); } });
+        inputs.forEach(({ def, el, bool }) => { if (bool) { el.checked = !!getPath(parsed, def); return; } if (document.activeElement !== el) { const v = getPath(parsed, def); el.value = Array.isArray(v) ? v.join(', ') : (v == null ? '' : v); } });
         if (document.activeElement !== titleInput) titleInput.value = parsed.title || '';
         if (drawProgress) drawProgress(false);
         if (drawHubs) drawHubs();
