@@ -28,6 +28,12 @@
 {%- if page.collection == "writing" and img_path == "/assets/images/og-default.png" and page.card != false -%}
   {%- assign img_path = "/assets/og/" | append: page.slug | append: ".png" -%}{%- assign auto_card = true -%}
 {%- endif -%}
+{%- comment -%} Series and theme pages get a card too: series-NAME.png and theme-NAME.png. {%- endcomment -%}
+{%- if page.collection == "series" and img_path == "/assets/images/og-default.png" and page.card != false -%}
+  {%- assign img_path = "/assets/og/series-" | append: page.slug | append: ".png" -%}{%- assign auto_card = true -%}
+{%- elsif page.collection == "themes" and img_path == "/assets/images/og-default.png" and page.card != false -%}
+  {%- assign img_path = "/assets/og/theme-" | append: page.slug | append: ".png" -%}{%- assign auto_card = true -%}
+{%- endif -%}
 {%- if img_path contains "://" -%}{%- assign img_url = img_path -%}{%- else -%}{%- assign img_url = img_path | absolute_url -%}{%- endif -%}
 <title>{{ full_title | escape }}</title>
 <meta name="description" content="{{ desc | escape }}">

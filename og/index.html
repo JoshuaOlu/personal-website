@@ -35,6 +35,41 @@ noindex: true
   </div>
 </div></div>
 {%- endfor %}
+{%- for s in site.series %}
+  {%- include series-info.html slug=s.slug -%}
+  {%- if ser_parts.size > 0 -%}
+  {%- assign title = s.title | strip -%}
+  {%- assign n = title | size -%}
+  {%- if n <= 34 -%}{%- assign tier = "t1" -%}{%- elsif n <= 58 -%}{%- assign tier = "t2" -%}{%- elsif n <= 82 -%}{%- assign tier = "t3" -%}{%- else -%}{%- assign tier = "t4" -%}{%- endif -%}
+  {%- capture topic -%}{% if ser_fiction %}Story series{% else %}Series{% endif %}{% if ser_known %} · {{ ser_total }} parts{% endif %}{%- endcapture -%}
+<div class="card-slot" id="series-{{ s.slug }}"><div class="ogc {{ tier }}">
+  <div class="ogc-topic">{{ topic | escape }}</div>
+  <h1 class="ogc-title">{{ title | escape }}</h1>
+  <div class="ogc-foot">
+    <img class="ogc-photo" src="{{ '/assets/images/headshot.jpg' | relative_url }}" alt="">
+    <div><div class="ogc-name">{{ site.data.identity.name | default: site.title }}</div><div class="ogc-role">Engineering education, Nigeria &amp; Africa</div></div>
+    <div class="ogc-url">{{ site.url | remove: "https://" }}</div>
+  </div>
+</div></div>
+  {%- endif -%}
+{%- endfor %}
+{%- for t in site.themes %}
+  {%- assign tn = 0 -%}{%- for p in site.writing -%}{%- if p.themes contains t.slug -%}{%- assign tn = tn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if tn > 1 -%}
+  {%- assign title = t.title | strip -%}
+  {%- assign n = title | size -%}
+  {%- if n <= 34 -%}{%- assign tier = "t1" -%}{%- elsif n <= 58 -%}{%- assign tier = "t2" -%}{%- else -%}{%- assign tier = "t3" -%}{%- endif -%}
+<div class="card-slot" id="theme-{{ t.slug }}"><div class="ogc {{ tier }}">
+  <div class="ogc-topic">Theme</div>
+  <h1 class="ogc-title">{{ title | escape }}</h1>
+  <div class="ogc-foot">
+    <img class="ogc-photo" src="{{ '/assets/images/headshot.jpg' | relative_url }}" alt="">
+    <div><div class="ogc-name">{{ site.data.identity.name | default: site.title }}</div><div class="ogc-role">Engineering education, Nigeria &amp; Africa</div></div>
+    <div class="ogc-url">{{ site.url | remove: "https://" }}</div>
+  </div>
+</div></div>
+  {%- endif -%}
+{%- endfor %}
 <script>
 (function () {
   var id = decodeURIComponent((location.hash || '').slice(1));

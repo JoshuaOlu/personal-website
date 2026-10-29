@@ -3,4 +3,13 @@ layout: null
 sitemap: false
 noindex: true
 ---
-[{% for post in site.writing %}{"slug": {{ post.slug | jsonify }}, "title": {{ post.title | jsonify }}}{% unless forloop.last %},{% endunless %}{% endfor %}]
+{%- assign first = true -%}
+[{% for post in site.writing %}{% unless first %},{% endunless %}{% assign first = false %}{"slug": {{ post.slug | jsonify }}, "title": {{ post.title | jsonify }}}{% endfor %}
+{%- for s in site.series -%}
+  {%- include series-info.html slug=s.slug -%}
+  {%- if ser_parts.size > 0 -%}{% unless first %},{% endunless %}{% assign first = false %}{"slug": {{ "series-" | append: s.slug | jsonify }}, "title": {{ s.title | jsonify }}}{%- endif -%}
+{%- endfor -%}
+{%- for t in site.themes -%}
+  {%- assign tn = 0 -%}{%- for p in site.writing -%}{%- if p.themes contains t.slug -%}{%- assign tn = tn | plus: 1 -%}{%- endif -%}{%- endfor -%}
+  {%- if tn > 1 -%}{% unless first %},{% endunless %}{% assign first = false %}{"slug": {{ "theme-" | append: t.slug | jsonify }}, "title": {{ t.title | jsonify }}}{%- endif -%}
+{%- endfor -%}]
