@@ -39,3 +39,19 @@
 @media (max-width: 640px) { .post-wrap { padding: 1.5rem 1.25rem 0; } .post-main .post-body { font-size: 1.06rem; } }
 @media print { .post-rail, .post-progress { display: none; } }
 @media (prefers-reduced-motion: reduce) { .post-progress span { transition: none; } }
+
+/* Pieces with no side outline (stories, letters, short notes): one centred reading column,
+   so the page is balanced on wide screens instead of hugging the left edge. */
+.post-wrap:not(.has-rail) .post-main { max-width: 42rem; margin-left: auto; margin-right: auto; }
+.post-wrap:not(.has-rail) .page-header { max-width: none; margin-bottom: 2rem; }
+.post-wrap:not(.has-rail) .page-header h1 { font-size: clamp(2rem, 5.2vw, 3.1rem); line-height: 1.08; }
+.post-wrap:not(.has-rail) .page-tagline { max-width: none; }
+.post-wrap:not(.has-rail) .prose,
+.post-wrap:not(.has-rail) .post-toc,
+.post-wrap:not(.has-rail) .series-nav,
+.post-wrap:not(.has-rail) .keep-reading,
+.post-wrap:not(.has-rail) .next-story,
+.post-wrap:not(.has-rail) .newsletter { max-width: none; }
+.post-wrap:not(.has-rail) .post-body { font-size: 1.14rem; line-height: 1.8; }
+.post-wrap:not(.has-rail) .fiction-note { max-width: none; }
+@media (max-width: 640px) { .post-wrap:not(.has-rail) .post-body { font-size: 1.06rem; } }
